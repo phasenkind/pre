@@ -100,12 +100,14 @@
     </div>
 
     <div id="noReqDiv" class="compact" style="display: inline-flex; align-items: center; gap: 6px;">
-      <input type="checkbox" id="staff_no_req">
-      <span>No Req?</span>
+      <label>
+        <input type="checkbox" id="staff_no_req">
+        <span style="font-weight: bold;">No Req?</span>
+      </label>
     </div>
 
     <br>
-    <button onclick="checkItem()">Check Item</button>
+    <button onclick="checkItem()" style="margin-top: 16px; font-weight: bold;">Check Item</button>
 </div>
 
 <h3 id="result"></h3>
@@ -312,6 +314,7 @@
 </body>
 
 </html>
+
 
 
 
