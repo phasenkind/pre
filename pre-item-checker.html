@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Guild Wars Pre-Searing Item Checker</title>
+<style>
+  body {
+    background: black;
+    color: #ff9fbf;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+
+  /* Only affects fields inside the staff section */
+  #staffFields label {
+    display: block;
+    margin-top: 12px;   /* space above label */
+    font-weight: bold;
+  }
+
+  #staffFields select,
+  #staffFields input[type="checkbox"],
+  #staffFields button {
+    background: black;
+    color: #ff9fbf;
+    border: 1px solid #ff9fbf;
+    padding: 6px;
+    display: block;
+    margin-top: 4px;    /* small space between label and field */
+    margin-bottom: 16px; /* larger space after each field */
+  }
+
+  /* Optional: slightly tighter spacing for compact grouped fields like HCT */
+  #staffFields .compact select,
+  #staffFields .compact input[type="checkbox"] {
+    margin-bottom: 12px;
+  }
+
+  .hidden { display: none; }
+
+  h3 { 
+    margin-top: 24px;     /* extra space before result */
+  }
+</style>
+</head>
+<body>
+
+<h2>Pre-Searing Item Checker</h2>
+
+<label>Item Type:</label>
+<select id="itemType" onchange="showFields()">
+  <option value="">-- Select --</option>
+  <option value="staff">Staff</option>
+</select>
+
+<div id="staffFields" class="hidden">
+    <label>HSR %:</label>
+    <select id="staff_hsr"><option value="">-- Select --</option></select>
+
+    <label>Energy:</label>
+    <select id="staff_energy"><option value="">-- Select --</option></select>
+
+    <label>Inherent Modifier:</label>
+    <select id="staff_inherent" onchange="inherentChanged()">
+      <option value="">-- Select --</option>
+      <option value="none">None</option>
+      <option value="reduces_duration">Reduces condition duration</option>
+      <option value="hct">HCT</option>
+    </select>
+
+    <div id="hctAttributeDiv" class="hidden compact">
+      <label>HCT Attribute:</label>
+      <select id="staff_attr" class="compact" onchange="hctAttributeChanged()">
+        <option value="">-- Select --</option>
+        <option value="generic">Generic</option>
+        <option value="fire">Fire</option>
+        <option value="air">Air</option>
+        <option value="water">Water</option>
+        <option value="earth">Earth</option>
+        <option value="death">Death</option>
+        <option value="curses">Curses</option>
+        <option value="smite">Smite</option>
+        <option value="divine">Divine Favor</option>
+        <option value="dom">Domination</option>
+        <option value="illu">Illusion</option>
+      </select>
+    </div>
+
+    <div id="hctPercentDiv" class="hidden compact">
+      <label>HCT %:</label>
+      <select id="staff_hct_percent" class="compact">
+        <option value="">-- Select --</option>
+      </select>
+    </div>
+
+    <div id="noReqDiv" class="compact">
+      <label>
+        <input type="checkbox" id="staff_no_req">
+        No Req?
+      </label>
+    </div>
+
+    <br>
+    <button onclick="checkItem()">Check Item</button>
+</div>
+
+<h3 id="result"></h3>
+
+<script>
+  const staffTierMappings = [
+    { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Collectable" },
+    { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
+    { noReq: "yes", hsr: "13", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Collectable" },
+    { noReq: "yes", hsr: "13", energy: "6", inherent: "hct", attr: "death", hctPercent: "18", tier: "Collectable" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "blood", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "curses", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "", hctPercent: "18", tier: "God Tier Collectable" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "generic", hctPercent: "9", tier: "God Tier" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "fire", hctPercent: "", tier: "High End" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "death", hctPercent: "", tier: "High End" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "blood", hctPercent: "", tier: "High End" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "curses", hctPercent: "", tier: "High End" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "", tier: "High End" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "", tier: "High End" },
+    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "", tier: "High End" },
+    { noReq: "", hsr: "16", energy: "", inherent: "", attr: "", hctPercent: "reduces_duration", tier: "Mid Tier Collectable" },    
+    { noReq: "", hsr: "16", energy: "", inherent: "", attr: "", hctPercent: "", tier: "High End Collectable" },    
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "", hctPercent: "18", tier: "High End Collectable" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "17", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "generic", hctPercent: "", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "8", inherent: "none", attr: "", hctPercent: "", tier: "Collectable" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "blood", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "curses", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "dom", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "heal", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "smite", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "", hctPercent: "18", tier: "Mid Tier Collectable" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "death", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "", hctPercent: "18", tier: "Low End Collectable" },
+    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "High End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "", hctPercent: "18", tier: "Mid Tier Collectable" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "generic", hctPercent: "", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "Mid Tier" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "", hctPercent: "18", tier: "Low End Collectable" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "death", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
+    { noReq: "", hsr: "13", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "12", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+    { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
+  ];
+
+  function showFields() {
+    const staffFields = document.getElementById("staffFields");
+    const type = document.getElementById("itemType").value;
+    staffFields.classList.toggle("hidden", type !== "staff");
+
+    resetStaffFields();
+    populateHSR();
+    populateEnergy();
+  }
+
+  function resetStaffFields() {
+    document.getElementById("staff_hsr").value = "";
+    document.getElementById("staff_energy").value = "";
+    document.getElementById("staff_inherent").value = "";
+    document.getElementById("staff_no_req").checked = false;
+    document.getElementById("staff_attr").value = "";
+    document.getElementById("staff_hct_percent").value = "";
+    document.getElementById("hctAttributeDiv").classList.add("hidden");
+    document.getElementById("hctPercentDiv").classList.add("hidden");
+    document.getElementById("result").innerText = "";
+  }
+
+  function populateHSR() {
+    const hsrSelect = document.getElementById("staff_hsr");
+    hsrSelect.innerHTML = '<option value="">-- Select --</option>';
+    [11,12,13,14,15,16].forEach(v => hsrSelect.add(new Option(v, v)));
+  }
+
+  function populateEnergy() {
+    const energySelect = document.getElementById("staff_energy");
+    energySelect.innerHTML = '<option value="">-- Select --</option>';
+    [5,6,7,8].forEach(v => energySelect.add(new Option(v, v)));
+  }
+
+  function inherentChanged() {
+    const inherent = document.getElementById("staff_inherent").value;
+    const hctDiv = document.getElementById("hctAttributeDiv");
+    if (inherent === "hct") hctDiv.classList.remove("hidden");
+    else {
+      hctDiv.classList.add("hidden");
+      document.getElementById("staff_attr").value = "";
+      document.getElementById("hctPercentDiv").classList.add("hidden");
+    }
+  }
+
+  function hctAttributeChanged() {
+    const attr = document.getElementById("staff_attr").value;
+    const percentDiv = document.getElementById("hctPercentDiv");
+    const percentSelect = document.getElementById("staff_hct_percent");
+    percentSelect.innerHTML = '<option value="">-- Select --</option>';
+    if (attr) {
+      percentDiv.classList.remove("hidden");
+      const values = attr === "generic" ? [8,9] : [15,16,17,18];
+      values.forEach(v => percentSelect.add(new Option(v, v)));
+    } else percentDiv.classList.add("hidden");
+  }
+
+  function calculateTier() {
+    const hsr = document.getElementById("staff_hsr").value;
+    const energy = document.getElementById("staff_energy").value;
+    const noReq = document.getElementById("staff_no_req").checked ? "yes" : "no";
+    const inherent = document.getElementById("staff_inherent").value;
+    const attr = document.getElementById("staff_attr").value;
+    const hctPercent = document.getElementById("staff_hct_percent").value;
+
+    for (let mapping of staffTierMappings) {
+      if ((mapping.noReq === "" || mapping.noReq === noReq) &&
+          (mapping.hsr === "" || mapping.hsr === hsr) &&
+          (mapping.energy === "" || mapping.energy === energy) &&
+          (mapping.inherent === "" || mapping.inherent === inherent) &&
+          (mapping.attr === "" || mapping.attr === attr) &&
+          (mapping.hctPercent === "" || mapping.hctPercent === hctPercent)) {
+        return mapping.tier;
+      }
+    }
+    return "Junk";
+  }
+
+  function checkItem() {
+    const tier = calculateTier();
+    document.getElementById("result").innerText = `Staff Tier: ${tier}`;
+  }
+</script>
+</body>
+</html>
