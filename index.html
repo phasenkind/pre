@@ -21,8 +21,8 @@
   #staffFields input[type="checkbox"],
   #staffFields button {
     background: black;
-    color: #ff9fbf;
-    border: 1px solid #ff9fbf;
+    color: #cccccc;
+    border: 1px solid #cccccc;
     padding: 6px;
     display: block;
     margin-top: 4px;    /* small space between label and field */
@@ -35,6 +35,10 @@
     margin-bottom: 12px;
   }
 
+  .header-red {
+  color: #F79024; /* warm Pre-Searing orange */
+  }
+
   .hidden { display: none; }
 
   h3 { 
@@ -44,7 +48,7 @@
 </head>
 <body>
 
-<h2>Pre-Searing Item Checker</h2>
+<h2 class="header-red">Pre-Searing Item Checker</h2>
 
 <label style="font-weight: bold;">Item Type:</label>
 <select id="itemType" onchange="showFields()">
@@ -310,6 +314,7 @@
 </body>
 
 </html>
+
 
 
 
