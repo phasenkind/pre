@@ -265,14 +265,21 @@
     { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
   ];
 
-  function showFields() {
-    const staffFields = document.getElementById("staffFields");
-    const type = document.getElementById("itemType").value;
-    staffFields.classList.toggle("hidden", type !== "staff");
+function showFields() {
 
+  const type = document.getElementById("itemType").value;
+
+  const staffFields = document.getElementById("staffFields");
+  const axeFields = document.getElementById("axeFields");
+
+  staffFields.classList.toggle("hidden", type !== "staff");
+  axeFields.classList.toggle("hidden", type !== "axe");
+
+  if (type === "staff") {
     resetStaffFields();
     populateHSR();
     populateEnergy();
+  }
   }
 
   function resetStaffFields() {
@@ -351,6 +358,7 @@
 </body>
 
 </html>
+
 
 
 
