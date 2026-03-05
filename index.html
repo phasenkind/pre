@@ -52,6 +52,7 @@
 <select id="itemType" onchange="showFields()">
   <option value="">-- Select --</option>
   <option value="staff">Staff</option>
+  <option value="axe">Axe</option>
 </select>
 
 <div id="staffFields" class="hidden">
@@ -104,6 +105,29 @@
 
     <br>
     <button onclick="checkItem()" style="margin-top: 16px; font-weight: bold;">Check Item</button>
+</div>
+
+  <div id="axeFields" class="hidden">
+
+  <label>Damage Range:</label>
+  <select id="axe_damage">
+    <option value="">-- Select --</option>
+    <option value="6-15">6-15 or lower</option>
+    <option value="6-16">6-16</option>
+    <option value="6-17">6-17</option>
+    <option value="6-18">6-18</option>
+    <option value="6-19">6-19</option>
+    <option value="6-20">6-20</option>
+    <option value="7-18">7-18</option>
+    <option value="7-19">7-19</option>
+    <option value="7-20">7-20</option>
+    <option value="7-21">7-21</option>
+  </select>
+
+  <button onclick="checkItem()" style="margin-top:16px;font-weight:bold;">
+    Check Item
+  </button>
+
 </div>
 
 <h3 id="result"></h3>
@@ -243,15 +267,17 @@
   ];
 
   function showFields() {
-    const staffFields = document.getElementById("staffFields");
     const type = document.getElementById("itemType").value;
+    const staffFields = document.getElementById("staffFields");
+    const axeFields = document.getElementById("axeFields");
     staffFields.classList.toggle("hidden", type !== "staff");
-
-    resetStaffFields();
-    populateHSR();
-    populateEnergy();
+    axeFields.classList.toggle("hidden", type !== "axe");
+    if (type === "staff") {
+      resetStaffFields();
+      populateHSR();
+      populateEnergy();
+    }
   }
-
   function resetStaffFields() {
     document.getElementById("staff_hsr").value = "";
     document.getElementById("staff_energy").value = "";
@@ -328,6 +354,7 @@
 </body>
 
 </html>
+
 
 
 
