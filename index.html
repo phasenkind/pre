@@ -452,14 +452,22 @@ function weaponInherentChanged(selectElem) {
   values.forEach(v => percentSelect.add(new Option(v + "%", v)));
 }
   
-  function checkItem() {
+function checkItem() {
+  const type = document.getElementById("itemType").value;
+
+  if (type === "staff") {
     const tier = calculateTier();
     document.getElementById("result").innerText = `Item Tier: ${tier}`;
+    return;
+  }
+
+  document.getElementById("result").innerText = `${type} logic not added yet`;
   }
 </script>
 </body>
 
 </html>
+
 
 
 
