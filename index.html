@@ -398,15 +398,23 @@
   }
 
     function populateHSR() {
+      const noReq = document.getElementById("no_req").checked;
       const hsrSelect = document.getElementById("staff_hsr");
+    
       hsrSelect.innerHTML = '<option value="">-- Select --</option>';
-      [11, 12, 13, 14, 15, 16].forEach(v => hsrSelect.add(new Option(v, v)));
+    
+      const values = noReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
+      values.forEach(v => hsrSelect.add(new Option(v, v)));
     }
 
     function populateEnergy() {
+      const noReq = document.getElementById("no_req").checked;
       const energySelect = document.getElementById("staff_energy");
+    
       energySelect.innerHTML = '<option value="">-- Select --</option>';
-      [5, 6, 7, 8].forEach(v => energySelect.add(new Option(v, v)));
+    
+      const values = noReq ? [5, 6] : [5, 6, 7, 8];
+      values.forEach(v => energySelect.add(new Option(v, v)));
     }
 
     function inherentChanged() {
@@ -547,6 +555,11 @@ function populateWeaponDamage(type) {
 
 function noReqChanged() {
   const type = document.getElementById("itemType").value;
+
+  if (type === "staff") {
+    populateHSR();
+    populateEnergy();
+  }
 
   if (["axe", "sword", "hammer", "bow"].includes(type)) {
     populateWeaponDamage(type);
@@ -741,6 +754,7 @@ function findTier(criteria, mappings, keys) {
 
 </body>
 </html>
+
 
 
 
