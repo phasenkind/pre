@@ -27,7 +27,29 @@
     margin-top: 4px;
     margin-bottom: 16px;
   }
+  
+.formSection {
+  margin-top: 18px;
+}
 
+.sectionTitle {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #cccccc;
+}
+
+.inlineCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  margin: 12px 0;
+}
+
+#checkItemButton {
+  margin-top: 20px;
+  font-weight: bold;
+}
   .compact select,
   .compact input[type="checkbox"] {
     margin-bottom: 12px;
@@ -52,15 +74,24 @@
 
 <h2 class="header-red">Pre-Searing Item Checker</h2>
 
-<label style="font-weight: bold;">Item Type:</label>
-<select id="itemType" onchange="showFields()">
-  <option value="">-- Select --</option>
-  <option value="staff">Staff</option>
-  <option value="axe">Axe</option>
-  <option value="sword">Sword</option>
-  <option value="hammer">Hammer</option>
-  <option value="bow">Bow</option>
-</select>
+<div class="formSection">
+  <div class="sectionTitle">Item Type</div>
+  <select id="itemType" onchange="showFields()">
+    <option value="">-- Select --</option>
+    <option value="staff">Staff</option>
+    <option value="axe">Axe</option>
+    <option value="sword">Sword</option>
+    <option value="hammer">Hammer</option>
+    <option value="bow">Bow</option>
+  </select>
+</div>
+
+<div id="noReqContainer" class="hidden">
+  <label class="inlineCheck">
+    <input type="checkbox" id="no_req">
+    No Req?
+  </label>
+</div>
 
 <div id="noReqContainer" class="hidden" style="margin: 12px 0;">
   <label style="display:inline-flex; align-items:center; gap:6px; font-weight:bold;">
@@ -69,7 +100,8 @@
   </label>
 </div>
 
-<div class="itemFields hidden" data-type="staff">
+<div class="itemFields hidden formSection" data-type="staff">
+  <div class="sectionTitle">Staff Stats</div>
     <label>HSR %:</label>
     <select id="staff_hsr"><option value="">-- Select --</option></select>
 
@@ -114,7 +146,8 @@
 
   </div>
   
-<div class="itemFields hidden" data-type="axe">
+<div class="itemFields hidden formSection" data-type="axe">
+  <div class="sectionTitle">Axe Stats</div>
   <label>Damage Range:</label>
   <select id="axe_damage">
     <option value="">-- Select --</option>
@@ -131,7 +164,8 @@
   </select>
 </div>
 
-<div class="itemFields hidden" data-type="sword">
+<div class="itemFields hidden formSection" data-type="sword">
+  <div class="sectionTitle">Sword Stats</div>
   <label>Damage Range:</label>
   <select id="sword_damage">
     <option value="">-- Select --</option>
@@ -145,7 +179,8 @@
   </select>
 </div>
 
-<div class="itemFields hidden" data-type="hammer">
+<div class="itemFields hidden formSection" data-type="hammer">
+  <div class="sectionTitle">Hammer Stats</div>
   <label>Damage Range:</label>
   <select id="hammer_damage">
     <option value="">-- Select --</option>
@@ -159,7 +194,8 @@
   </select>
 </div>
 
-<div class="itemFields hidden" data-type="bow">
+<div class="itemFields hidden formSection" data-type="bow">
+  <div class="sectionTitle">Bow Stats</div>
   <label>Damage Range:</label>
   <select id="bow_damage">
     <option value="">-- Select --</option>
@@ -174,7 +210,8 @@
   </select>
 </div>
 
-<div id="martialModifiers" class="hidden itemFields" data-type="axe,sword,bow,hammer">
+<div id="martialModifiers" class="hidden itemFields formSection" data-type="axe,sword,bow,hammer">
+  <div class="sectionTitle">Martial Modifiers</div>
   <label>Inherent Damage Increase:</label>
   <select class="weapon_inherent" onchange="weaponInherentChanged(this)">
     <option value="">-- Select --</option>
@@ -194,8 +231,8 @@
   </div>
 </div>
 
-<button id="checkItemButton" onclick="checkItem()" class="hidden" style="margin-top:16px;font-weight:bold;">
-Check Item
+<button id="checkItemButton" onclick="checkItem()" class="hidden">
+  Check Item
 </button>
 
 <h3 id="result"></h3>
@@ -480,6 +517,7 @@ function checkItem() {
 </body>
 
 </html>
+
 
 
 
