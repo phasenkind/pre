@@ -62,8 +62,8 @@
   <option value="bow">Bow</option>
 </select>
 
-<div style="margin-top: 10px; margin-bottom: 18px;">
-  <label style="display: inline-flex; align-items: center; gap: 6px; font-weight: bold; margin-top: 0;">
+<div id="noReqContainer" class="hidden" style="margin: 12px 0;">
+  <label style="display:inline-flex; align-items:center; gap:6px; font-weight:bold;">
     <input type="checkbox" id="no_req">
     No Req?
   </label>
@@ -364,6 +364,7 @@ function resetAllFields() {
   
 function showFields() {
   const type = document.getElementById("itemType").value;
+  const noReqContainer = document.getElementById("noReqContainer");
   const checkButton = document.getElementById("checkItemButton");
 
   resetAllFields();
@@ -373,6 +374,7 @@ function showFields() {
     div.classList.toggle("hidden", !types.includes(type));
   });
 
+  noReqContainer.classList.toggle("hidden", type === "");
   checkButton.classList.toggle("hidden", type === "");
 
   if (type === "staff") {
@@ -478,6 +480,7 @@ function checkItem() {
 </body>
 
 </html>
+
 
 
 
