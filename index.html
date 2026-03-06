@@ -1,100 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Pre-Searing Item Checker</title>
-<style>
-  body {
-    background: black;
-    color: #cccccc;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
+  <style>
+    body {
+      background: black;
+      color: #cccccc;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
 
-.itemFields label,
-.topField label {
-  display: block;
-  margin-top: 12px;
-  font-weight: bold;
-}
+    .itemFields label,
+    .topField label,
+    #martialSharedFields label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
 
-.itemFields select,
-.topField select {
-  background: black;
-  color: #cccccc;
-  border: 1px solid #cccccc;
-  padding: 6px;
-  display: block;
-  margin-top: 4px;
-  margin-bottom: 16px;
-}
+    .itemFields select,
+    .topField select,
+    #martialSharedFields select {
+      background: black;
+      color: #cccccc;
+      border: 1px solid #cccccc;
+      padding: 6px;
+      display: block;
+      margin-top: 4px;
+      margin-bottom: 16px;
+    }
 
-#checkItemButton {
-  background: #cccccc;
-  color: black;
-  border: 1px solid black;
-  padding: 6px;
-  margin-top: 20px;
-  font-weight: bold;
-  border-radius: 4px;
-}
-  .compact select,
-  .compact input[type="checkbox"] {
-    margin-bottom: 12px;
-  }
+    #checkItemButton {
+      background: #cccccc;
+      color: black;
+      border: 1px solid black;
+      padding: 6px 10px;
+      margin-top: 20px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-  .header-red {
-  color: #8a090c; 
-  }
+    .compact select,
+    .compact input[type="checkbox"] {
+      margin-bottom: 12px;
+    }
 
-  .hidden { display: none; }
+    .header-red {
+      color: #8a090c;
+    }
 
-  h3 { 
-    margin-top: 24px;
-  }
-  
-  .noReqRow {
-  margin-top: 12px;
-  margin-bottom: 12px;
- }
+    .hidden {
+      display: none;
+    }
 
-.noReqRow label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: bold;
-}
-  
-</style>
+    h3 {
+      margin-top: 24px;
+    }
+
+    .noReqRow {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    .noReqRow label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+    }
+
+    .subtle {
+      color: #999999;
+      font-size: 0.95em;
+      margin-top: -8px;
+      margin-bottom: 12px;
+    }
+  </style>
 </head>
 <body>
 
-<h2 class="header-red">Pre-Searing Item Checker</h2>
+  <h2 class="header-red">Pre-Searing Item Checker</h2>
 
-<div class="topField">
-  <label>Item Type:</label>
-  <select id="itemType" onchange="showFields()">
-    <option value="">-- Select --</option>
-    <option value="staff">Staff</option>
-    <option value="axe">Axe</option>
-    <option value="sword">Sword</option>
-    <option value="hammer">Hammer</option>
-    <option value="bow">Bow</option>
-  </select>
-</div>
+  <div class="topField">
+    <label>Item Type:</label>
+    <select id="itemType" onchange="showFields()">
+      <option value="">-- Select --</option>
+      <option value="staff">Staff</option>
+      <option value="axe">Axe</option>
+      <option value="sword">Sword</option>
+      <option value="hammer">Hammer</option>
+      <option value="bow">Bow</option>
+    </select>
+  </div>
 
-<div id="noReqContainer" class="hidden noReqRow">
-  <label>
-    <input type="checkbox" id="no_req">
-    No Req?
-  </label>
-</div>
+  <div id="noReqContainer" class="hidden noReqRow">
+    <label>
+      <input type="checkbox" id="no_req">
+      No Req?
+    </label>
+  </div>
 
-<div class="itemFields hidden" data-type="staff">
+  <div class="itemFields hidden" data-type="staff">
     <label>HSR %:</label>
-    <select id="staff_hsr"><option value="">-- Select --</option></select>
+    <select id="staff_hsr">
+      <option value="">-- Select --</option>
+    </select>
 
     <label>Energy:</label>
-    <select id="staff_energy"><option value="">-- Select --</option></select>
+    <select id="staff_energy">
+      <option value="">-- Select --</option>
+    </select>
 
     <label>Inherent Modifier:</label>
     <select id="staff_inherent" onchange="inherentChanged()">
@@ -106,7 +123,7 @@
 
     <div id="hctAttributeDiv" class="hidden compact">
       <label>HCT Attribute:</label>
-      <select id="staff_attr" class="compact" onchange="hctAttributeChanged()">
+      <select id="staff_attr" onchange="hctAttributeChanged()">
         <option value="">-- Select --</option>
         <option value="generic">Generic</option>
         <option value="fire">Fire</option>
@@ -127,101 +144,101 @@
 
     <div id="hctPercentDiv" class="hidden compact">
       <label>HCT %:</label>
-      <select id="staff_hct_percent" class="compact">
+      <select id="staff_hct_percent">
         <option value="">-- Select --</option>
       </select>
     </div>
-
   </div>
-  
-<div class="itemFields hidden" data-type="axe">
-  <label>Damage Range:</label>
-  <select id="axe_damage">
-    <option value="">-- Select --</option>
-    <option value="6-15">6-15 or lower</option>
-    <option value="6-16">6-16</option>
-    <option value="6-17">6-17</option>
-    <option value="6-18">6-18</option>
-    <option value="6-19">6-19</option>
-    <option value="6-20">6-20</option>
-    <option value="7-18">7-18</option>
-    <option value="7-19">7-19</option>
-    <option value="7-20">7-20</option>
-    <option value="7-21">7-21</option>
-  </select>
-</div>
 
-<div class="itemFields hidden" data-type="sword">
-  <label>Damage Range:</label>
-  <select id="sword_damage">
-    <option value="">-- Select --</option>
-    <option value="10-13">10-13 or lower</option>
-    <option value="10-14">10-14</option>
-    <option value="11-14">11-14</option>
-    <option value="11-15">11-15</option>
-    <option value="11-16">11-16</option>
-    <option value="12-16">12-16</option>
-    <option value="12-17">12-17</option>
-  </select>
-</div>
-
-<div class="itemFields hidden" data-type="hammer">
-  <label>Damage Range:</label>
-  <select id="hammer_damage">
-    <option value="">-- Select --</option>
-    <option value="14-21">14-21 or lower</option>
-    <option value="14-22">14-22</option>
-    <option value="14-23">14-23</option>
-    <option value="14-24">14-24</option>
-    <option value="15-24">15-24</option>
-    <option value="15-25">15-25</option>
-    <option value="15-26">15-26</option>
-  </select>
-</div>
-
-<div class="itemFields hidden" data-type="bow">
-  <label>Damage Range:</label>
-  <select id="bow_damage">
-    <option value="">-- Select --</option>
-    <option value="11-16">11-16 or lower</option>
-    <option value="11-17">11-17</option>
-    <option value="11-18">11-18</option>
-    <option value="11-19">11-19</option>
-    <option value="12-18">12-18</option>
-    <option value="12-19">12-19</option>
-    <option value="12-20">12-20</option>
-    <option value="12-21">12-21</option>
-  </select>
-</div>
-
-<div class="itemFields hidden" data-type="axe,sword,bow,hammer">
-  <label>Inherent Damage Increase:</label>
-  <select class="weapon_inherent" onchange="weaponInherentChanged(this)">
-    <option value="">-- Select --</option>
-    <option value="none">None</option>
-    <option value="enchanted">while Enchanted</option>
-    <option value="stance">while in a Stance</option>
-    <option value="hexed">while Hexed</option>
-    <option value="above50">while Health is above 50%</option>
-    <option value="below50">while Health is below 50%</option>
-  </select>
-
-  <div class="weaponDamagePercentDiv hidden">
-    <label>Damage Increase %:</label>
-    <select class="weapon_damage_percent">
+  <div class="itemFields hidden" data-type="axe">
+    <label>Damage Range:</label>
+    <select id="axe_damage">
       <option value="">-- Select --</option>
+      <option value="6-15">6-15 or lower</option>
+      <option value="6-16">6-16</option>
+      <option value="6-17">6-17</option>
+      <option value="6-18">6-18</option>
+      <option value="6-19">6-19</option>
+      <option value="6-20">6-20</option>
+      <option value="7-18">7-18</option>
+      <option value="7-19">7-19</option>
+      <option value="7-20">7-20</option>
+      <option value="7-21">7-21</option>
     </select>
   </div>
-</div>
 
-<button id="checkItemButton" onclick="checkItem()" class="hidden">
-  Check Item
-</button>
+  <div class="itemFields hidden" data-type="sword">
+    <label>Damage Range:</label>
+    <select id="sword_damage">
+      <option value="">-- Select --</option>
+      <option value="10-13">10-13 or lower</option>
+      <option value="10-14">10-14</option>
+      <option value="11-14">11-14</option>
+      <option value="11-15">11-15</option>
+      <option value="11-16">11-16</option>
+      <option value="12-16">12-16</option>
+      <option value="12-17">12-17</option>
+    </select>
+  </div>
 
-<h3 id="result"></h3>
+  <div class="itemFields hidden" data-type="hammer">
+    <label>Damage Range:</label>
+    <select id="hammer_damage">
+      <option value="">-- Select --</option>
+      <option value="14-21">14-21 or lower</option>
+      <option value="14-22">14-22</option>
+      <option value="14-23">14-23</option>
+      <option value="14-24">14-24</option>
+      <option value="15-24">15-24</option>
+      <option value="15-25">15-25</option>
+      <option value="15-26">15-26</option>
+    </select>
+  </div>
 
-<script>
-  const staffTierMappings = [
+  <div class="itemFields hidden" data-type="bow">
+    <label>Damage Range:</label>
+    <select id="bow_damage">
+      <option value="">-- Select --</option>
+      <option value="11-16">11-16 or lower</option>
+      <option value="11-17">11-17</option>
+      <option value="11-18">11-18</option>
+      <option value="11-19">11-19</option>
+      <option value="12-18">12-18</option>
+      <option value="12-19">12-19</option>
+      <option value="12-20">12-20</option>
+      <option value="12-21">12-21</option>
+    </select>
+  </div>
+
+  <div id="martialSharedFields" class="hidden">
+    <label>Inherent Damage Increase:</label>
+    <select id="weapon_inherent" onchange="weaponInherentChanged()">
+      <option value="">-- Select --</option>
+      <option value="none">None</option>
+      <option value="enchanted">while Enchanted</option>
+      <option value="stance">while in a Stance</option>
+      <option value="hexed">while Hexed</option>
+      <option value="above50">while Health is above 50%</option>
+      <option value="below50">while Health is below 50%</option>
+    </select>
+
+    <div id="weaponDamagePercentDiv" class="hidden">
+      <label>Damage Increase %:</label>
+      <select id="weapon_damage_percent">
+        <option value="">-- Select --</option>
+      </select>
+    </div>
+  </div>
+
+  <button id="checkItemButton" onclick="checkItem()" class="hidden">
+    Check Item
+  </button>
+
+  <h3 id="result"></h3>
+  <div id="debug" class="subtle"></div>
+
+  <script>
+    const staffTierMappings = [
     { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Highly Collectable" },
     { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Collectable" },
     { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
@@ -244,7 +261,7 @@
     { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "", tier: "High End" },
     { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "", tier: "High End" },
     { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "", tier: "High End" },
-    { noReq: "", hsr: "16", energy: "", inherent: "", attr: "", hctPercent: "reduces_duration", tier: "Collectable" },    
+    { noReq: "", hsr: "16", energy: "", inherent: "reduces_duration", attr: "", hctPercent: "", tier: "Collectable" },    
     { noReq: "", hsr: "16", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Collectable" },    
     { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
     { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
@@ -353,201 +370,270 @@
     { noReq: "", hsr: "12", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
     { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
   ];
+  const martialTierMappings = [
+    { type: "axe", noReq: "", damage: "7-21", inherent: "above50", percent: "14", tier: "God Tier" },
+  ];
+    
+ function resetAllFields() {
+      document.querySelectorAll(".itemFields select").forEach(select => {
+        select.value = "";
+      });
 
-function resetAllFields() {
-  document.querySelectorAll(".itemFields select").forEach(select => {
-    select.value = "";
-  });
+      document.getElementById("no_req").checked = false;
 
-  document.querySelectorAll('.itemFields input[type="checkbox"]').forEach(checkbox => {
-    checkbox.checked = false;
-  });
-
-  const noReq = document.getElementById("no_req");
-  if (noReq) noReq.checked = false;
-
-  const hctAttributeDiv = document.getElementById("hctAttributeDiv");
-  const hctPercentDiv = document.getElementById("hctPercentDiv");
-
-  if (hctAttributeDiv) hctAttributeDiv.classList.add("hidden");
-  if (hctPercentDiv) hctPercentDiv.classList.add("hidden");
-
-  document.querySelectorAll(".weaponDamagePercentDiv").forEach(div => {
-    div.classList.add("hidden");
-  });
-
-  document.querySelectorAll(".weapon_damage_percent").forEach(select => {
-    select.innerHTML = '<option value="">-- Select --</option>';
-  });
-
-  document.getElementById("result").innerText = "";
-}
-  
-function showFields() {
-  const type = document.getElementById("itemType").value;
-  const noReqContainer = document.getElementById("noReqContainer");
-  const checkButton = document.getElementById("checkItemButton");
-
-  resetAllFields();
-
-  document.querySelectorAll(".itemFields").forEach(div => {
-    const types = div.dataset.type.split(",");
-    div.classList.toggle("hidden", !types.includes(type));
-  });
-
-  noReqContainer.classList.toggle("hidden", type === "");
-  checkButton.classList.toggle("hidden", type === "");
-
-  if (type === "staff") {
-    populateHSR();
-    populateEnergy();
-  }
-}
-
-  function populateHSR() {
-    const hsrSelect = document.getElementById("staff_hsr");
-    hsrSelect.innerHTML = '<option value="">-- Select --</option>';
-    [11,12,13,14,15,16].forEach(v => hsrSelect.add(new Option(v, v)));
-  }
-
-  function populateEnergy() {
-    const energySelect = document.getElementById("staff_energy");
-    energySelect.innerHTML = '<option value="">-- Select --</option>';
-    [5,6,7,8].forEach(v => energySelect.add(new Option(v, v)));
-  }
-
-  function inherentChanged() {
-    const inherent = document.getElementById("staff_inherent").value;
-    const hctDiv = document.getElementById("hctAttributeDiv");
-    if (inherent === "hct") hctDiv.classList.remove("hidden");
-    else {
-      hctDiv.classList.add("hidden");
-      document.getElementById("staff_attr").value = "";
+      document.getElementById("hctAttributeDiv").classList.add("hidden");
       document.getElementById("hctPercentDiv").classList.add("hidden");
+
+      document.getElementById("weapon_inherent").value = "";
+      document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
+      document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
+
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
     }
-  }
- 
-  function hctAttributeChanged() {
-    const attr = document.getElementById("staff_attr").value;
-    const percentDiv = document.getElementById("hctPercentDiv");
-    const percentSelect = document.getElementById("staff_hct_percent");
-    percentSelect.innerHTML = '<option value="">-- Select --</option>';
-    if (attr) {
-      percentDiv.classList.remove("hidden");
-      const values = attr === "generic" ? [8,9] : [15,16,17,18];
-      values.forEach(v => percentSelect.add(new Option(v, v)));
-    } else percentDiv.classList.add("hidden");
-  }
 
-  function calculateTier() {
-    const hsr = document.getElementById("staff_hsr").value;
-    const energy = document.getElementById("staff_energy").value;
-    const noReq = document.getElementById("no_req").checked ? "yes" : "no";
-    const inherent = document.getElementById("staff_inherent").value;
-    const attr = document.getElementById("staff_attr").value;
-    const hctPercent = document.getElementById("staff_hct_percent").value;
+    function showFields() {
+      const type = document.getElementById("itemType").value;
+      const noReqContainer = document.getElementById("noReqContainer");
+      const checkButton = document.getElementById("checkItemButton");
+      const martialSharedFields = document.getElementById("martialSharedFields");
 
-    for (let mapping of staffTierMappings) {
-      if ((mapping.noReq === "" || mapping.noReq === noReq) &&
-          (mapping.hsr === "" || mapping.hsr === hsr) &&
-          (mapping.energy === "" || mapping.energy === energy) &&
-          (mapping.inherent === "" || mapping.inherent === inherent) &&
-          (mapping.attr === "" || mapping.attr === attr) &&
-          (mapping.hctPercent === "" || mapping.hctPercent === hctPercent)) {
-        return mapping.tier;
+      resetAllFields();
+
+      document.querySelectorAll(".itemFields").forEach(div => {
+        const types = div.dataset.type.split(",");
+        div.classList.toggle("hidden", !types.includes(type));
+      });
+
+      noReqContainer.classList.toggle("hidden", type === "");
+      checkButton.classList.toggle("hidden", type === "");
+      martialSharedFields.classList.toggle("hidden", !["axe", "sword", "hammer", "bow"].includes(type));
+
+      if (type === "staff") {
+        populateHSR();
+        populateEnergy();
       }
     }
-    return "Junk";
-  }
-  
-function weaponInherentChanged(selectElem) {
-  const inherent = selectElem.value;
-  const container = selectElem.closest(".itemFields");
-  const percentDiv = container.querySelector(".weaponDamagePercentDiv");
-  const percentSelect = container.querySelector(".weapon_damage_percent");
 
-  percentSelect.innerHTML = '<option value="">-- Select --</option>';
+    function populateHSR() {
+      const hsrSelect = document.getElementById("staff_hsr");
+      hsrSelect.innerHTML = '<option value="">-- Select --</option>';
+      [11, 12, 13, 14, 15, 16].forEach(v => hsrSelect.add(new Option(v, v)));
+    }
 
-  if (!inherent || inherent === "none") {
-    percentDiv.classList.add("hidden");
-    return;
-  }
+    function populateEnergy() {
+      const energySelect = document.getElementById("staff_energy");
+      energySelect.innerHTML = '<option value="">-- Select --</option>';
+      [5, 6, 7, 8].forEach(v => energySelect.add(new Option(v, v)));
+    }
 
-  percentDiv.classList.remove("hidden");
+    function inherentChanged() {
+      const inherent = document.getElementById("staff_inherent").value;
+      const hctDiv = document.getElementById("hctAttributeDiv");
+      const percentDiv = document.getElementById("hctPercentDiv");
 
-  let values = [];
-  if (["enchanted","stance","above50"].includes(inherent)) {
-    values = [13,14];
-  } 
-  if (["below50","hexed"].includes(inherent)) {
-    values = [15,16,17,18];
-  }
+      if (inherent === "hct") {
+        hctDiv.classList.remove("hidden");
+      } else {
+        hctDiv.classList.add("hidden");
+        percentDiv.classList.add("hidden");
+        document.getElementById("staff_attr").value = "";
+        document.getElementById("staff_hct_percent").value = "";
+      }
+    }
 
-  values.forEach(v => percentSelect.add(new Option(v + "%", v)));
-}
-  
-function checkItem() {
-  const type = document.getElementById("itemType").value;
+    function hctAttributeChanged() {
+      const attr = document.getElementById("staff_attr").value;
+      const percentDiv = document.getElementById("hctPercentDiv");
+      const percentSelect = document.getElementById("staff_hct_percent");
 
-  if (type === "staff") {
-    const tier = calculateTier();
-    document.getElementById("result").innerText = `Item Tier: ${tier}`;
-    return;
-  }
+      percentSelect.innerHTML = '<option value="">-- Select --</option>';
 
-  document.getElementById("result").innerText = `${type} logic not added yet`;
-  }
-</script>
+      if (!attr) {
+        percentDiv.classList.add("hidden");
+        return;
+      }
+
+      percentDiv.classList.remove("hidden");
+      const values = attr === "generic" ? [8, 9] : [15, 16, 17, 18];
+      values.forEach(v => percentSelect.add(new Option(v, v)));
+    }
+
+    function weaponInherentChanged() {
+      const inherent = document.getElementById("weapon_inherent").value;
+      const percentDiv = document.getElementById("weaponDamagePercentDiv");
+      const percentSelect = document.getElementById("weapon_damage_percent");
+
+      percentSelect.innerHTML = '<option value="">-- Select --</option>';
+
+      if (!inherent || inherent === "none") {
+        percentDiv.classList.add("hidden");
+        return;
+      }
+
+      percentDiv.classList.remove("hidden");
+
+      let values = [];
+      if (["enchanted", "stance", "above50"].includes(inherent)) {
+        values = [13, 14];
+      } else if (["below50", "hexed"].includes(inherent)) {
+        values = [15, 16, 17, 18];
+      }
+
+      values.forEach(v => percentSelect.add(new Option(v + "%", v)));
+    }
+
+    function findTier(criteria, mappings, keys) {
+      for (const mapping of mappings) {
+        let matched = true;
+
+        for (const key of keys) {
+          if (mapping[key] !== "" && mapping[key] !== criteria[key]) {
+            matched = false;
+            break;
+          }
+        }
+
+        if (matched) {
+          return mapping;
+        }
+      }
+
+      return { tier: "Junk" };
+    }
+
+    function getStaffCriteria() {
+      return {
+        noReq: document.getElementById("no_req").checked ? "yes" : "no",
+        hsr: document.getElementById("staff_hsr").value,
+        energy: document.getElementById("staff_energy").value,
+        inherent: document.getElementById("staff_inherent").value,
+        attr: document.getElementById("staff_attr").value,
+        hctPercent: document.getElementById("staff_hct_percent").value
+      };
+    }
+
+    function getMartialCriteria(type) {
+      return {
+        type,
+        noReq: document.getElementById("no_req").checked ? "yes" : "no",
+        damage: document.getElementById(type + "_damage").value,
+        inherent: document.getElementById("weapon_inherent").value,
+        percent: document.getElementById("weapon_damage_percent").value
+      };
+    }
+
+    function validateStaffInput(criteria) {
+      if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
+        return "Please complete all required staff fields.";
+      }
+
+      if (criteria.inherent === "hct" && !criteria.attr) {
+        return "Please select the HCT attribute.";
+      }
+
+      if (criteria.inherent === "hct" && !criteria.hctPercent) {
+        return "Please select the HCT %.";
+      }
+
+      return "";
+    }
+
+    function validateMartialInput(criteria) {
+      if (!criteria.damage) {
+        return "Please select the damage range.";
+      }
+
+      if (!criteria.inherent) {
+        return "Please select the inherent damage increase.";
+      }
+
+      if (criteria.inherent !== "none" && !criteria.percent) {
+        return "Please select the damage increase %.";
+      }
+
+      return "";
+    }
+
+    function calculateStaffTier() {
+      const criteria = getStaffCriteria();
+      const validationMessage = validateStaffInput(criteria);
+
+      if (validationMessage) {
+        return { error: validationMessage };
+      }
+
+      const normalizedCriteria = {
+        ...criteria,
+        attr: criteria.inherent === "hct" ? criteria.attr : "",
+        hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
+      };
+
+      const match = findTier(
+        normalizedCriteria,
+        staffTierMappings,
+        ["noReq", "hsr", "energy", "inherent", "attr", "hctPercent"]
+      );
+
+      return { tier: match.tier, match, criteria: normalizedCriteria };
+    }
+
+    function calculateMartialTier(type) {
+      const criteria = getMartialCriteria(type);
+      const validationMessage = validateMartialInput(criteria);
+
+      if (validationMessage) {
+        return { error: validationMessage };
+      }
+
+      const normalizedCriteria = {
+        ...criteria,
+        inherent: criteria.inherent === "none" ? "" : criteria.inherent,
+        percent: criteria.inherent === "none" ? "" : criteria.percent
+      };
+
+      const match = findTier(
+        normalizedCriteria,
+        martialTierMappings,
+        ["type", "noReq", "damage", "inherent", "percent"]
+      );
+
+      return { tier: match.tier, match, criteria: normalizedCriteria };
+    }
+
+    function checkItem() {
+      const type = document.getElementById("itemType").value;
+      const resultEl = document.getElementById("result");
+      const debugEl = document.getElementById("debug");
+
+      if (!type) {
+        resultEl.innerText = "Please select an item type.";
+        debugEl.innerText = "";
+        return;
+      }
+
+      let result;
+
+      if (type === "staff") {
+        result = calculateStaffTier();
+      } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
+        result = calculateMartialTier(type);
+      } else {
+        resultEl.innerText = "Logic not added yet.";
+        debugEl.innerText = "";
+        return;
+      }
+
+      if (result.error) {
+        resultEl.innerText = result.error;
+        debugEl.innerText = "";
+        return;
+      }
+
+      resultEl.innerText = `Item Tier: ${result.tier}`;
+      debugEl.innerText = `Matched rule: ${JSON.stringify(result.match)}`;
+    }
+  </script>
+
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
