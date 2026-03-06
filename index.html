@@ -336,14 +336,14 @@ function resetAllFields() {
     checkbox.checked = false;
   });
 
-  document.querySelectorAll(".hidden").forEach(div => {
-    if (
-      div.id === "hctAttributeDiv" ||
-      div.id === "hctPercentDiv" ||
-      div.classList.contains("weaponDamagePercentDiv")
-    ) {
-      div.classList.add("hidden");
-    }
+  const hctAttributeDiv = document.getElementById("hctAttributeDiv");
+  const hctPercentDiv = document.getElementById("hctPercentDiv");
+
+  if (hctAttributeDiv) hctAttributeDiv.classList.add("hidden");
+  if (hctPercentDiv) hctPercentDiv.classList.add("hidden");
+
+  document.querySelectorAll(".weaponDamagePercentDiv").forEach(div => {
+    div.classList.add("hidden");
   });
 
   document.querySelectorAll(".weapon_damage_percent").forEach(select => {
@@ -460,6 +460,7 @@ function weaponInherentChanged(selectElem) {
 </body>
 
 </html>
+
 
 
 
