@@ -714,25 +714,35 @@
       updateSpecialQuestionVisibility();
     }
 
-    function populateHSR() {
-      const noReq = getNoReqValue() === "yes";
-      const hsrSelect = document.getElementById("staff_hsr");
-
-      hsrSelect.innerHTML = '<option value="">-- Select --</option>';
-
-      const values = noReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
-      values.forEach(v => hsrSelect.add(new Option(v, v)));
+  function populateHSR() {
+    const noReq = getNoReqValue() === "yes";
+    const hsrSelect = document.getElementById("staff_hsr");
+    const previousValue = hsrSelect.value;
+  
+    hsrSelect.innerHTML = '<option value="">-- Select --</option>';
+  
+    const values = noReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
+    values.forEach(v => hsrSelect.add(new Option(v, v)));
+  
+    if (values.map(String).includes(previousValue)) {
+      hsrSelect.value = previousValue;
     }
-
-    function populateEnergy() {
-      const noReq = getNoReqValue() === "yes";
-      const energySelect = document.getElementById("staff_energy");
-
-      energySelect.innerHTML = '<option value="">-- Select --</option>';
-
-      const values = noReq ? [5, 6] : [5, 6, 7, 8];
-      values.forEach(v => energySelect.add(new Option(v, v)));
+  }
+    
+  function populateEnergy() {
+    const noReq = getNoReqValue() === "yes";
+    const energySelect = document.getElementById("staff_energy");
+    const previousValue = energySelect.value;
+  
+    energySelect.innerHTML = '<option value="">-- Select --</option>';
+  
+    const values = noReq ? [5, 6] : [5, 6, 7, 8];
+    values.forEach(v => energySelect.add(new Option(v, v)));
+  
+    if (values.map(String).includes(previousValue)) {
+      energySelect.value = previousValue;
     }
+  }
 
     function inherentChanged() {
       const inherent = document.getElementById("staff_inherent").value;
@@ -1198,6 +1208,7 @@
   </script>
 </body>
 </html>
+
 
 
 
