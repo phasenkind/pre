@@ -1016,8 +1016,18 @@
         debugEl.innerText = "";
         return;
       }
+resultEl.innerText = `Item Tier: ${result.tier}`;
 
-      resultEl.innerText = `Item Tier: ${result.tier}`;
+    if (result.breakdown) {
+      debugEl.innerText =
+        `Score: ${result.score} | ` +
+        `Damage: ${result.breakdown.damageScore} | ` +
+        `Skin: ${result.breakdown.skinBonus} | ` +
+        `Inherent: ${result.breakdown.inherentBonus} | ` +
+        `Percent: ${result.breakdown.percentBonus} | ` +
+        `Base: ${result.breakdown.baseScore} | ` +
+        `Multiplier: ${result.breakdown.modMultiplier}`;
+    } else {
       debugEl.innerText = "";
     }
 
@@ -1025,3 +1035,4 @@
   </script>
 </body>
 </html>
+
