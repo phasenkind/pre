@@ -31,13 +31,61 @@
       margin-bottom: 16px;
     }
 
-    .noReqSliderWrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 8px;
-      margin-bottom: 8px;
-    }
+.noReqSliderWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#no_req_slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 120px;
+  height: 12px;
+  background: #444;
+  border-radius: 6px;
+  outline: none;
+}
+
+.noReqSliderWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#no_req_slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 120px;
+  height: 12px;
+  background: #444;
+  border-radius: 6px;
+  outline: none;
+}
+
+#no_req_slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px; 
+  height: 22px;
+  background: #cccccc;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid black;
+}
+
+#no_req_slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  background: #cccccc;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid black;
+}
 
 .noReqSliderWrap input[type="range"] {
   width: 180px;
@@ -872,3 +920,4 @@
     debugEl.innerText = "";
   }
 </script>
+
