@@ -434,10 +434,10 @@
       "11-16": 0,
       "11-17": 1,
       "11-18": 2,
-      "11-19": 3,
-      "12-18": 4,
-      "12-19": 5,
-      "12-20": 10,
+      "11-19": 5,
+      "12-18": 5,
+      "12-19": 10,
+      "12-20": 20,
       "12-21": 50
     };
 
@@ -810,10 +810,10 @@
     }
 
     function reqBowScoreToTier(score) {
-      if (score >= 1000) return "God Tier";
-      if (score >= 100) return "High End";
-      if (score >= 20) return "Mid Tier";
-      if (score >= 5) return "Low End";
+      if (score >= 500) return "God Tier";
+      if (score >= 250) return "High End";
+      if (score >= 50) return "Mid Tier";
+      if (score >= 20) return "Low End";
       return "Junk";
     }
 
@@ -1008,6 +1008,7 @@
 </script>
 </body>
 </html>
+
 
 
 
