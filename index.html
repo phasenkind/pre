@@ -10,25 +10,30 @@
     padding: 20px;
   }
 
-  .itemFields label {
-    display: block;
-    margin-top: 12px;
-    font-weight: bold;
-  }
+.itemFields label,
+.topField label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
 
-  .itemFields select,
-  .itemFields input[type="checkbox"],
-  .itemFields button {
-    background: black;
-    color: #cccccc;
-    border: 1px solid #cccccc;
-    padding: 6px;
-    display: block;
-    margin-top: 4px;
-    margin-bottom: 16px;
-  }
+.itemFields select,
+.topField select {
+  background: black;
+  color: #cccccc;
+  border: 1px solid #cccccc;
+  padding: 6px;
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
 
 #checkItemButton {
+  background: #cccccc;
+  color: black;
+  border: 1px solid #cccccc;
+  padding: 6px;
+  display: block;
   margin-top: 20px;
   font-weight: bold;
 }
@@ -59,21 +64,6 @@
   font-weight: bold;
 }
   
-.topField label {
-  display: block;
-  margin-top: 12px;
-  font-weight: bold;
-}
-
-.topField select {
-  background: black;
-  color: #cccccc;
-  border: 1px solid #cccccc;
-  padding: 6px;
-  display: block;
-  margin-top: 4px;
-  margin-bottom: 16px;
-  }
 </style>
 </head>
 <body>
@@ -511,6 +501,7 @@ function checkItem() {
 </body>
 
 </html>
+
 
 
 
