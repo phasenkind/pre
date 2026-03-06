@@ -101,10 +101,6 @@
       </select>
     </div>
 
-    <div id="noReqDiv" class="compact" style="display: inline-flex; align-items: center; gap: 6px;">
-      <input type="checkbox" id="staff_no_req">
-      <span>No Req?</span>
-    </div>
   </div>
   
 <div class="itemFields hidden" data-type="axe">
@@ -186,6 +182,11 @@
     </select>
   </div>
 </div>
+
+<label style="display:inline-flex; align-items:center; gap:6px; font-weight:bold;">
+  <input type="checkbox" id="no_req">
+  No Req?
+</label>
 
 <button id="checkItemButton" onclick="checkItem()" class="hidden" style="margin-top:16px;font-weight:bold;">
 Check Item
@@ -329,11 +330,12 @@ Check Item
 
 function resetAllFields() {
   document.querySelectorAll(".itemFields select").forEach(select => {
-    select.value = "";
+    document.getElementById("no_req").checked = false;
+    document.getElementById("result").innerText = "";
   });
 
   document.querySelectorAll('.itemFields input[type="checkbox"]').forEach(checkbox => {
-    checkbox.checked = false;
+  checkbox.checked = false;
   });
 
   const hctAttributeDiv = document.getElementById("hctAttributeDiv");
@@ -411,7 +413,7 @@ function showFields() {
   function calculateTier() {
     const hsr = document.getElementById("staff_hsr").value;
     const energy = document.getElementById("staff_energy").value;
-    const noReq = document.getElementById("staff_no_req").checked ? "yes" : "no";
+    const noReq = document.getElementById("no_req").checked ? "yes" : "no";
     const inherent = document.getElementById("staff_inherent").value;
     const attr = document.getElementById("staff_attr").value;
     const hctPercent = document.getElementById("staff_hct_percent").value;
@@ -470,6 +472,7 @@ function checkItem() {
 </body>
 
 </html>
+
 
 
 
