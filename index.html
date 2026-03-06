@@ -151,6 +151,13 @@
   </div>
 
 <div class="itemFields hidden" data-type="axe">
+  <div class="noReqRow">
+    <label>
+      <input type="checkbox" id="axe_piercing">
+      Piercing Axe?
+    </label>
+  </div>
+
   <label>Damage Range:</label>
   <select id="axe_damage">
     <option value="">-- Select --</option>
@@ -158,6 +165,13 @@
 </div>
 
 <div class="itemFields hidden" data-type="sword">
+  <div class="noReqRow">
+    <label>
+      <input type="checkbox" id="sword_short">
+      Shortsword?
+    </label>
+  </div>
+
   <label>Damage Range:</label>
   <select id="sword_damage">
     <option value="">-- Select --</option>
@@ -352,23 +366,25 @@
      { type: "axe", skin: "", noReq: "", damage: "7-21", inherent: "above50", percent: "14", tier: "God Tier" },
   ];
     
- function resetAllFields() {
-      document.querySelectorAll(".itemFields select").forEach(select => {
-        select.value = "";
-      });
-
-      document.getElementById("no_req").checked = false;
-
-      document.getElementById("hctAttributeDiv").classList.add("hidden");
-      document.getElementById("hctPercentDiv").classList.add("hidden");
-
-      document.getElementById("weapon_inherent").value = "";
-      document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
-      document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
-
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
-    }
+  function resetAllFields() {
+    document.querySelectorAll(".itemFields select").forEach(select => {
+      select.value = "";
+    });
+  
+    document.getElementById("no_req").checked = false;
+    document.getElementById("axe_piercing").checked = false;
+    document.getElementById("sword_short").checked = false;
+  
+    document.getElementById("hctAttributeDiv").classList.add("hidden");
+    document.getElementById("hctPercentDiv").classList.add("hidden");
+  
+    document.getElementById("weapon_inherent").value = "";
+    document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
+    document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
+  
+    document.getElementById("result").innerText = "";
+    document.getElementById("debug").innerText = "";
+  }
 
     function showFields() {
       const type = document.getElementById("itemType").value;
@@ -625,16 +641,31 @@ function findTier(criteria, mappings, keys) {
       };
     }
 
-    function getMartialCriteria(type) {
-      return {
-        type,
-        skin: type === "bow" ? document.getElementById("bow_skin").value : "",
-        noReq: document.getElementById("no_req").checked ? "yes" : "no",
-        damage: document.getElementById(type + "_damage").value,
-        inherent: document.getElementById("weapon_inherent").value,
-        percent: document.getElementById("weapon_damage_percent").value
-      };
-    }
+function getMartialCriteria(type) {
+
+  let skin = "";
+
+  if (type === "bow") {
+    skin = document.getElementById("bow_skin").value;
+  }
+
+  if (type === "axe") {
+    skin = document.getElementById("axe_piercing").checked ? "piercing" : "";
+  }
+
+  if (type === "sword") {
+    skin = document.getElementById("sword_short").checked ? "short" : "";
+  }
+
+  return {
+    type,
+    skin,
+    noReq: document.getElementById("no_req").checked ? "yes" : "no",
+    damage: document.getElementById(type + "_damage").value,
+    inherent: document.getElementById("weapon_inherent").value,
+    percent: document.getElementById("weapon_damage_percent").value
+  };
+}
 
     function validateStaffInput(criteria) {
       if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
@@ -754,6 +785,7 @@ function findTier(criteria, mappings, keys) {
 
 </body>
 </html>
+
 
 
 
