@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>Pre-Searing Item Checker</title>
@@ -293,612 +294,734 @@
 
   <script>
     const staffTierMappings = [
-    { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Highly Collectable" },
-    { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Collectable" },
-    { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-    { noReq: "yes", hsr: "14", energy: "5", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-    { noReq: "yes", hsr: "13", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Collectable" },
-    { noReq: "yes", hsr: "13", energy: "6", inherent: "hct", attr: "death", hctPercent: "18", tier: "Collectable" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "blood", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "curses", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "", hctPercent: "18", tier: "Highly Collectable" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "generic", hctPercent: "9", tier: "God Tier" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "fire", hctPercent: "", tier: "High End" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "death", hctPercent: "", tier: "High End" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "blood", hctPercent: "", tier: "High End" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "curses", hctPercent: "", tier: "High End" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "", tier: "High End" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "", tier: "High End" },
-    { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "", tier: "High End" },
-    { noReq: "", hsr: "16", energy: "", inherent: "reduces_duration", attr: "", hctPercent: "", tier: "Collectable" },    
-    { noReq: "", hsr: "16", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Collectable" },    
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "", hctPercent: "18", tier: "Highly Collectable" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "17", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "generic", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "none", attr: "", hctPercent: "", tier: "Collectable" },
-    { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "", hctPercent: "15", tier: "Collectable" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "", hctPercent: "15", tier: "Collectable" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "death", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },    
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "High End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "generic", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "Mid Tier" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "water", hctPercent: "18", tier: "Collectable" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "air", hctPercent: "18", tier: "Collectable" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "earth", hctPercent: "18", tier: "Collectable" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "death", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
-    { noReq: "", hsr: "13", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "12", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "12", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-    { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
-  ];
+      { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Highly Collectable" },
+      { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Collectable" },
+      { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
+      { noReq: "yes", hsr: "14", energy: "5", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
+      { noReq: "yes", hsr: "13", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Collectable" },
+      { noReq: "yes", hsr: "13", energy: "6", inherent: "hct", attr: "death", hctPercent: "18", tier: "Collectable" },
     
-  function getNoReqValue() {
-    const slider = document.getElementById("no_req_slider");
-    if (!slider) return "";
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "blood", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "curses", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "", hctPercent: "18", tier: "Highly Collectable" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "generic", hctPercent: "9", tier: "God Tier" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "fire", hctPercent: "", tier: "High End" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "death", hctPercent: "", tier: "High End" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "blood", hctPercent: "", tier: "High End" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "curses", hctPercent: "", tier: "High End" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "", tier: "High End" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "", tier: "High End" },
+      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "", tier: "High End" },
+      { noReq: "", hsr: "16", energy: "", inherent: "reduces_duration", attr: "", hctPercent: "", tier: "Collectable" },
+      { noReq: "", hsr: "16", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Collectable" },
+    
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "", hctPercent: "18", tier: "Highly Collectable" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "17", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "generic", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "none", attr: "", hctPercent: "", tier: "Collectable" },
+      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "", hctPercent: "15", tier: "Collectable" },
+    
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "", hctPercent: "15", tier: "Collectable" },
+    
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "death", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
+    
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "High End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "generic", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
+    
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "Mid Tier" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "water", hctPercent: "18", tier: "Collectable" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "air", hctPercent: "18", tier: "Collectable" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "earth", hctPercent: "18", tier: "Collectable" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "death", hctPercent: "17", tier: "Low End" },
+    
+      { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
+    
+      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
+    
+      { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
+    
+      { noReq: "", hsr: "13", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+    
+      { noReq: "", hsr: "12", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+      { noReq: "", hsr: "12", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
+    
+      { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
+    ];
 
-    if (slider.value === "0") return "yes";
-    if (slider.value === "2") return "no";
-    return "";
-  }
+    const martialTierMappings = [
+      /* temporary fallback mappings for no-req bows / other martial weapons */
+    ];
 
-  function hasChosenNoReq() {
-    return getNoReqValue() !== "";
-  }
-
-  function resetAllFields() {
-    document.querySelectorAll(".itemFields select").forEach(select => {
-      select.value = "";
-    });
-
-    document.getElementById("no_req_slider").value = "1";
-
-    document.getElementById("axe_piercing").checked = false;
-    document.getElementById("sword_short").checked = false;
-
-    document.getElementById("hctAttributeDiv").classList.add("hidden");
-    document.getElementById("hctPercentDiv").classList.add("hidden");
-    document.getElementById("staff_attr").value = "";
-    document.getElementById("staff_hct_percent").value = "";
-
-    document.getElementById("weapon_inherent").value = "";
-    document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
-    document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
-
-    document.getElementById("result").innerText = "";
-    document.getElementById("debug").innerText = "";
-
-    const specialQuestionFields = document.getElementById("specialQuestionFields");
-    const axePiercingRow = document.getElementById("axePiercingRow");
-    const swordShortRow = document.getElementById("swordShortRow");
-
-    if (specialQuestionFields) specialQuestionFields.classList.add("hidden");
-    if (axePiercingRow) axePiercingRow.classList.add("hidden");
-    if (swordShortRow) swordShortRow.classList.add("hidden");
-  }
-
-  function showFields() {
-    const type = document.getElementById("itemType").value;
-    const noReqContainer = document.getElementById("noReqContainer");
-    const checkButton = document.getElementById("checkItemButton");
-    const martialSharedFields = document.getElementById("martialSharedFields");
-
-    resetAllFields();
-
-    noReqContainer.classList.toggle("hidden", type === "");
-
-    document.querySelectorAll(".itemFields").forEach(div => {
-      div.classList.add("hidden");
-    });
-
-    martialSharedFields.classList.add("hidden");
-    checkButton.classList.add("hidden");
-
-    updateSpecialQuestionVisibility();
-  }
-
-  function noReqChanged() {
-    const type = document.getElementById("itemType").value;
-    const chosenValue = getNoReqValue();
-    const checkButton = document.getElementById("checkItemButton");
-    const martialSharedFields = document.getElementById("martialSharedFields");
-    const noReqChosen = chosenValue !== "";
-
-    document.querySelectorAll(".itemFields").forEach(div => {
-      div.classList.add("hidden");
-    });
-
-    martialSharedFields.classList.add("hidden");
-    checkButton.classList.toggle("hidden", !noReqChosen);
-
-    if (!type || !noReqChosen) {
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
-      updateSpecialQuestionVisibility();
-      return;
-    }
-
-    document.querySelectorAll(".itemFields").forEach(div => {
-      const types = div.dataset.type.split(",");
-      div.classList.toggle("hidden", !types.includes(type));
-    });
-
-    if (type === "staff") {
-      populateHSR();
-      populateEnergy();
-    }
-
-    if (["axe", "sword", "hammer", "bow"].includes(type)) {
-      martialSharedFields.classList.remove("hidden");
-      populateWeaponDamage(type);
-    }
-
-    document.getElementById("result").innerText = "";
-    document.getElementById("debug").innerText = "";
-
-    updateSpecialQuestionVisibility();
-  }
-
-  function populateHSR() {
-    const noReq = getNoReqValue() === "yes";
-    const hsrSelect = document.getElementById("staff_hsr");
-
-    hsrSelect.innerHTML = '<option value="">-- Select --</option>';
-
-    const values = noReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
-    values.forEach(v => hsrSelect.add(new Option(v, v)));
-  }
-
-  function populateEnergy() {
-    const noReq = getNoReqValue() === "yes";
-    const energySelect = document.getElementById("staff_energy");
-
-    energySelect.innerHTML = '<option value="">-- Select --</option>';
-
-    const values = noReq ? [5, 6] : [5, 6, 7, 8];
-    values.forEach(v => energySelect.add(new Option(v, v)));
-  }
-
-  function inherentChanged() {
-    const inherent = document.getElementById("staff_inherent").value;
-    const hctDiv = document.getElementById("hctAttributeDiv");
-    const percentDiv = document.getElementById("hctPercentDiv");
-
-    if (inherent === "hct") {
-      hctDiv.classList.remove("hidden");
-    } else {
-      hctDiv.classList.add("hidden");
-      percentDiv.classList.add("hidden");
-      document.getElementById("staff_attr").value = "";
-      document.getElementById("staff_hct_percent").value = "";
-    }
-  }
-
-  function hctAttributeChanged() {
-    const attr = document.getElementById("staff_attr").value;
-    const percentDiv = document.getElementById("hctPercentDiv");
-    const percentSelect = document.getElementById("staff_hct_percent");
-
-    percentSelect.innerHTML = '<option value="">-- Select --</option>';
-
-    if (!attr) {
-      percentDiv.classList.add("hidden");
-      return;
-    }
-
-    percentDiv.classList.remove("hidden");
-    const values = attr === "generic" ? [8, 9] : [15, 16, 17, 18];
-    values.forEach(v => percentSelect.add(new Option(v, v)));
-  }
-
-  function getDamageOptions(type, noReq) {
-    const damageOptions = {
-      axe: {
-        noReq: ["5-10", "5-11", "6-12"],
-        req: [
-          { value: "6-15", label: "6-15 or lower" },
-          "6-16", "6-17", "6-18", "6-19", "6-20", "7-18", "7-19", "7-20", "7-21"
-        ]
-      },
-      sword: {
-        noReq: ["6-9", "7-9", "7-10", "8-10"],
-        req: [
-          { value: "10-13", label: "10-13 or lower" },
-          "10-14", "11-14", "11-15", "11-16", "12-16", "12-17"
-        ]
-      },
-      hammer: {
-        noReq: ["9-13", "9-14", "10-14", "10-15", "11-15"],
-        req: [
-          { value: "14-21", label: "14-21 or lower" },
-          "14-22", "14-23", "14-24", "15-24", "15-25", "15-26"
-        ]
-      },
-      bow: {
-        noReq: ["7-11", "7-12", "8-12", "9-13"],
-        req: [
-          { value: "11-16", label: "11-16 or lower" },
-          "11-17", "11-18", "11-19", "12-18", "12-19", "12-20", "12-21"
-        ]
-      }
+    const reqBowDamageScores = {
+      "11-16": 0,
+      "11-17": 1,
+      "11-18": 2,
+      "11-19": 3,
+      "12-18": 4,
+      "12-19": 5,
+      "12-20": 10,
+      "12-21": 50
     };
 
-    if (!damageOptions[type]) return [];
-    return noReq ? damageOptions[type].noReq : damageOptions[type].req;
-  }
+    const bowSkinBonuses = {
+      short: 1,
+      long: 2,
+      recurve: 2,
+      flat: 4,
+      horn: 6
+    };
 
-  function setSelectOptions(selectId, options) {
-    const select = document.getElementById(selectId);
-    if (!select) return;
+    const bowInherentBonuses = {
+      none: 1,
+      hexedfoes: 2,
+      below50: 2,
+      enchanted: 2,
+      hexed: 3,
+      stance: 5,
+      above50: 10
+    };
 
-    select.innerHTML = '<option value="">-- Select --</option>';
+    const bowPercentBonuses = {
+      enchanted: { "13": 1, "14": 2 },
+      stance:    { "13": 1, "14": 2 },
+      above50:   { "13": 1, "14": 2 },
+      hexedfoes: { "13": 1, "14": 2 },
+      hexed:     { "15": 1, "16": 1, "17": 1, "18": 2 },
+      below50:   { "15": 1, "16": 1, "17": 1, "18": 2 }
+    };
 
-    options.forEach(option => {
-      if (typeof option === "string") {
-        select.add(new Option(option, option));
+    function updateNoReqSliderVisual() {
+      const slider = document.getElementById("no_req_slider");
+      slider.classList.remove("neutral", "yes", "no");
+
+      if (slider.value === "0") {
+        slider.classList.add("yes");
+      } else if (slider.value === "2") {
+        slider.classList.add("no");
       } else {
-        select.add(new Option(option.label, option.value));
+        slider.classList.add("neutral");
       }
-    });
-  }
+    }
 
-  function populateWeaponDamage(type) {
-    const noReq = getNoReqValue() === "yes";
-    const options = getDamageOptions(type, noReq);
-    setSelectOptions(`${type}_damage`, options);
-  }
+    function getNoReqValue() {
+      const slider = document.getElementById("no_req_slider");
+      if (!slider) return "";
 
-  function weaponInherentChanged() {
-    const inherent = document.getElementById("weapon_inherent").value;
-    const percentDiv = document.getElementById("weaponDamagePercentDiv");
-    const percentSelect = document.getElementById("weapon_damage_percent");
+      if (slider.value === "0") return "yes";
+      if (slider.value === "2") return "no";
+      return "";
+    }
 
-    percentSelect.innerHTML = '<option value="">-- Select --</option>';
+    function hasChosenNoReq() {
+      return getNoReqValue() !== "";
+    }
 
-    if (!inherent || inherent === "none") {
-      percentDiv.classList.add("hidden");
+    function resetAllFields() {
+      document.querySelectorAll(".itemFields select").forEach(select => {
+        select.value = "";
+      });
+
+      document.getElementById("no_req_slider").value = "1";
+      updateNoReqSliderVisual();
+
+      document.getElementById("axe_piercing").checked = false;
+      document.getElementById("sword_short").checked = false;
+
+      document.getElementById("hctAttributeDiv").classList.add("hidden");
+      document.getElementById("hctPercentDiv").classList.add("hidden");
+      document.getElementById("staff_attr").value = "";
+      document.getElementById("staff_hct_percent").value = "";
+
+      document.getElementById("weapon_inherent").value = "";
+      document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
+      document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
+
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
+
+      const specialQuestionFields = document.getElementById("specialQuestionFields");
+      const axePiercingRow = document.getElementById("axePiercingRow");
+      const swordShortRow = document.getElementById("swordShortRow");
+
+      if (specialQuestionFields) specialQuestionFields.classList.add("hidden");
+      if (axePiercingRow) axePiercingRow.classList.add("hidden");
+      if (swordShortRow) swordShortRow.classList.add("hidden");
+    }
+
+    function showFields() {
+      const type = document.getElementById("itemType").value;
+      const noReqContainer = document.getElementById("noReqContainer");
+      const checkButton = document.getElementById("checkItemButton");
+      const martialSharedFields = document.getElementById("martialSharedFields");
+
+      resetAllFields();
+
+      noReqContainer.classList.toggle("hidden", type === "");
+
+      document.querySelectorAll(".itemFields").forEach(div => {
+        div.classList.add("hidden");
+      });
+
+      martialSharedFields.classList.add("hidden");
+      checkButton.classList.add("hidden");
+
       updateSpecialQuestionVisibility();
-      return;
     }
 
-    percentDiv.classList.remove("hidden");
+    function noReqChanged() {
+      const type = document.getElementById("itemType").value;
+      const noReqChosen = hasChosenNoReq();
+      const checkButton = document.getElementById("checkItemButton");
+      const martialSharedFields = document.getElementById("martialSharedFields");
 
-    let values = [];
-    if (["enchanted", "stance", "hexedfoes", "above50"].includes(inherent)) {
-      values = [13, 14];
-    } else if (["below50", "hexed"].includes(inherent)) {
-      values = [15, 16, 17, 18];
+      updateNoReqSliderVisual();
+
+      document.querySelectorAll(".itemFields").forEach(div => {
+        div.classList.add("hidden");
+      });
+
+      martialSharedFields.classList.add("hidden");
+      checkButton.classList.toggle("hidden", !noReqChosen);
+
+      if (!type || !noReqChosen) {
+        document.getElementById("result").innerText = "";
+        document.getElementById("debug").innerText = "";
+        updateSpecialQuestionVisibility();
+        return;
+      }
+
+      document.querySelectorAll(".itemFields").forEach(div => {
+        const types = div.dataset.type.split(",");
+        div.classList.toggle("hidden", !types.includes(type));
+      });
+
+      if (type === "staff") {
+        populateHSR();
+        populateEnergy();
+      }
+
+      if (["axe", "sword", "hammer", "bow"].includes(type)) {
+        martialSharedFields.classList.remove("hidden");
+        populateWeaponDamage(type);
+      }
+
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
+
+      updateSpecialQuestionVisibility();
     }
 
-    values.forEach(v => percentSelect.add(new Option(v + "%", v)));
+    function populateHSR() {
+      const noReq = getNoReqValue() === "yes";
+      const hsrSelect = document.getElementById("staff_hsr");
 
-    updateSpecialQuestionVisibility();
-  }
+      hsrSelect.innerHTML = '<option value="">-- Select --</option>';
 
-  function updateSpecialQuestionVisibility() {
-    const type = document.getElementById("itemType").value;
-    const specialQuestionFields = document.getElementById("specialQuestionFields");
-    const axePiercingRow = document.getElementById("axePiercingRow");
-    const swordShortRow = document.getElementById("swordShortRow");
-
-    if (!specialQuestionFields || !axePiercingRow || !swordShortRow) {
-      return;
+      const values = noReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
+      values.forEach(v => hsrSelect.add(new Option(v, v)));
     }
 
-    const damage = document.getElementById(type + "_damage")?.value || "";
-    const inherent = document.getElementById("weapon_inherent")?.value || "";
-    const percent = document.getElementById("weapon_damage_percent")?.value || "";
+    function populateEnergy() {
+      const noReq = getNoReqValue() === "yes";
+      const energySelect = document.getElementById("staff_energy");
 
-    const isMartial = ["axe", "sword", "hammer", "bow"].includes(type);
-    const noReqChosen = hasChosenNoReq();
+      energySelect.innerHTML = '<option value="">-- Select --</option>';
 
-    if (!isMartial || !noReqChosen) {
-      specialQuestionFields.classList.add("hidden");
-      axePiercingRow.classList.add("hidden");
-      swordShortRow.classList.add("hidden");
-      document.getElementById("axe_piercing").checked = false;
-      document.getElementById("sword_short").checked = false;
-      return;
+      const values = noReq ? [5, 6] : [5, 6, 7, 8];
+      values.forEach(v => energySelect.add(new Option(v, v)));
     }
 
-    const baseFieldsComplete =
-      damage &&
-      inherent &&
-      (inherent === "none" || percent);
+    function inherentChanged() {
+      const inherent = document.getElementById("staff_inherent").value;
+      const hctDiv = document.getElementById("hctAttributeDiv");
+      const percentDiv = document.getElementById("hctPercentDiv");
 
-    const showAxe = baseFieldsComplete && type === "axe";
-    const showSword = baseFieldsComplete && type === "sword";
-
-    specialQuestionFields.classList.toggle("hidden", !(showAxe || showSword));
-    axePiercingRow.classList.toggle("hidden", !showAxe);
-    swordShortRow.classList.toggle("hidden", !showSword);
-
-    if (!showAxe) {
-      document.getElementById("axe_piercing").checked = false;
+      if (inherent === "hct") {
+        hctDiv.classList.remove("hidden");
+      } else {
+        hctDiv.classList.add("hidden");
+        percentDiv.classList.add("hidden");
+        document.getElementById("staff_attr").value = "";
+        document.getElementById("staff_hct_percent").value = "";
+      }
     }
 
-    if (!showSword) {
-      document.getElementById("sword_short").checked = false;
+    function hctAttributeChanged() {
+      const attr = document.getElementById("staff_attr").value;
+      const percentDiv = document.getElementById("hctPercentDiv");
+      const percentSelect = document.getElementById("staff_hct_percent");
+
+      percentSelect.innerHTML = '<option value="">-- Select --</option>';
+
+      if (!attr) {
+        percentDiv.classList.add("hidden");
+        return;
+      }
+
+      percentDiv.classList.remove("hidden");
+      const values = attr === "generic" ? [8, 9] : [15, 16, 17, 18];
+      values.forEach(v => percentSelect.add(new Option(v, v)));
     }
-  }
 
-  function findTier(criteria, mappings, keys) {
-    for (const mapping of mappings) {
-      let matched = true;
+    function getDamageOptions(type, noReq) {
+      const damageOptions = {
+        axe: {
+          noReq: ["5-10", "5-11", "6-12"],
+          req: [
+            { value: "6-15", label: "6-15 or lower" },
+            "6-16", "6-17", "6-18", "6-19", "6-20", "7-18", "7-19", "7-20", "7-21"
+          ]
+        },
+        sword: {
+          noReq: ["6-9", "7-9", "7-10", "8-10"],
+          req: [
+            { value: "10-13", label: "10-13 or lower" },
+            "10-14", "11-14", "11-15", "11-16", "12-16", "12-17"
+          ]
+        },
+        hammer: {
+          noReq: ["9-13", "9-14", "10-14", "10-15", "11-15"],
+          req: [
+            { value: "14-21", label: "14-21 or lower" },
+            "14-22", "14-23", "14-24", "15-24", "15-25", "15-26"
+          ]
+        },
+        bow: {
+          noReq: ["7-11", "7-12", "8-12", "9-13"],
+          req: [
+            { value: "11-16", label: "11-16 or lower" },
+            "11-17", "11-18", "11-19", "12-18", "12-19", "12-20", "12-21"
+          ]
+        }
+      };
 
-      for (const key of keys) {
-        const mappingValue = mapping[key] ?? "";
+      if (!damageOptions[type]) return [];
+      return noReq ? damageOptions[type].noReq : damageOptions[type].req;
+    }
 
-        if (mappingValue !== "" && mappingValue !== criteria[key]) {
-          matched = false;
-          break;
+    function setSelectOptions(selectId, options) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+
+      select.innerHTML = '<option value="">-- Select --</option>';
+
+      options.forEach(option => {
+        if (typeof option === "string") {
+          select.add(new Option(option, option));
+        } else {
+          select.add(new Option(option.label, option.value));
+        }
+      });
+    }
+
+    function populateWeaponDamage(type) {
+      const noReq = getNoReqValue() === "yes";
+      const options = getDamageOptions(type, noReq);
+      setSelectOptions(`${type}_damage`, options);
+    }
+
+    function weaponInherentChanged() {
+      const inherent = document.getElementById("weapon_inherent").value;
+      const percentDiv = document.getElementById("weaponDamagePercentDiv");
+      const percentSelect = document.getElementById("weapon_damage_percent");
+
+      percentSelect.innerHTML = '<option value="">-- Select --</option>';
+
+      if (!inherent || inherent === "none") {
+        percentDiv.classList.add("hidden");
+        updateSpecialQuestionVisibility();
+        return;
+      }
+
+      percentDiv.classList.remove("hidden");
+
+      let values = [];
+      if (["enchanted", "stance", "hexedfoes","above50"].includes(inherent)) {
+        values = [13, 14];
+      } else if ([ "below50", "hexed"].includes(inherent)) {
+        values = [15, 16, 17, 18];
+      }
+
+      values.forEach(v => percentSelect.add(new Option(v + "%", v)));
+
+      updateSpecialQuestionVisibility();
+    }
+
+    function updateSpecialQuestionVisibility() {
+      const type = document.getElementById("itemType").value;
+      const specialQuestionFields = document.getElementById("specialQuestionFields");
+      const axePiercingRow = document.getElementById("axePiercingRow");
+      const swordShortRow = document.getElementById("swordShortRow");
+
+      if (!specialQuestionFields || !axePiercingRow || !swordShortRow) {
+        return;
+      }
+
+      const damage = document.getElementById(type + "_damage")?.value || "";
+      const inherent = document.getElementById("weapon_inherent")?.value || "";
+      const percent = document.getElementById("weapon_damage_percent")?.value || "";
+
+      const isMartial = ["axe", "sword", "hammer", "bow"].includes(type);
+      const noReqChosen = hasChosenNoReq();
+
+      if (!isMartial || !noReqChosen) {
+        specialQuestionFields.classList.add("hidden");
+        axePiercingRow.classList.add("hidden");
+        swordShortRow.classList.add("hidden");
+        document.getElementById("axe_piercing").checked = false;
+        document.getElementById("sword_short").checked = false;
+        return;
+      }
+
+      const baseFieldsComplete =
+        damage &&
+        inherent &&
+        (inherent === "none" || percent);
+
+      const showAxe = baseFieldsComplete && type === "axe";
+      const showSword = baseFieldsComplete && type === "sword";
+
+      specialQuestionFields.classList.toggle("hidden", !(showAxe || showSword));
+      axePiercingRow.classList.toggle("hidden", !showAxe);
+      swordShortRow.classList.toggle("hidden", !showSword);
+
+      if (!showAxe) {
+        document.getElementById("axe_piercing").checked = false;
+      }
+
+      if (!showSword) {
+        document.getElementById("sword_short").checked = false;
+      }
+    }
+
+    function findTier(criteria, mappings, keys) {
+      for (const mapping of mappings) {
+        let matched = true;
+
+        for (const key of keys) {
+          const mappingValue = mapping[key] ?? "";
+
+          if (mappingValue !== "" && mappingValue !== criteria[key]) {
+            matched = false;
+            break;
+          }
+        }
+
+        if (matched) {
+          return mapping;
         }
       }
 
-      if (matched) {
-        return mapping;
+      return { tier: "Junk" };
+    }
+
+    function scoreReqBow(criteria) {
+      const damageScore = reqBowDamageScores[criteria.damage] ?? 0;
+      const skinBonus = bowSkinBonuses[criteria.skin] ?? 0;
+
+      const inherentKey = criteria.inherent || "none";
+      const inherentBonus = bowInherentBonuses[inherentKey] ?? 1;
+      const percentBonus = bowPercentBonuses[inherentKey]?.[criteria.percent] ?? 1;
+
+      const baseScore = damageScore + skinBonus;
+
+      let modMultiplier;
+      if (inherentKey === "none") {
+        modMultiplier = inherentBonus;
+      } else {
+        modMultiplier = inherentBonus * percentBonus;
       }
+
+      const totalScore = baseScore * modMultiplier;
+
+      return {
+        totalScore,
+        breakdown: {
+          damageScore,
+          skinBonus,
+          inherentBonus,
+          percentBonus,
+          baseScore,
+          modMultiplier
+        }
+      };
     }
 
-    return { tier: "Junk" };
-  }
-
-  function getStaffCriteria() {
-    return {
-      noReq: getNoReqValue(),
-      hsr: document.getElementById("staff_hsr").value,
-      energy: document.getElementById("staff_energy").value,
-      inherent: document.getElementById("staff_inherent").value,
-      attr: document.getElementById("staff_attr").value,
-      hctPercent: document.getElementById("staff_hct_percent").value
-    };
-  }
-
-  function getMartialCriteria(type) {
-    let skin = "";
-
-    if (type === "bow") {
-      skin = document.getElementById("bow_skin").value;
+    function reqBowScoreToTier(score) {
+      if (score >= 1000) return "God Tier";
+      if (score >= 100) return "High End";
+      if (score >= 20) return "Mid Tier";
+      if (score >= 5) return "Low End";
+      return "Junk";
     }
 
-    if (type === "axe") {
-      skin = document.getElementById("axe_piercing").checked ? "piercing" : "";
+    function getStaffCriteria() {
+      return {
+        noReq: getNoReqValue(),
+        hsr: document.getElementById("staff_hsr").value,
+        energy: document.getElementById("staff_energy").value,
+        inherent: document.getElementById("staff_inherent").value,
+        attr: document.getElementById("staff_attr").value,
+        hctPercent: document.getElementById("staff_hct_percent").value
+      };
     }
 
-    if (type === "sword") {
-      skin = document.getElementById("sword_short").checked ? "short" : "";
+    function getMartialCriteria(type) {
+      let skin = "";
+
+      if (type === "bow") {
+        skin = document.getElementById("bow_skin").value;
+      }
+
+      if (type === "axe") {
+        skin = document.getElementById("axe_piercing").checked ? "piercing" : "";
+      }
+
+      if (type === "sword") {
+        skin = document.getElementById("sword_short").checked ? "short" : "";
+      }
+
+      return {
+        type,
+        skin,
+        noReq: getNoReqValue(),
+        damage: document.getElementById(type + "_damage").value,
+        inherent: document.getElementById("weapon_inherent").value,
+        percent: document.getElementById("weapon_damage_percent").value
+      };
     }
 
-    return {
-      type,
-      skin,
-      noReq: getNoReqValue(),
-      damage: document.getElementById(type + "_damage").value,
-      inherent: document.getElementById("weapon_inherent").value,
-      percent: document.getElementById("weapon_damage_percent").value
-    };
-  }
+    function validateStaffInput(criteria) {
+      if (!criteria.noReq) {
+        return "Please choose Yes or No for No Req?.";
+      }
 
-  function validateStaffInput(criteria) {
-    if (!criteria.noReq) {
-      return "Please choose Yes or No for No Req?.";
+      if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
+        return "Please complete all required staff fields.";
+      }
+
+      if (criteria.inherent === "hct" && !criteria.attr) {
+        return "Please select the HCT attribute.";
+      }
+
+      if (criteria.inherent === "hct" && !criteria.hctPercent) {
+        return "Please select the HCT %.";
+      }
+
+      return "";
     }
 
-    if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
-      return "Please complete all required staff fields.";
+    function validateMartialInput(criteria) {
+      if (!criteria.noReq) {
+        return "Please choose Yes or No for No Req?.";
+      }
+
+      if (criteria.type === "bow" && !criteria.skin) {
+        return "Please select the bow skin.";
+      }
+
+      if (!criteria.damage) {
+        return "Please select the damage range.";
+      }
+
+      if (!criteria.inherent) {
+        return "Please select the inherent damage increase.";
+      }
+
+      if (criteria.inherent !== "none" && !criteria.percent) {
+        return "Please select the damage increase %.";
+      }
+
+      return "";
     }
 
-    if (criteria.inherent === "hct" && !criteria.attr) {
-      return "Please select the HCT attribute.";
+    function calculateStaffTier() {
+      const criteria = getStaffCriteria();
+      const validationMessage = validateStaffInput(criteria);
+
+      if (validationMessage) {
+        return { error: validationMessage };
+      }
+
+      const normalizedCriteria = {
+        ...criteria,
+        attr: criteria.inherent === "hct" ? criteria.attr : "",
+        hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
+      };
+
+      const match = findTier(
+        normalizedCriteria,
+        staffTierMappings,
+        ["noReq", "hsr", "energy", "inherent", "attr", "hctPercent"]
+      );
+
+      return { tier: match.tier, match, criteria: normalizedCriteria };
     }
 
-    if (criteria.inherent === "hct" && !criteria.hctPercent) {
-      return "Please select the HCT %.";
+    function calculateMartialTier(type) {
+      const criteria = getMartialCriteria(type);
+      const validationMessage = validateMartialInput(criteria);
+
+      if (validationMessage) {
+        return { error: validationMessage };
+      }
+
+      const scoringCriteria = {
+        ...criteria,
+        inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
+        percent: criteria.inherent === "none" ? "" : criteria.percent
+      };
+
+      if (type === "bow" && scoringCriteria.noReq === "no") {
+        const scoreResult = scoreReqBow(scoringCriteria);
+        const tier = reqBowScoreToTier(scoreResult.totalScore);
+
+        return {
+          tier,
+          score: scoreResult.totalScore,
+          breakdown: scoreResult.breakdown
+        };
+      }
+
+      const mappingCriteria = {
+        ...criteria,
+        inherent: criteria.inherent === "none" ? "" : criteria.inherent,
+        percent: criteria.inherent === "none" ? "" : criteria.percent
+      };
+
+      const match = findTier(
+        mappingCriteria,
+        martialTierMappings,
+        ["type", "skin", "noReq", "damage", "inherent", "percent"]
+      );
+
+      return { tier: match.tier, match, criteria: mappingCriteria };
     }
 
-    return "";
-  }
+    function checkItem() {
+      const type = document.getElementById("itemType").value;
+      const resultEl = document.getElementById("result");
+      const debugEl = document.getElementById("debug");
 
-  function validateMartialInput(criteria) {
-    if (!criteria.noReq) {
-      return "Please choose Yes or No for No Req?.";
-    }
+      if (!type) {
+        resultEl.innerText = "Please select an item type.";
+        debugEl.innerText = "";
+        return;
+      }
 
-    if (criteria.type === "bow" && !criteria.skin) {
-      return "Please select the bow skin.";
-    }
+      let result;
 
-    if (!criteria.damage) {
-      return "Please select the damage range.";
-    }
+      if (type === "staff") {
+        result = calculateStaffTier();
+      } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
+        result = calculateMartialTier(type);
+      } else {
+        resultEl.innerText = "Logic not added yet.";
+        debugEl.innerText = "";
+        return;
+      }
 
-    if (!criteria.inherent) {
-      return "Please select the inherent damage increase.";
-    }
+      if (result.error) {
+        resultEl.innerText = result.error;
+        debugEl.innerText = "";
+        return;
+      }
 
-    if (criteria.inherent !== "none" && !criteria.percent) {
-      return "Please select the damage increase %.";
-    }
-
-    return "";
-  }
-
-  function calculateStaffTier() {
-    const criteria = getStaffCriteria();
-    const validationMessage = validateStaffInput(criteria);
-
-    if (validationMessage) {
-      return { error: validationMessage };
-    }
-
-    const normalizedCriteria = {
-      ...criteria,
-      attr: criteria.inherent === "hct" ? criteria.attr : "",
-      hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
-    };
-
-    const match = findTier(
-      normalizedCriteria,
-      staffTierMappings,
-      ["noReq", "hsr", "energy", "inherent", "attr", "hctPercent"]
-    );
-
-    return { tier: match.tier, match, criteria: normalizedCriteria };
-  }
-
-  function calculateMartialTier(type) {
-    const criteria = getMartialCriteria(type);
-    const validationMessage = validateMartialInput(criteria);
-
-    if (validationMessage) {
-      return { error: validationMessage };
-    }
-
-    const normalizedCriteria = {
-      ...criteria,
-      inherent: criteria.inherent === "none" ? "" : criteria.inherent,
-      percent: criteria.inherent === "none" ? "" : criteria.percent
-    };
-
-    const match = findTier(
-      normalizedCriteria,
-      martialTierMappings,
-      ["type", "skin", "noReq", "damage", "inherent", "percent"]
-    );
-
-    return { tier: match.tier, match, criteria: normalizedCriteria };
-  }
-
-  function checkItem() {
-    const type = document.getElementById("itemType").value;
-    const resultEl = document.getElementById("result");
-    const debugEl = document.getElementById("debug");
-
-    if (!type) {
-      resultEl.innerText = "Please select an item type.";
+      resultEl.innerText = `Item Tier: ${result.tier}`;
       debugEl.innerText = "";
-      return;
     }
 
-    let result;
-
-    if (type === "staff") {
-      result = calculateStaffTier();
-    } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
-      result = calculateMartialTier(type);
-    } else {
-      resultEl.innerText = "Logic not added yet.";
-      debugEl.innerText = "";
-      return;
-    }
-
-    if (result.error) {
-      resultEl.innerText = result.error;
-      debugEl.innerText = "";
-      return;
-    }
-
-    resultEl.innerText = `Item Tier: ${result.tier}`;
-    debugEl.innerText = "";
-  }
-</script>
-
-
-
-
-
-
-
-
+    updateNoReqSliderVisual();
+  </script>
+</body>
+</html>
