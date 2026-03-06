@@ -130,6 +130,29 @@
 
 </div>
 
+  <div id="martialModifiers" class="hidden">
+
+<label>Inherent Damage Increase:</label>
+<select id="weapon_inherent" onchange="weaponInherentChanged()">
+  <option value="">-- Select --</option>
+  <option value="none">None</option>
+  <option value="enchanted">while Enchanted</option>
+  <option value="stance">while in a Stance</option>
+  <option value="hexed">while Hexed</option>
+  <option value="above50">while Health is above 50%</option>
+  <option value="below50">while Health is below 50%</option>
+  <option value="vshexed">vs. Hexed Foes</option>
+</select>
+
+<div id="weaponDamagePercentDiv" class="hidden">
+  <label>Damage Increase %:</label>
+  <select id="weapon_damage_percent">
+    <option value="">-- Select --</option>
+  </select>
+</div>
+
+</div>
+
 <h3 id="result"></h3>
 
 <script>
@@ -269,12 +292,18 @@
 function showFields() {
 
   const type = document.getElementById("itemType").value;
-
+  const martialModifiers = document.getElementById("martialModifiers");
   const staffFields = document.getElementById("staffFields");
   const axeFields = document.getElementById("axeFields");
 
   staffFields.classList.toggle("hidden", type !== "staff");
   axeFields.classList.toggle("hidden", type !== "axe");
+
+  if (["axe","sword","bow","hammer"].includes(type)) {
+  martialModifiers.classList.remove("hidden");
+} else {
+  martialModifiers.classList.add("hidden");
+}
 
   if (type === "staff") {
     resetStaffFields();
@@ -350,7 +379,35 @@ function showFields() {
     }
     return "Junk";
   }
+  
+function weaponInherentChanged() {
 
+  const inherent = document.getElementById("weapon_inherent").value;
+  const percentDiv = document.getElementById("weaponDamagePercentDiv");
+  const percentSelect = document.getElementById("weapon_damage_percent");
+
+  percentSelect.innerHTML = '<option value="">-- Select --</option>';
+
+  if (!inherent || inherent === "none") {
+    percentDiv.classList.add("hidden");
+    return;
+  }
+
+  percentDiv.classList.remove("hidden");
+
+  let values = [];
+
+  if (["enchanted","stance","above50","vshexed"].includes(inherent)) {
+    values = [13,14];
+  }
+
+  if (["below50","hexed"].includes(inherent)) {
+    values = [15,16,17,18];
+  }
+
+  values.forEach(v => percentSelect.add(new Option(v + "%", v)));
+}
+  
   function checkItem() {
     const tier = calculateTier();
     document.getElementById("result").innerText = `Item Tier: ${tier}`;
@@ -359,6 +416,7 @@ function showFields() {
 </body>
 
 </html>
+
 
 
 
