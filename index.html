@@ -27,14 +27,6 @@
     margin-top: 4px;
     margin-bottom: 16px;
   }
-  
-.inlineCheck {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: bold;
-  margin: 12px 0;
-}
 
 #checkItemButton {
   margin-top: 20px;
@@ -55,10 +47,6 @@
     margin-top: 24px;
   }
   
-  #no_req + span {
-    color: #cccccc;
- }
- 
   .noReqRow {
   margin-top: 12px;
   margin-bottom: 12px;
@@ -76,8 +64,8 @@
 
 <h2 class="header-red">Pre-Searing Item Checker</h2>
 
-<div class="formSection">
-  <div class="sectionTitle">Item Type</div>
+<div class="itemFields">
+  <label>Item Type:</label>
   <select id="itemType" onchange="showFields()">
     <option value="">-- Select --</option>
     <option value="staff">Staff</option>
@@ -95,7 +83,7 @@
   </label>
 </div>
 
-<div class="itemFields hidden formSection" data-type="staff">
+<div class="itemFields hidden" data-type="staff">
     <label>HSR %:</label>
     <select id="staff_hsr"><option value="">-- Select --</option></select>
 
@@ -140,7 +128,7 @@
 
   </div>
   
-<div class="itemFields hidden formSection" data-type="axe">
+<div class="itemFields hidden" data-type="axe">
   <label>Damage Range:</label>
   <select id="axe_damage">
     <option value="">-- Select --</option>
@@ -157,7 +145,7 @@
   </select>
 </div>
 
-<div class="itemFields hidden formSection" data-type="sword">
+<div class="itemFields hidden" data-type="sword">
   <label>Damage Range:</label>
   <select id="sword_damage">
     <option value="">-- Select --</option>
@@ -171,7 +159,7 @@
   </select>
 </div>
 
-<div class="itemFields hidden formSection" data-type="hammer">
+<div class="itemFields hidden" data-type="hammer">
   <label>Damage Range:</label>
   <select id="hammer_damage">
     <option value="">-- Select --</option>
@@ -185,7 +173,7 @@
   </select>
 </div>
 
-<div class="itemFields hidden formSection" data-type="bow">
+<div class="itemFields hidden" data-type="bow">
   <label>Damage Range:</label>
   <select id="bow_damage">
     <option value="">-- Select --</option>
@@ -200,7 +188,7 @@
   </select>
 </div>
 
-<div id="martialModifiers" class="hidden itemFields formSection" data-type="axe,sword,bow,hammer">
+<div class="itemFields hidden" data-type="axe,sword,bow,hammer">
   <label>Inherent Damage Increase:</label>
   <select class="weapon_inherent" onchange="weaponInherentChanged(this)">
     <option value="">-- Select --</option>
@@ -362,13 +350,15 @@
 
 function resetAllFields() {
   document.querySelectorAll(".itemFields select").forEach(select => {
-    document.getElementById("no_req").checked = false;
-    document.getElementById("result").innerText = "";
+    select.value = "";
   });
 
   document.querySelectorAll('.itemFields input[type="checkbox"]').forEach(checkbox => {
-  checkbox.checked = false;
+    checkbox.checked = false;
   });
+
+  const noReq = document.getElementById("no_req");
+  if (noReq) noReq.checked = false;
 
   const hctAttributeDiv = document.getElementById("hctAttributeDiv");
   const hctPercentDiv = document.getElementById("hctPercentDiv");
@@ -386,7 +376,6 @@ function resetAllFields() {
 
   document.getElementById("result").innerText = "";
 }
-
   
 function showFields() {
   const type = document.getElementById("itemType").value;
@@ -506,6 +495,7 @@ function checkItem() {
 </body>
 
 </html>
+
 
 
 
