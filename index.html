@@ -614,14 +614,7 @@
       };
 }
 
-    function staffScoreToTier(score, isNoReq) {
-      if (isNoReq) {
-        if (score >= 180) return "Highly Collectable";
-        if (score >= 60) return "Collectable";
-        if (score >= 20) return "Low End";
-        return "Junk";
-      }
-
+    function staffScoreToTier(score) {
       if (score >= 1800) return "God Tier";
       if (score >= 700) return "High End";
       if (score >= 250) return "Mid Tier";
@@ -1232,6 +1225,7 @@
   </script>
 </body>
 </html>
+
 
 
 
