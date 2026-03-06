@@ -151,13 +151,6 @@
   </div>
 
 <div class="itemFields hidden" data-type="axe">
-  <div class="noReqRow">
-    <label>
-      <input type="checkbox" id="axe_piercing">
-      Piercing Axe?
-    </label>
-  </div>
-
   <label>Damage Range:</label>
   <select id="axe_damage">
     <option value="">-- Select --</option>
@@ -165,13 +158,6 @@
 </div>
 
 <div class="itemFields hidden" data-type="sword">
-  <div class="noReqRow">
-    <label>
-      <input type="checkbox" id="sword_short">
-      Shortsword?
-    </label>
-  </div>
-
   <label>Damage Range:</label>
   <select id="sword_damage">
     <option value="">-- Select --</option>
@@ -214,13 +200,29 @@
       <option value="below50">while Health is below 50%</option>
     </select>
 
-    <div id="weaponDamagePercentDiv" class="hidden">
+  <div id="weaponDamagePercentDiv" class="hidden">
       <label>Damage Increase %:</label>
       <select id="weapon_damage_percent">
-        <option value="">-- Select --</option>
+      <option value="">-- Select --</option>
       </select>
-    </div>
+      </div>
+      <div id="specialQuestionFields" class="hidden">
+      <div id="axePiercingRow" class="hidden noReqRow">
+      <label>
+      <input type="checkbox" id="axe_piercing">
+      Piercing Axe?
+    </label>
   </div>
+
+  <div id="swordShortRow" class="hidden noReqRow">
+     <label>
+      <input type="checkbox" id="sword_short">
+      Shortsword?
+    </label>
+  </div>
+</div>
+</div>
+  
 
   <button id="checkItemButton" onclick="checkItem()" class="hidden">
     Check Item
@@ -386,33 +388,39 @@
     document.getElementById("debug").innerText = "";
   }
 
-    function showFields() {
-      const type = document.getElementById("itemType").value;
-      const noReqContainer = document.getElementById("noReqContainer");
-      const checkButton = document.getElementById("checkItemButton");
-      const martialSharedFields = document.getElementById("martialSharedFields");
-    
-      resetAllFields();
-    
-      document.querySelectorAll(".itemFields").forEach(div => {
-        const types = div.dataset.type.split(",");
-        div.classList.toggle("hidden", !types.includes(type));
-      });
-    
-      noReqContainer.classList.toggle("hidden", type === "");
-      checkButton.classList.toggle("hidden", type === "");
-      martialSharedFields.classList.toggle("hidden", !["axe", "sword", "hammer", "bow"].includes(type));
-    
-      if (type === "staff") {
-        populateHSR();
-        populateEnergy();
-      }
-    
-      if (["axe", "sword", "hammer", "bow"].includes(type)) {
-        populateWeaponDamage(type);
-      }
+   function showFields() {
+  const type = document.getElementById("itemType").value;
+  const noReqContainer = document.getElementById("noReqContainer");
+  const checkButton = document.getElementById("checkItemButton");
+  const martialSharedFields = document.getElementById("martialSharedFields");
+  const specialQuestionFields = document.getElementById("specialQuestionFields");
+  const axePiercingRow = document.getElementById("axePiercingRow");
+  const swordShortRow = document.getElementById("swordShortRow");
+
+  resetAllFields();
+
+  document.querySelectorAll(".itemFields").forEach(div => {
+    const types = div.dataset.type.split(",");
+    div.classList.toggle("hidden", !types.includes(type));
+  });
+
+  noReqContainer.classList.toggle("hidden", type === "");
+  checkButton.classList.toggle("hidden", type === "");
+  martialSharedFields.classList.toggle("hidden", !["axe", "sword", "hammer", "bow"].includes(type));
+
+  specialQuestionFields.classList.toggle("hidden", !["axe", "sword"].includes(type));
+  axePiercingRow.classList.toggle("hidden", type !== "axe");
+  swordShortRow.classList.toggle("hidden", type !== "sword");
+
+  if (type === "staff") {
+    populateHSR();
+    populateEnergy();
   }
 
+  if (["axe", "sword", "hammer", "bow"].includes(type)) {
+    populateWeaponDamage(type);
+  }
+}
     function populateHSR() {
       const noReq = document.getElementById("no_req").checked;
       const hsrSelect = document.getElementById("staff_hsr");
@@ -785,6 +793,7 @@ function getMartialCriteria(type) {
 
 </body>
 </html>
+
 
 
 
