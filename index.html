@@ -57,7 +57,19 @@
   
   #no_req + span {
     color: #cccccc;
-  }
+ }
+ 
+  .noReqRow {
+  margin-top: 12px;
+  margin-bottom: 12px;
+ }
+
+.noReqRow label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -76,15 +88,8 @@
   </select>
 </div>
 
-<div id="noReqContainer" class="hidden">
-  <label class="inlineCheck">
-    <input type="checkbox" id="no_req">
-    No Req?
-  </label>
-</div>
-
-<div id="noReqContainer" class="hidden" style="margin: 12px 0;">
-  <label style="display:inline-flex; align-items:center; gap:6px; font-weight:bold;">
+<div id="noReqContainer" class="hidden noReqRow">
+  <label>
     <input type="checkbox" id="no_req">
     No Req?
   </label>
@@ -501,6 +506,7 @@ function checkItem() {
 </body>
 
 </html>
+
 
 
 
