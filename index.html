@@ -254,9 +254,10 @@
       <option value="none">None</option>
       <option value="enchanted">while Enchanted</option>
       <option value="stance">while in a Stance</option>
-      <option value="hexed">while Hexed</option>
+      <option value="hexedfoes">vs. Hexed foes</option>
       <option value="above50">while Health is above 50%</option>
       <option value="below50">while Health is below 50%</option>
+      <option value="hexed">while Hexed</option>
     </select>
 
     <div id="weaponDamagePercentDiv" class="hidden">
@@ -655,7 +656,7 @@
     percentDiv.classList.remove("hidden");
 
     let values = [];
-    if (["enchanted", "stance", "above50"].includes(inherent)) {
+    if (["enchanted", "stance", "hexedfoes", "above50"].includes(inherent)) {
       values = [13, 14];
     } else if (["below50", "hexed"].includes(inherent)) {
       values = [15, 16, 17, 18];
@@ -893,6 +894,7 @@
     debugEl.innerText = "";
   }
 </script>
+
 
 
 
