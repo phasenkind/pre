@@ -961,20 +961,19 @@
     }
 
     <script>
-  ...
   function checkItem() {
     const type = document.getElementById("itemType").value;
     const resultEl = document.getElementById("result");
     const debugEl = document.getElementById("debug");
-
+  
     if (!type) {
       resultEl.innerText = "Please select an item type.";
       debugEl.innerText = "";
       return;
     }
-
+  
     let result;
-
+  
     if (type === "staff") {
       result = calculateStaffTier();
     } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
@@ -984,15 +983,15 @@
       debugEl.innerText = "";
       return;
     }
-
+  
     if (result.error) {
       resultEl.innerText = result.error;
       debugEl.innerText = "";
       return;
     }
-
+  
     resultEl.innerText = `Item Tier: ${result.tier}`;
-
+  
     if (result.breakdown) {
       debugEl.innerText =
         `Score: ${result.score} | ` +
@@ -1010,5 +1009,6 @@
 </script>
 </body>
 </html>
+
 
 
