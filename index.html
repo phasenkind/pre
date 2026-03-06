@@ -445,8 +445,8 @@
       short: 1,
       long: 2,
       recurve: 2,
-      flat: 3,
-      horn: 4
+      flat: 4,
+      horn: 5
     };
 
     const bowInherentBonuses = {
@@ -812,7 +812,7 @@
     function reqBowScoreToTier(score) {
       if (score >= 500) return "God Tier";
       if (score >= 250) return "High End";
-      if (score >= 50) return "Mid Tier";
+      if (score >= 100) return "Mid Tier";
       if (score >= 20) return "Low End";
       return "Junk";
     }
@@ -1008,6 +1008,7 @@
 </script>
 </body>
 </html>
+
 
 
 
