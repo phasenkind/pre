@@ -430,43 +430,80 @@
       /* temporary fallback mappings for no-req bows / other martial weapons */
     ];
 
-    const reqBowDamageScores = {
-      "11-16": 0,
-      "11-17": 1,
-      "11-18": 2,
-      "11-19": 5,
-      "12-18": 5,
-      "12-19": 10,
-      "12-20": 20,
-      "12-21": 80
-    };
+  const reqBowDamageScores = {
+    "11-16": 0,
+    "11-17": 1,
+    "11-18": 2,
+    "11-19": 5,
+    "12-18": 5,
+    "12-19": 10,
+    "12-20": 20,
+    "12-21": 80
+  };
+  
+  const bowSkinBonuses = {
+    short: 1,
+    long: 2,
+    recurve: 2,
+    flat: 3,
+    horn: 4
+  };
+  
+  const reqBowInherentBonuses = {
+    none: 1,
+    hexedfoes: 1,
+    below50: 1,
+    enchanted: 1,
+    hexed: 2,
+    stance: 3,
+    above50: 4
+  };
+  
+  const reqBowPercentBonuses = {
+    enchanted: { "13": 2, "14": 3 },
+    stance:    { "13": 2, "14": 3 },
+    above50:   { "13": 2, "14": 3 },
+    hexedfoes: { "13": 2, "14": 3 },
+    hexed:     { "15": 2, "16": 2, "17": 2, "18": 3 },
+    below50:   { "15": 2, "16": 2, "17": 2, "18": 3 }
+  };
 
-    const bowSkinBonuses = {
-      short: 1,
-      long: 2,
-      recurve: 2,
-      flat: 3,
-      horn: 4
-    };
+ const reqAxeDamageScores = {
+  "6-15": 0,
+  "6-16": 1,
+  "6-17": 2,
+  "6-18": 3,
+  "6-19": 4,
+  "7-18": 5,
+  "6-20": 6,
+  "7-19": 7,
+  "7-20": 8,
+  "7-21": 10
+};
 
-    const bowInherentBonuses = {
-      none: 1,
-      hexedfoes: 1,
-      below50: 1,
-      enchanted: 1,
-      hexed: 2,
-      stance: 3,
-      above50: 4
-    };
+const axeSkinMalus = {
+  "": 1,
+  piercing: 3
+};
 
-    const bowPercentBonuses = {
-      enchanted: { "13": 2, "14": 3 },
-      stance:    { "13": 2, "14": 3 },
-      above50:   { "13": 2, "14": 3 },
-      hexedfoes: { "13": 2, "14": 3 },
-      hexed:     { "15": 2, "16": 2, "17": 2, "18": 3 },
-      below50:   { "15": 2, "16": 2, "17": 2, "18": 3 },
-    };
+const reqAxeInherentBonuses = {
+  none: 1,
+  hexedfoes: 1,
+  below50: 1,
+  enchanted: 1,
+  stance: 2,
+  hexed: 3,
+  above50: 4
+};
+
+const reqAxePercentBonuses = {
+  enchanted: { "13": 2, "14": 3 },
+  stance:    { "13": 2, "14": 3 },
+  above50:   { "13": 2, "14": 3 },
+  hexedfoes: { "13": 2, "14": 3 },
+  hexed:     { "15": 2, "16": 2, "17": 2, "18": 3 },
+  below50:   { "15": 2, "16": 2, "17": 2, "18": 3 }
+};
 
     function getNoReqValue() {
       const slider = document.getElementById("no_req_slider");
@@ -777,45 +814,85 @@
       return { tier: "Junk" };
     }
 
-    function scoreReqBow(criteria) {
-      const damageScore = reqBowDamageScores[criteria.damage] ?? 0;
-      const skinBonus = bowSkinBonuses[criteria.skin] ?? 0;
-
-      const inherentKey = criteria.inherent || "none";
-      const inherentBonus = bowInherentBonuses[inherentKey] ?? 1;
-      const percentBonus = bowPercentBonuses[inherentKey]?.[criteria.percent] ?? 1;
-
-      const baseScore = damageScore * skinBonus;
-
-      let modMultiplier;
-      if (inherentKey === "none") {
-        modMultiplier = inherentBonus;
-      } else {
-        modMultiplier = inherentBonus * percentBonus;
+  function scoreReqBow(criteria) {
+    const damageScore = reqBowDamageScores[criteria.damage] ?? 0;
+    const skinBonus = bowSkinBonuses[criteria.skin] ?? 0;
+  
+    const inherentKey = criteria.inherent || "none";
+    const inherentBonus = reqBowInherentBonuses[inherentKey] ?? 1;
+    const percentBonus = reqBowPercentBonuses[inherentKey]?.[criteria.percent] ?? 1;
+  
+    const baseScore = damageScore * skinBonus;
+  
+    let modMultiplier;
+    if (inherentKey === "none") {
+      modMultiplier = inherentBonus;
+    } else {
+      modMultiplier = inherentBonus * percentBonus;
+    }
+  
+    const totalScore = baseScore * modMultiplier;
+  
+    return {
+      totalScore,
+      breakdown: {
+        damageScore,
+        skinBonus,
+        inherentBonus,
+        percentBonus,
+        baseScore,
+        modMultiplier
       }
+    };
+  }
+    
+  function scoreReqAxe(criteria) {
+    const damageScore = reqAxeDamageScores[criteria.damage] ?? 0;
+    const skinMalus = axeSkinMalus[criteria.skin] ?? 1;
+  
+    const inherentKey = criteria.inherent || "none";
+    const inherentBonus = reqAxeInherentBonuses[inherentKey] ?? 1;
+    const percentBonus = reqAxePercentBonuses[inherentKey]?.[criteria.percent] ?? 1;
+  
+    const baseScore = damageScore;
+  
+    let modMultiplier;
+    if (inherentKey === "none") {
+      modMultiplier = inherentBonus;
+    } else {
+      modMultiplier = inherentBonus * percentBonus;
+    }
+  
+    const totalScore = (baseScore * modMultiplier) / skinMalus;
+  
+    return {
+      totalScore,
+      breakdown: {
+        damageScore,
+        skinMalus,
+        inherentBonus,
+        percentBonus,
+        baseScore,
+        modMultiplier
+      }
+    };
+  }
 
-      const totalScore = baseScore * modMultiplier;
-
-      return {
-        totalScore,
-        breakdown: {
-          damageScore,
-          skinBonus,
-          inherentBonus,
-          percentBonus,
-          baseScore,
-          modMultiplier
-        }
-      };
+  function reqBowScoreToTier(score) {
+    if (score >= 600) return "God Tier";
+    if (score >= 200) return "High End";
+    if (score >= 100) return "Mid Tier";
+    if (score >= 25) return "Low End";
+    return "Junk";
     }
 
-    function reqBowScoreToTier(score) {
-      if (score >= 600) return "God Tier";
-      if (score >= 200) return "High End";
-      if (score >= 100) return "Mid Tier";
-      if (score >= 25) return "Low End";
-      return "Junk";
-    }
+  function reqAxeScoreToTier(score) {
+    if (score >= 600) return "God Tier";
+    if (score >= 200) return "High End";
+    if (score >= 100) return "Mid Tier";
+    if (score >= 25) return "Low End";
+    return "Junk";
+}
 
     function getStaffCriteria() {
       return {
@@ -920,47 +997,58 @@
       return { tier: match.tier, match, criteria: normalizedCriteria };
     }
 
-    function calculateMartialTier(type) {
-      const criteria = getMartialCriteria(type);
-      const validationMessage = validateMartialInput(criteria);
-
-      if (validationMessage) {
-        return { error: validationMessage };
-      }
-
-      const scoringCriteria = {
-        ...criteria,
-        inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
-        percent: criteria.inherent === "none" ? "" : criteria.percent
+  function calculateMartialTier(type) {
+    const criteria = getMartialCriteria(type);
+    const validationMessage = validateMartialInput(criteria);
+  
+    if (validationMessage) {
+      return { error: validationMessage };
+    }
+  
+    const scoringCriteria = {
+      ...criteria,
+      inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
+      percent: criteria.inherent === "none" ? "" : criteria.percent
+    };
+  
+    if (type === "bow" && scoringCriteria.noReq === "no") {
+      const scoreResult = scoreReqBow(scoringCriteria);
+      const tier = reqBowScoreToTier(scoreResult.totalScore);
+  
+      return {
+        tier,
+        score: scoreResult.totalScore,
+        breakdown: scoreResult.breakdown
       };
-
-      if (type === "bow" && scoringCriteria.noReq === "no") {
-        const scoreResult = scoreReqBow(scoringCriteria);
-        const tier = reqBowScoreToTier(scoreResult.totalScore);
-
-        return {
-          tier,
-          score: scoreResult.totalScore,
-          breakdown: scoreResult.breakdown
-        };
-      }
-
-      const mappingCriteria = {
-        ...criteria,
-        inherent: criteria.inherent === "none" ? "" : criteria.inherent,
-        percent: criteria.inherent === "none" ? "" : criteria.percent
+    }
+  
+    if (type === "axe" && scoringCriteria.noReq === "no") {
+      const scoreResult = scoreReqAxe(scoringCriteria);
+      const tier = reqAxeScoreToTier(scoreResult.totalScore);
+  
+      return {
+        tier,
+        score: scoreResult.totalScore,
+        breakdown: scoreResult.breakdown
       };
-
-      const match = findTier(
-        mappingCriteria,
-        martialTierMappings,
-        ["type", "skin", "noReq", "damage", "inherent", "percent"]
-      );
-
-      return { tier: match.tier, match, criteria: mappingCriteria };
     }
 
-   function checkItem() {
+  const mappingCriteria = {
+    ...criteria,
+    inherent: criteria.inherent === "none" ? "" : criteria.inherent,
+    percent: criteria.inherent === "none" ? "" : criteria.percent
+  };
+
+  const match = findTier(
+    mappingCriteria,
+    martialTierMappings,
+    ["type", "skin", "noReq", "damage", "inherent", "percent"]
+  );
+
+  return { tier: match.tier, match, criteria: mappingCriteria };
+}
+
+  function checkItem() {
     const type = document.getElementById("itemType").value;
     const resultEl = document.getElementById("result");
     const debugEl = document.getElementById("debug");
@@ -992,10 +1080,16 @@
     resultEl.innerText = `Item Tier: ${result.tier}`;
   
     if (result.breakdown) {
+      const skinPart = result.breakdown.skinBonus !== undefined
+        ? `Skin: ${result.breakdown.skinBonus} | `
+        : result.breakdown.skinMalus !== undefined
+        ? `Skin Malus: ${result.breakdown.skinMalus} | `
+        : "";
+  
       debugEl.innerText =
         `Score: ${result.score} | ` +
         `Damage: ${result.breakdown.damageScore} | ` +
-        `Skin: ${result.breakdown.skinBonus} | ` +
+        skinPart +
         `Inherent: ${result.breakdown.inherentBonus} | ` +
         `Percent: ${result.breakdown.percentBonus} | ` +
         `Base: ${result.breakdown.baseScore} | ` +
@@ -1004,10 +1098,11 @@
       debugEl.innerText = "";
     }
   }
-    
+      
 </script>
 </body>
 </html>
+
 
 
 
