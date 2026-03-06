@@ -10,15 +10,15 @@
     padding: 20px;
   }
 
-  #staffFields label {
+  .itemFields label {
     display: block;
     margin-top: 12px;
     font-weight: bold;
   }
 
-  #staffFields select,
-  #staffFields input[type="checkbox"],
-  #staffFields button {
+  .itemFields select,
+  .itemFields input[type="checkbox"],
+  .itemFields button {
     background: black;
     color: #cccccc;
     border: 1px solid #cccccc;
@@ -55,7 +55,7 @@
   <option value="axe">Axe</option>
 </select>
 
-<div id="staffFields" class="hidden">
+<div id="staffFields" class="hidden itemFields">
     <label>HSR %:</label>
     <select id="staff_hsr"><option value="">-- Select --</option></select>
 
@@ -107,7 +107,7 @@
     <button onclick="checkItem()" style="margin-top: 16px; font-weight: bold;">Check Item</button>
   </div>
   
-  <div id="axeFields" class="hidden">
+  <div id="axeFields" class="hidden itemFields">
 
   <label>Damage Range:</label>
   <select id="axe_damage">
@@ -126,7 +126,7 @@
 
 </div>
 
-  <div id="martialModifiers" class="hidden">
+  <div id="martialModifiers" class="hidden itemFields">
 
 <label>Inherent Damage Increase:</label>
 <select id="weapon_inherent" onchange="weaponInherentChanged()">
@@ -416,6 +416,7 @@ function weaponInherentChanged() {
 </body>
 
 </html>
+
 
 
 
