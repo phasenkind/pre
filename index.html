@@ -445,8 +445,8 @@
       short: 1,
       long: 2,
       recurve: 2,
-      flat: 4,
-      horn: 5
+      flat: 3,
+      horn: 4
     };
 
     const bowInherentBonuses = {
@@ -785,7 +785,7 @@
       const inherentBonus = bowInherentBonuses[inherentKey] ?? 1;
       const percentBonus = bowPercentBonuses[inherentKey]?.[criteria.percent] ?? 1;
 
-      const baseScore = damageScore + skinBonus;
+      const baseScore = damageScore * skinBonus;
 
       let modMultiplier;
       if (inherentKey === "none") {
@@ -1008,6 +1008,7 @@
 </script>
 </body>
 </html>
+
 
 
 
