@@ -492,17 +492,17 @@ const reqAxeInherentBonuses = {
   below50: 1,
   enchanted: 1,
   stance: 2,
-  hexed: 3,
+  hexed: 2,
   above50: 4
 };
 
 const reqAxePercentBonuses = {
   enchanted: { "13": 2, "14": 3 },
   stance:    { "13": 2, "14": 3 },
-  above50:   { "13": 2, "14": 3 },
+  above50:   { "13": 3, "14": 4 },
   hexedfoes: { "13": 2, "14": 3 },
-  hexed:     { "15": 2, "16": 2, "17": 2, "18": 3 },
-  below50:   { "15": 2, "16": 2, "17": 2, "18": 3 }
+  hexed:     { "15": 2, "16": 3, "17": 3, "18": 4 },
+  below50:   { "15": 2, "16": 3, "17": 3, "18": 4 }
 };
 
     function getNoReqValue() {
@@ -887,10 +887,10 @@ const reqAxePercentBonuses = {
     }
 
   function reqAxeScoreToTier(score) {
-    if (score >= 600) return "God Tier";
-    if (score >= 200) return "High End";
-    if (score >= 100) return "Mid Tier";
-    if (score >= 25) return "Low End";
+    if (score >= 60) return "God Tier";
+    if (score >= 40) return "High End";
+    if (score >= 20) return "Mid Tier";
+    if (score >= 5) return "Low End";
     return "Junk";
 }
 
@@ -1102,6 +1102,7 @@ const reqAxePercentBonuses = {
 </script>
 </body>
 </html>
+
 
 
 
