@@ -492,9 +492,9 @@
       This replaces the huge hardcoded mapping with a score model.
       You can tune the numbers easily later.
     */
-    const premiumStaffAttrs = new Set(["fire", "death"]);
-    const usableStaffAttrs = new Set(["blood", "curses", "smite", "heal", "dom"]);
-    const collectorStaffAttrs = new Set(["air", "water", "earth", "prot", "divine", "illu"]);
+    const premiumStaffAttr = new Set(["fire", "death"]);
+    const normalStaffAttr = new Set(["blood", "curses", "smite", "heal", "dom"]);
+    const collectorStaffAttr = new Set(["air", "water", "earth", "prot", "divine", "illu"]);
 
     const staffReqHsrScores = {
       "11": 1,
@@ -527,9 +527,9 @@
     function getStaffAttrBonus(attr) {
       if (!attr) return 1;
       if (attr === "generic") return 2;
-      if (premiumStaffAttrs.has(attr)) return 8;
-      if (usableStaffAttrs.has(attr)) return 4;
-      if (collectorStaffAttrs.has(attr)) return 1;
+      if (premiumStaffAttr.has(attr)) return 8;
+      if (normalStaffAttr.has(attr)) return 4;
+      if (collectorStaffAttr.has(attr)) return 1;
       return 1;
     }
 
@@ -1208,6 +1208,7 @@
   </script>
 </body>
 </html>
+
 
 
 
