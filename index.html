@@ -28,8 +28,8 @@
     margin-bottom: 16px;
   }
 
-  #staffFields .compact select,
-  #staffFields .compact input[type="checkbox"] {
+  .compact select,
+  .compact input[type="checkbox"] {
     margin-bottom: 12px;
   }
 
@@ -327,34 +327,48 @@ Check Item
     { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
   ];
 
+function resetAllFields() {
+  document.querySelectorAll(".itemFields select").forEach(select => {
+    select.value = "";
+  });
+
+  document.querySelectorAll('.itemFields input[type="checkbox"]').forEach(checkbox => {
+    checkbox.checked = false;
+  });
+
+  document.querySelectorAll(".hidden").forEach(div => {
+    if (
+      div.id === "hctAttributeDiv" ||
+      div.id === "hctPercentDiv" ||
+      div.classList.contains("weaponDamagePercentDiv")
+    ) {
+      div.classList.add("hidden");
+    }
+  });
+
+  document.querySelectorAll(".weapon_damage_percent").forEach(select => {
+    select.innerHTML = '<option value="">-- Select --</option>';
+  });
+
+  document.getElementById("result").innerText = "";
+}
+
+  
 function showFields() {
   const type = document.getElementById("itemType").value;
 
-  // Show/hide each item field container based on its data-type
+  resetAllFields();
+
   document.querySelectorAll(".itemFields").forEach(div => {
     const types = div.dataset.type.split(",");
     div.classList.toggle("hidden", !types.includes(type));
   });
 
-  // Reset staff fields if staff is selected
   if (type === "staff") {
-    resetStaffFields();
     populateHSR();
     populateEnergy();
   }
 }
-
-  function resetStaffFields() {
-    document.getElementById("staff_hsr").value = "";
-    document.getElementById("staff_energy").value = "";
-    document.getElementById("staff_inherent").value = "";
-    document.getElementById("staff_no_req").checked = false;
-    document.getElementById("staff_attr").value = "";
-    document.getElementById("staff_hct_percent").value = "";
-    document.getElementById("hctAttributeDiv").classList.add("hidden");
-    document.getElementById("hctPercentDiv").classList.add("hidden");
-    document.getElementById("result").innerText = "";
-  }
 
   function populateHSR() {
     const hsrSelect = document.getElementById("staff_hsr");
@@ -446,6 +460,7 @@ function weaponInherentChanged(selectElem) {
 </body>
 
 </html>
+
 
 
 
