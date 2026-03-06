@@ -97,7 +97,7 @@
 
   <div id="noReqContainer" class="hidden noReqRow">
     <label>
-     <input type="checkbox" id="no_req" onchange="noReqChanged()">
+      <input type="checkbox" id="no_req" onchange="noReqChanged()">
       No Req?
     </label>
   </div>
@@ -150,43 +150,43 @@
     </div>
   </div>
 
-<div class="itemFields hidden" data-type="axe">
-  <label>Damage Range:</label>
-  <select id="axe_damage">
-    <option value="">-- Select --</option>
-  </select>
-</div>
+  <div class="itemFields hidden" data-type="axe">
+    <label>Damage Range:</label>
+    <select id="axe_damage" onchange="updateSpecialQuestionVisibility()">
+      <option value="">-- Select --</option>
+    </select>
+  </div>
 
-<div class="itemFields hidden" data-type="sword">
-  <label>Damage Range:</label>
-  <select id="sword_damage">
-    <option value="">-- Select --</option>
-  </select>
-</div>
-  
-<div class="itemFields hidden" data-type="hammer">
-  <label>Damage Range:</label>
-  <select id="hammer_damage">
-    <option value="">-- Select --</option>
-  </select>
-</div>
+  <div class="itemFields hidden" data-type="sword">
+    <label>Damage Range:</label>
+    <select id="sword_damage" onchange="updateSpecialQuestionVisibility()">
+      <option value="">-- Select --</option>
+    </select>
+  </div>
 
-<div class="itemFields hidden" data-type="bow">
-  <label>Skin:</label>
-  <select id="bow_skin">
-    <option value="">-- Select --</option>
-    <option value="short">Shortbow</option>
-    <option value="recurve">Recurve Bow</option>
-    <option value="long">Longbow</option>
-    <option value="flat">Flatbow</option>
-    <option value="horn">Hornbow</option>
-  </select>
-  
-  <label>Damage Range:</label>
-  <select id="bow_damage">
-    <option value="">-- Select --</option>
-  </select>
-</div>
+  <div class="itemFields hidden" data-type="hammer">
+    <label>Damage Range:</label>
+    <select id="hammer_damage" onchange="updateSpecialQuestionVisibility()">
+      <option value="">-- Select --</option>
+    </select>
+  </div>
+
+  <div class="itemFields hidden" data-type="bow">
+    <label>Skin:</label>
+    <select id="bow_skin">
+      <option value="">-- Select --</option>
+      <option value="short">Shortbow</option>
+      <option value="recurve">Recurve Bow</option>
+      <option value="long">Longbow</option>
+      <option value="flat">Flatbow</option>
+      <option value="horn">Hornbow</option>
+    </select>
+
+    <label>Damage Range:</label>
+    <select id="bow_damage" onchange="updateSpecialQuestionVisibility()">
+      <option value="">-- Select --</option>
+    </select>
+  </div>
 
   <div id="martialSharedFields" class="hidden">
     <label>Inherent Damage Increase:</label>
@@ -200,29 +200,29 @@
       <option value="below50">while Health is below 50%</option>
     </select>
 
-  <div id="weaponDamagePercentDiv" class="hidden">
+    <div id="weaponDamagePercentDiv" class="hidden">
       <label>Damage Increase %:</label>
-      <select id="weapon_damage_percent">
-      <option value="">-- Select --</option>
+      <select id="weapon_damage_percent" onchange="updateSpecialQuestionVisibility()">
+        <option value="">-- Select --</option>
       </select>
-      </div>
-      <div id="specialQuestionFields" class="hidden">
-      <div id="axePiercingRow" class="hidden noReqRow">
-      <label>
-      <input type="checkbox" id="axe_piercing">
-      Piercing Axe?
-    </label>
-  </div>
+    </div>
 
-  <div id="swordShortRow" class="hidden noReqRow">
-     <label>
-      <input type="checkbox" id="sword_short">
-      Shortsword?
-    </label>
+    <div id="specialQuestionFields" class="hidden">
+      <div id="axePiercingRow" class="hidden noReqRow">
+        <label>
+          <input type="checkbox" id="axe_piercing">
+          Piercing Axe?
+        </label>
+      </div>
+
+      <div id="swordShortRow" class="hidden noReqRow">
+        <label>
+          <input type="checkbox" id="sword_short">
+          Shortsword?
+        </label>
+      </div>
+    </div>
   </div>
-</div>
-</div>
-  
 
   <button id="checkItemButton" onclick="checkItem()" class="hidden">
     Check Item
@@ -388,14 +388,12 @@
     document.getElementById("debug").innerText = "";
   }
 
-   function showFields() {
+function showFields() {
   const type = document.getElementById("itemType").value;
   const noReqContainer = document.getElementById("noReqContainer");
   const checkButton = document.getElementById("checkItemButton");
   const martialSharedFields = document.getElementById("martialSharedFields");
-  const specialQuestionFields = document.getElementById("specialQuestionFields");
-  const axePiercingRow = document.getElementById("axePiercingRow");
-  const swordShortRow = document.getElementById("swordShortRow");
+  updateSpecialQuestionVisibility();
 
   resetAllFields();
 
@@ -552,247 +550,438 @@ function getDamageOptions(type, noReq) {
     }
   };
 
-  if (!damageOptions[type]) return [];
-  return noReq ? damageOptions[type].noReq : damageOptions[type].req;
-}
+ function resetAllFields() {
+    document.querySelectorAll(".itemFields select").forEach(select => {
+      select.value = "";
+    });
 
-function setSelectOptions(selectId, options) {
-  const select = document.getElementById(selectId);
-  if (!select) return;
+    document.getElementById("no_req").checked = false;
+    document.getElementById("axe_piercing").checked = false;
+    document.getElementById("sword_short").checked = false;
 
-  select.innerHTML = '<option value="">-- Select --</option>';
+    document.getElementById("hctAttributeDiv").classList.add("hidden");
+    document.getElementById("hctPercentDiv").classList.add("hidden");
+    document.getElementById("staff_attr").value = "";
+    document.getElementById("staff_hct_percent").value = "";
 
-  options.forEach(option => {
-    if (typeof option === "string") {
-      select.add(new Option(option, option));
+    document.getElementById("weapon_inherent").value = "";
+    document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
+    document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
+
+    document.getElementById("result").innerText = "";
+    document.getElementById("debug").innerText = "";
+
+    const specialQuestionFields = document.getElementById("specialQuestionFields");
+    const axePiercingRow = document.getElementById("axePiercingRow");
+    const swordShortRow = document.getElementById("swordShortRow");
+
+    if (specialQuestionFields) specialQuestionFields.classList.add("hidden");
+    if (axePiercingRow) axePiercingRow.classList.add("hidden");
+    if (swordShortRow) swordShortRow.classList.add("hidden");
+  }
+
+  function showFields() {
+    const type = document.getElementById("itemType").value;
+    const noReqContainer = document.getElementById("noReqContainer");
+    const checkButton = document.getElementById("checkItemButton");
+    const martialSharedFields = document.getElementById("martialSharedFields");
+
+    resetAllFields();
+
+    document.querySelectorAll(".itemFields").forEach(div => {
+      const types = div.dataset.type.split(",");
+      div.classList.toggle("hidden", !types.includes(type));
+    });
+
+    noReqContainer.classList.toggle("hidden", type === "");
+    checkButton.classList.toggle("hidden", type === "");
+    martialSharedFields.classList.toggle("hidden", !["axe", "sword", "hammer", "bow"].includes(type));
+
+    if (type === "staff") {
+      populateHSR();
+      populateEnergy();
+    }
+
+    if (["axe", "sword", "hammer", "bow"].includes(type)) {
+      populateWeaponDamage(type);
+    }
+
+    updateSpecialQuestionVisibility();
+  }
+
+  function populateHSR() {
+    const noReq = document.getElementById("no_req").checked;
+    const hsrSelect = document.getElementById("staff_hsr");
+
+    hsrSelect.innerHTML = '<option value="">-- Select --</option>';
+
+    const values = noReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
+    values.forEach(v => hsrSelect.add(new Option(v, v)));
+  }
+
+  function populateEnergy() {
+    const noReq = document.getElementById("no_req").checked;
+    const energySelect = document.getElementById("staff_energy");
+
+    energySelect.innerHTML = '<option value="">-- Select --</option>';
+
+    const values = noReq ? [5, 6] : [5, 6, 7, 8];
+    values.forEach(v => energySelect.add(new Option(v, v)));
+  }
+
+  function inherentChanged() {
+    const inherent = document.getElementById("staff_inherent").value;
+    const hctDiv = document.getElementById("hctAttributeDiv");
+    const percentDiv = document.getElementById("hctPercentDiv");
+
+    if (inherent === "hct") {
+      hctDiv.classList.remove("hidden");
     } else {
-      select.add(new Option(option.label, option.value));
-    }
-  });
-}
-
-function populateWeaponDamage(type) {
-  const noReq = document.getElementById("no_req").checked;
-  const options = getDamageOptions(type, noReq);
-  setSelectOptions(`${type}_damage`, options);
-}
-
-function noReqChanged() {
-  const type = document.getElementById("itemType").value;
-
-  if (type === "staff") {
-    populateHSR();
-    populateEnergy();
-  }
-
-  if (["axe", "sword", "hammer", "bow"].includes(type)) {
-    populateWeaponDamage(type);
-  }
-
-  document.getElementById("result").innerText = "";
-  document.getElementById("debug").innerText = "";
-}
-    
-    function weaponInherentChanged() {
-      const inherent = document.getElementById("weapon_inherent").value;
-      const percentDiv = document.getElementById("weaponDamagePercentDiv");
-      const percentSelect = document.getElementById("weapon_damage_percent");
-
-      percentSelect.innerHTML = '<option value="">-- Select --</option>';
-
-      if (!inherent || inherent === "none") {
-        percentDiv.classList.add("hidden");
-        return;
-      }
-
-      percentDiv.classList.remove("hidden");
-
-      let values = [];
-      if (["enchanted", "stance", "above50"].includes(inherent)) {
-        values = [13, 14];
-      } else if (["below50", "hexed"].includes(inherent)) {
-        values = [15, 16, 17, 18];
-      }
-
-      values.forEach(v => percentSelect.add(new Option(v + "%", v)));
-    }
-
-function findTier(criteria, mappings, keys) {
-  for (const mapping of mappings) {
-    let matched = true;
-
-    for (const key of keys) {
-      const mappingValue = mapping[key] ?? "";
-
-      if (mappingValue !== "" && mappingValue !== criteria[key]) {
-        matched = false;
-        break;
-      }
-    }
-
-    if (matched) {
-      return mapping;
+      hctDiv.classList.add("hidden");
+      percentDiv.classList.add("hidden");
+      document.getElementById("staff_attr").value = "";
+      document.getElementById("staff_hct_percent").value = "";
     }
   }
 
-  return { tier: "Junk" };
-}
-    
-    function getStaffCriteria() {
-      return {
-        noReq: document.getElementById("no_req").checked ? "yes" : "no",
-        hsr: document.getElementById("staff_hsr").value,
-        energy: document.getElementById("staff_energy").value,
-        inherent: document.getElementById("staff_inherent").value,
-        attr: document.getElementById("staff_attr").value,
-        hctPercent: document.getElementById("staff_hct_percent").value
-      };
+  function hctAttributeChanged() {
+    const attr = document.getElementById("staff_attr").value;
+    const percentDiv = document.getElementById("hctPercentDiv");
+    const percentSelect = document.getElementById("staff_hct_percent");
+
+    percentSelect.innerHTML = '<option value="">-- Select --</option>';
+
+    if (!attr) {
+      percentDiv.classList.add("hidden");
+      return;
     }
 
-function getMartialCriteria(type) {
-
-  let skin = "";
-
-  if (type === "bow") {
-    skin = document.getElementById("bow_skin").value;
+    percentDiv.classList.remove("hidden");
+    const values = attr === "generic" ? [8, 9] : [15, 16, 17, 18];
+    values.forEach(v => percentSelect.add(new Option(v, v)));
   }
 
-  if (type === "axe") {
-    skin = document.getElementById("axe_piercing").checked ? "piercing" : "";
+  function getDamageOptions(type, noReq) {
+    const damageOptions = {
+      axe: {
+        noReq: ["5-10", "5-11", "6-12"],
+        req: [
+          { value: "6-15", label: "6-15 or lower" },
+          "6-16", "6-17", "6-18", "6-19", "6-20", "7-18", "7-19", "7-20", "7-21"
+        ]
+      },
+      sword: {
+        noReq: ["6-9", "7-9", "7-10", "8-10"],
+        req: [
+          { value: "10-13", label: "10-13 or lower" },
+          "10-14", "11-14", "11-15", "11-16", "12-16", "12-17"
+        ]
+      },
+      hammer: {
+        noReq: ["9-13", "9-14", "10-14", "10-15", "11-15"],
+        req: [
+          { value: "14-21", label: "14-21 or lower" },
+          "14-22", "14-23", "14-24", "15-24", "15-25", "15-26"
+        ]
+      },
+      bow: {
+        noReq: ["7-11", "7-12", "8-12", "9-13"],
+        req: [
+          { value: "11-16", label: "11-16 or lower" },
+          "11-17", "11-18", "11-19", "12-18", "12-19", "12-20", "12-21"
+        ]
+      }
+    };
+
+    if (!damageOptions[type]) return [];
+    return noReq ? damageOptions[type].noReq : damageOptions[type].req;
   }
 
-  if (type === "sword") {
-    skin = document.getElementById("sword_short").checked ? "short" : "";
-  }
+  function setSelectOptions(selectId, options) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
 
-  return {
-    type,
-    skin,
-    noReq: document.getElementById("no_req").checked ? "yes" : "no",
-    damage: document.getElementById(type + "_damage").value,
-    inherent: document.getElementById("weapon_inherent").value,
-    percent: document.getElementById("weapon_damage_percent").value
-  };
-}
+    select.innerHTML = '<option value="">-- Select --</option>';
 
-    function validateStaffInput(criteria) {
-      if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
-        return "Please complete all required staff fields.";
-      }
-
-      if (criteria.inherent === "hct" && !criteria.attr) {
-        return "Please select the HCT attribute.";
-      }
-
-      if (criteria.inherent === "hct" && !criteria.hctPercent) {
-        return "Please select the HCT %.";
-      }
-
-      return "";
-    }
-
-    function validateMartialInput(criteria) {
-      if (criteria.type === "bow" && !criteria.skin) {
-        return "Please select the bow skin.";
-      }
-    
-      if (!criteria.damage) {
-        return "Please select the damage range.";
-      }
-    
-      if (!criteria.inherent) {
-        return "Please select the inherent damage increase.";
-      }
-    
-      if (criteria.inherent !== "none" && !criteria.percent) {
-        return "Please select the damage increase %.";
-      }
-    
-      return "";
-    }
-
-    function calculateStaffTier() {
-      const criteria = getStaffCriteria();
-      const validationMessage = validateStaffInput(criteria);
-
-      if (validationMessage) {
-        return { error: validationMessage };
-      }
-
-      const normalizedCriteria = {
-        ...criteria,
-        attr: criteria.inherent === "hct" ? criteria.attr : "",
-        hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
-      };
-
-      const match = findTier(
-        normalizedCriteria,
-        staffTierMappings,
-        ["noReq", "hsr", "energy", "inherent", "attr", "hctPercent"]
-      );
-
-      return { tier: match.tier, match, criteria: normalizedCriteria };
-    }
-
-    function calculateMartialTier(type) {
-      const criteria = getMartialCriteria(type);
-      const validationMessage = validateMartialInput(criteria);
-
-      if (validationMessage) {
-        return { error: validationMessage };
-      }
-
-      const normalizedCriteria = {
-        ...criteria,
-        inherent: criteria.inherent === "none" ? "" : criteria.inherent,
-        percent: criteria.inherent === "none" ? "" : criteria.percent
-      };
-
-      const match = findTier(
-        normalizedCriteria,
-        martialTierMappings,
-        ["type", "skin", "noReq", "damage", "inherent", "percent"]
-      );
-
-      return { tier: match.tier, match, criteria: normalizedCriteria };
-    }
-
-    function checkItem() {
-      const type = document.getElementById("itemType").value;
-      const resultEl = document.getElementById("result");
-      const debugEl = document.getElementById("debug");
-
-      if (!type) {
-        resultEl.innerText = "Please select an item type.";
-        debugEl.innerText = "";
-        return;
-      }
-
-      let result;
-
-      if (type === "staff") {
-        result = calculateStaffTier();
-      } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
-        result = calculateMartialTier(type);
+    options.forEach(option => {
+      if (typeof option === "string") {
+        select.add(new Option(option, option));
       } else {
-        resultEl.innerText = "Logic not added yet.";
-        debugEl.innerText = "";
-        return;
+        select.add(new Option(option.label, option.value));
       }
+    });
+  }
 
-      if (result.error) {
-        resultEl.innerText = result.error;
-        debugEl.innerText = "";
-        return;
-      }
+  function populateWeaponDamage(type) {
+    const noReq = document.getElementById("no_req").checked;
+    const options = getDamageOptions(type, noReq);
+    setSelectOptions(`${type}_damage`, options);
+  }
 
-      resultEl.innerText = `Item Tier: ${result.tier}`;
-      debugEl.innerText = `Matched rule: ${JSON.stringify(result.match)}`;
+  function noReqChanged() {
+    const type = document.getElementById("itemType").value;
+
+    if (type === "staff") {
+      populateHSR();
+      populateEnergy();
     }
-  </script>
 
-</body>
-</html>
+    if (["axe", "sword", "hammer", "bow"].includes(type)) {
+      populateWeaponDamage(type);
+    }
+
+    document.getElementById("result").innerText = "";
+    document.getElementById("debug").innerText = "";
+
+    updateSpecialQuestionVisibility();
+  }
+
+  function weaponInherentChanged() {
+    const inherent = document.getElementById("weapon_inherent").value;
+    const percentDiv = document.getElementById("weaponDamagePercentDiv");
+    const percentSelect = document.getElementById("weapon_damage_percent");
+
+    percentSelect.innerHTML = '<option value="">-- Select --</option>';
+
+    if (!inherent || inherent === "none") {
+      percentDiv.classList.add("hidden");
+      updateSpecialQuestionVisibility();
+      return;
+    }
+
+    percentDiv.classList.remove("hidden");
+
+    let values = [];
+    if (["enchanted", "stance", "above50"].includes(inherent)) {
+      values = [13, 14];
+    } else if (["below50", "hexed"].includes(inherent)) {
+      values = [15, 16, 17, 18];
+    }
+
+    values.forEach(v => percentSelect.add(new Option(v + "%", v)));
+
+    updateSpecialQuestionVisibility();
+  }
+
+  function updateSpecialQuestionVisibility() {
+    const type = document.getElementById("itemType").value;
+    const specialQuestionFields = document.getElementById("specialQuestionFields");
+    const axePiercingRow = document.getElementById("axePiercingRow");
+    const swordShortRow = document.getElementById("swordShortRow");
+
+    if (!specialQuestionFields || !axePiercingRow || !swordShortRow) {
+      return;
+    }
+
+    const damage = document.getElementById(type + "_damage")?.value || "";
+    const inherent = document.getElementById("weapon_inherent")?.value || "";
+    const percent = document.getElementById("weapon_damage_percent")?.value || "";
+
+    const isMartial = ["axe", "sword", "hammer", "bow"].includes(type);
+
+    if (!isMartial) {
+      specialQuestionFields.classList.add("hidden");
+      axePiercingRow.classList.add("hidden");
+      swordShortRow.classList.add("hidden");
+      document.getElementById("axe_piercing").checked = false;
+      document.getElementById("sword_short").checked = false;
+      return;
+    }
+
+    const baseFieldsComplete =
+      damage &&
+      inherent &&
+      (inherent === "none" || percent);
+
+    const showAxe = baseFieldsComplete && type === "axe";
+    const showSword = baseFieldsComplete && type === "sword";
+
+    specialQuestionFields.classList.toggle("hidden", !(showAxe || showSword));
+    axePiercingRow.classList.toggle("hidden", !showAxe);
+    swordShortRow.classList.toggle("hidden", !showSword);
+
+    if (!showAxe) {
+      document.getElementById("axe_piercing").checked = false;
+    }
+
+    if (!showSword) {
+      document.getElementById("sword_short").checked = false;
+    }
+  }
+
+  function findTier(criteria, mappings, keys) {
+    for (const mapping of mappings) {
+      let matched = true;
+
+      for (const key of keys) {
+        const mappingValue = mapping[key] ?? "";
+
+        if (mappingValue !== "" && mappingValue !== criteria[key]) {
+          matched = false;
+          break;
+        }
+      }
+
+      if (matched) {
+        return mapping;
+      }
+    }
+
+    return { tier: "Junk" };
+  }
+
+  function getStaffCriteria() {
+    return {
+      noReq: document.getElementById("no_req").checked ? "yes" : "no",
+      hsr: document.getElementById("staff_hsr").value,
+      energy: document.getElementById("staff_energy").value,
+      inherent: document.getElementById("staff_inherent").value,
+      attr: document.getElementById("staff_attr").value,
+      hctPercent: document.getElementById("staff_hct_percent").value
+    };
+  }
+
+  function getMartialCriteria(type) {
+    let skin = "";
+
+    if (type === "bow") {
+      skin = document.getElementById("bow_skin").value;
+    }
+
+    if (type === "axe") {
+      skin = document.getElementById("axe_piercing").checked ? "piercing" : "";
+    }
+
+    if (type === "sword") {
+      skin = document.getElementById("sword_short").checked ? "short" : "";
+    }
+
+    return {
+      type,
+      skin,
+      noReq: document.getElementById("no_req").checked ? "yes" : "no",
+      damage: document.getElementById(type + "_damage").value,
+      inherent: document.getElementById("weapon_inherent").value,
+      percent: document.getElementById("weapon_damage_percent").value
+    };
+  }
+
+  function validateStaffInput(criteria) {
+    if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
+      return "Please complete all required staff fields.";
+    }
+
+    if (criteria.inherent === "hct" && !criteria.attr) {
+      return "Please select the HCT attribute.";
+    }
+
+    if (criteria.inherent === "hct" && !criteria.hctPercent) {
+      return "Please select the HCT %.";
+    }
+
+    return "";
+  }
+
+  function validateMartialInput(criteria) {
+    if (criteria.type === "bow" && !criteria.skin) {
+      return "Please select the bow skin.";
+    }
+
+    if (!criteria.damage) {
+      return "Please select the damage range.";
+    }
+
+    if (!criteria.inherent) {
+      return "Please select the inherent damage increase.";
+    }
+
+    if (criteria.inherent !== "none" && !criteria.percent) {
+      return "Please select the damage increase %.";
+    }
+
+    return "";
+  }
+
+  function calculateStaffTier() {
+    const criteria = getStaffCriteria();
+    const validationMessage = validateStaffInput(criteria);
+
+    if (validationMessage) {
+      return { error: validationMessage };
+    }
+
+    const normalizedCriteria = {
+      ...criteria,
+      attr: criteria.inherent === "hct" ? criteria.attr : "",
+      hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
+    };
+
+    const match = findTier(
+      normalizedCriteria,
+      staffTierMappings,
+      ["noReq", "hsr", "energy", "inherent", "attr", "hctPercent"]
+    );
+
+    return { tier: match.tier, match, criteria: normalizedCriteria };
+  }
+
+  function calculateMartialTier(type) {
+    const criteria = getMartialCriteria(type);
+    const validationMessage = validateMartialInput(criteria);
+
+    if (validationMessage) {
+      return { error: validationMessage };
+    }
+
+    const normalizedCriteria = {
+      ...criteria,
+      inherent: criteria.inherent === "none" ? "" : criteria.inherent,
+      percent: criteria.inherent === "none" ? "" : criteria.percent
+    };
+
+    const match = findTier(
+      normalizedCriteria,
+      martialTierMappings,
+      ["type", "skin", "noReq", "damage", "inherent", "percent"]
+    );
+
+    return { tier: match.tier, match, criteria: normalizedCriteria };
+  }
+
+  function checkItem() {
+    const type = document.getElementById("itemType").value;
+    const resultEl = document.getElementById("result");
+    const debugEl = document.getElementById("debug");
+
+    if (!type) {
+      resultEl.innerText = "Please select an item type.";
+      debugEl.innerText = "";
+      return;
+    }
+
+    let result;
+
+    if (type === "staff") {
+      result = calculateStaffTier();
+    } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
+      result = calculateMartialTier(type);
+    } else {
+      resultEl.innerText = "Logic not added yet.";
+      debugEl.innerText = "";
+      return;
+    }
+
+    if (result.error) {
+      resultEl.innerText = result.error;
+      debugEl.innerText = "";
+      return;
+    }
+
+    resultEl.innerText = `Item Tier: ${result.tier}`;
+    debugEl.innerText = "";
+  }
+</script>
+
 
 
 
