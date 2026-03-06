@@ -187,7 +187,7 @@
   </div>
 </div>
 
-<button onclick="checkItem()" style="margin-top:16px;font-weight:bold;">
+<button id="checkItemButton" onclick="checkItem()" class="hidden" style="margin-top:16px;font-weight:bold;">
 Check Item
 </button>
 
@@ -356,6 +356,7 @@ function resetAllFields() {
   
 function showFields() {
   const type = document.getElementById("itemType").value;
+  const checkButton = document.getElementById("checkItemButton");
 
   resetAllFields();
 
@@ -363,6 +364,8 @@ function showFields() {
     const types = div.dataset.type.split(",");
     div.classList.toggle("hidden", !types.includes(type));
   });
+
+  checkButton.classList.toggle("hidden", type === "");
 
   if (type === "staff") {
     populateHSR();
@@ -467,6 +470,7 @@ function checkItem() {
 </body>
 
 </html>
+
 
 
 
