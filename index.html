@@ -97,7 +97,7 @@
 
   <div id="noReqContainer" class="hidden noReqRow">
     <label>
-      <input type="checkbox" id="no_req">
+     <input type="checkbox" id="no_req" onchange="noReqChanged()">
       No Req?
     </label>
   </div>
@@ -150,65 +150,28 @@
     </div>
   </div>
 
-  <div class="itemFields hidden" data-type="axe">
-    <label>Damage Range:</label>
-    <select id="axe_damage">
-      <option value="">-- Select --</option>
-      <option value="6-15">6-15 or lower</option>
-      <option value="6-16">6-16</option>
-      <option value="6-17">6-17</option>
-      <option value="6-18">6-18</option>
-      <option value="6-19">6-19</option>
-      <option value="6-20">6-20</option>
-      <option value="7-18">7-18</option>
-      <option value="7-19">7-19</option>
-      <option value="7-20">7-20</option>
-      <option value="7-21">7-21</option>
-    </select>
-  </div>
+<div class="itemFields hidden" data-type="axe">
+  <label>Damage Range:</label>
+  <select id="axe_damage">
+    <option value="">-- Select --</option>
+  </select>
+</div>
 
-  <div class="itemFields hidden" data-type="sword">
-    <label>Damage Range:</label>
-    <select id="sword_damage">
-      <option value="">-- Select --</option>
-      <option value="10-13">10-13 or lower</option>
-      <option value="10-14">10-14</option>
-      <option value="11-14">11-14</option>
-      <option value="11-15">11-15</option>
-      <option value="11-16">11-16</option>
-      <option value="12-16">12-16</option>
-      <option value="12-17">12-17</option>
-    </select>
-  </div>
-
-  <div class="itemFields hidden" data-type="hammer">
-    <label>Damage Range:</label>
-    <select id="hammer_damage">
-      <option value="">-- Select --</option>
-      <option value="14-21">14-21 or lower</option>
-      <option value="14-22">14-22</option>
-      <option value="14-23">14-23</option>
-      <option value="14-24">14-24</option>
-      <option value="15-24">15-24</option>
-      <option value="15-25">15-25</option>
-      <option value="15-26">15-26</option>
-    </select>
-  </div>
+<div class="itemFields hidden" data-type="sword">
+  <label>Damage Range:</label>
+  <select id="sword_damage">
+    <option value="">-- Select --</option>
+  </select>
+</div>
+  
+<div class="itemFields hidden" data-type="hammer">
+  <label>Damage Range:</label>
+  <select id="hammer_damage">
+    <option value="">-- Select --</option>
+  </select>
+</div>
 
 <div class="itemFields hidden" data-type="bow">
-  <label>Damage Range:</label>
-  <select id="bow_damage">
-    <option value="">-- Select --</option>
-    <option value="11-16">11-16 or lower</option>
-    <option value="11-17">11-17</option>
-    <option value="11-18">11-18</option>
-    <option value="11-19">11-19</option>
-    <option value="12-18">12-18</option>
-    <option value="12-19">12-19</option>
-    <option value="12-20">12-20</option>
-    <option value="12-21">12-21</option>
-  </select>
-  
   <label>Skin:</label>
   <select id="bow_skin">
     <option value="">-- Select --</option>
@@ -217,6 +180,11 @@
     <option value="long">Longbow</option>
     <option value="flat">Flatbow</option>
     <option value="horn">Hornbow</option>
+  </select>
+  
+  <label>Damage Range:</label>
+  <select id="bow_damage">
+    <option value="">-- Select --</option>
   </select>
 </div>
 
@@ -381,7 +349,7 @@
     { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
   ];
   const martialTierMappings = [
-    { type: "axe", noReq: "", damage: "7-21", inherent: "above50", percent: "14", tier: "God Tier" },
+     { type: "axe", skin: "", noReq: "", damage: "7-21", inherent: "above50", percent: "14", tier: "God Tier" },
   ];
     
  function resetAllFields() {
@@ -407,23 +375,27 @@
       const noReqContainer = document.getElementById("noReqContainer");
       const checkButton = document.getElementById("checkItemButton");
       const martialSharedFields = document.getElementById("martialSharedFields");
-
+    
       resetAllFields();
-
+    
       document.querySelectorAll(".itemFields").forEach(div => {
         const types = div.dataset.type.split(",");
         div.classList.toggle("hidden", !types.includes(type));
       });
-
+    
       noReqContainer.classList.toggle("hidden", type === "");
       checkButton.classList.toggle("hidden", type === "");
       martialSharedFields.classList.toggle("hidden", !["axe", "sword", "hammer", "bow"].includes(type));
-
+    
       if (type === "staff") {
         populateHSR();
         populateEnergy();
       }
-    }
+    
+      if (["axe", "sword", "hammer", "bow"].includes(type)) {
+        populateWeaponDamage(type);
+      }
+  }
 
     function populateHSR() {
       const hsrSelect = document.getElementById("staff_hsr");
@@ -469,6 +441,121 @@
       values.forEach(v => percentSelect.add(new Option(v, v)));
     }
 
+function getDamageOptions(type, noReq) {
+  const damageOptions = {
+    axe: {
+      noReq: [
+        "5-10",
+        "5-11",
+        "6-12"
+      ],
+      req: [
+        { value: "6-15", label: "6-15 or lower" },
+        "6-16",
+        "6-17",
+        "6-18",
+        "6-19",
+        "6-20",
+        "7-18",
+        "7-19",
+        "7-20",
+        "7-21"
+      ]
+    },
+
+    sword: {
+      noReq: [
+        "6-9",
+        "7-9",
+        "7-10",
+        "8-10"
+      ],
+      req: [
+        { value: "10-13", label: "10-13 or lower" },
+        "10-14",
+        "11-14",
+        "11-15",
+        "11-16",
+        "12-16",
+        "12-17"
+      ]
+    },
+
+    hammer: {
+      noReq: [
+        "9-13",
+        "9-14",
+        "10-14",
+        "10-15",
+        "11-15"
+      ],
+      req: [
+        { value: "14-21", label: "14-21 or lower" },
+        "14-22",
+        "14-23",
+        "14-24",
+        "15-24",
+        "15-25",
+        "15-26"
+      ]
+    },
+
+    bow: {
+      noReq: [
+        "7-11",
+        "7-12",
+        "8-12",
+        "9-13"
+      ],
+      req: [
+        { value: "11-16", label: "11-16 or lower" },
+        "11-17",
+        "11-18",
+        "11-19",
+        "12-18",
+        "12-19",
+        "12-20",
+        "12-21"
+      ]
+    }
+  };
+
+  if (!damageOptions[type]) return [];
+  return noReq ? damageOptions[type].noReq : damageOptions[type].req;
+}
+
+function setSelectOptions(selectId, options) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+
+  select.innerHTML = '<option value="">-- Select --</option>';
+
+  options.forEach(option => {
+    if (typeof option === "string") {
+      select.add(new Option(option, option));
+    } else {
+      select.add(new Option(option.label, option.value));
+    }
+  });
+}
+
+function populateWeaponDamage(type) {
+  const noReq = document.getElementById("no_req").checked;
+  const options = getDamageOptions(type, noReq);
+  setSelectOptions(`${type}_damage`, options);
+}
+
+function noReqChanged() {
+  const type = document.getElementById("itemType").value;
+
+  if (["axe", "sword", "hammer", "bow"].includes(type)) {
+    populateWeaponDamage(type);
+  }
+
+  document.getElementById("result").innerText = "";
+  document.getElementById("debug").innerText = "";
+}
+    
     function weaponInherentChanged() {
       const inherent = document.getElementById("weapon_inherent").value;
       const percentDiv = document.getElementById("weaponDamagePercentDiv");
@@ -493,25 +580,27 @@
       values.forEach(v => percentSelect.add(new Option(v + "%", v)));
     }
 
-    function findTier(criteria, mappings, keys) {
-      for (const mapping of mappings) {
-        let matched = true;
+function findTier(criteria, mappings, keys) {
+  for (const mapping of mappings) {
+    let matched = true;
 
-        for (const key of keys) {
-          if (mapping[key] !== "" && mapping[key] !== criteria[key]) {
-            matched = false;
-            break;
-          }
-        }
+    for (const key of keys) {
+      const mappingValue = mapping[key] ?? "";
 
-        if (matched) {
-          return mapping;
-        }
+      if (mappingValue !== "" && mappingValue !== criteria[key]) {
+        matched = false;
+        break;
       }
-
-      return { tier: "Junk" };
     }
 
+    if (matched) {
+      return mapping;
+    }
+  }
+
+  return { tier: "Junk" };
+}
+    
     function getStaffCriteria() {
       return {
         noReq: document.getElementById("no_req").checked ? "yes" : "no",
@@ -652,5 +741,6 @@
 
 </body>
 </html>
+
 
 
