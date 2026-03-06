@@ -58,13 +58,29 @@
   gap: 6px;
   font-weight: bold;
 }
+  
+.topField label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+.topField select {
+  background: black;
+  color: #cccccc;
+  border: 1px solid #cccccc;
+  padding: 6px;
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  }
 </style>
 </head>
 <body>
 
 <h2 class="header-red">Pre-Searing Item Checker</h2>
 
-<div class="itemFields">
+<div class="topField">
   <label>Item Type:</label>
   <select id="itemType" onchange="showFields()">
     <option value="">-- Select --</option>
@@ -495,6 +511,7 @@ function checkItem() {
 </body>
 
 </html>
+
 
 
 
