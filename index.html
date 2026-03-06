@@ -69,18 +69,6 @@
       border: 2px solid black;
     }
 
-    #no_req_slider.neutral {
-      background: #444;
-    }
-
-    #no_req_slider.yes {
-      background: #2e7d32;
-    }
-
-    #no_req_slider.no {
-      background: #8a090c;
-    }
-
     #checkItemButton {
       background: #cccccc;
       color: black;
@@ -480,19 +468,6 @@
       below50:   { "15": 1, "16": 1, "17": 1, "18": 2 }
     };
 
-    function updateNoReqSliderVisual() {
-      const slider = document.getElementById("no_req_slider");
-      slider.classList.remove("neutral", "yes", "no");
-
-      if (slider.value === "0") {
-        slider.classList.add("yes");
-      } else if (slider.value === "2") {
-        slider.classList.add("no");
-      } else {
-        slider.classList.add("neutral");
-      }
-    }
-
     function getNoReqValue() {
       const slider = document.getElementById("no_req_slider");
       if (!slider) return "";
@@ -512,8 +487,7 @@
       });
 
       document.getElementById("no_req_slider").value = "1";
-      updateNoReqSliderVisual();
-
+ 
       document.getElementById("axe_piercing").checked = false;
       document.getElementById("sword_short").checked = false;
 
@@ -563,8 +537,6 @@
       const noReqChosen = hasChosenNoReq();
       const checkButton = document.getElementById("checkItemButton");
       const martialSharedFields = document.getElementById("martialSharedFields");
-
-      updateNoReqSliderVisual();
 
       document.querySelectorAll(".itemFields").forEach(div => {
         div.classList.add("hidden");
@@ -988,35 +960,38 @@
       return { tier: match.tier, match, criteria: mappingCriteria };
     }
 
-    function checkItem() {
-      const type = document.getElementById("itemType").value;
-      const resultEl = document.getElementById("result");
-      const debugEl = document.getElementById("debug");
+    <script>
+  ...
+  function checkItem() {
+    const type = document.getElementById("itemType").value;
+    const resultEl = document.getElementById("result");
+    const debugEl = document.getElementById("debug");
 
-      if (!type) {
-        resultEl.innerText = "Please select an item type.";
-        debugEl.innerText = "";
-        return;
-      }
+    if (!type) {
+      resultEl.innerText = "Please select an item type.";
+      debugEl.innerText = "";
+      return;
+    }
 
-      let result;
+    let result;
 
-      if (type === "staff") {
-        result = calculateStaffTier();
-      } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
-        result = calculateMartialTier(type);
-      } else {
-        resultEl.innerText = "Logic not added yet.";
-        debugEl.innerText = "";
-        return;
-      }
+    if (type === "staff") {
+      result = calculateStaffTier();
+    } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
+      result = calculateMartialTier(type);
+    } else {
+      resultEl.innerText = "Logic not added yet.";
+      debugEl.innerText = "";
+      return;
+    }
 
-      if (result.error) {
-        resultEl.innerText = result.error;
-        debugEl.innerText = "";
-        return;
-      }
-resultEl.innerText = `Item Tier: ${result.tier}`;
+    if (result.error) {
+      resultEl.innerText = result.error;
+      debugEl.innerText = "";
+      return;
+    }
+
+    resultEl.innerText = `Item Tier: ${result.tier}`;
 
     if (result.breakdown) {
       debugEl.innerText =
@@ -1030,9 +1005,10 @@ resultEl.innerText = `Item Tier: ${result.tier}`;
     } else {
       debugEl.innerText = "";
     }
-
-    updateNoReqSliderVisual();
-  </script>
+  }
+    
+</script>
 </body>
 </html>
+
 
