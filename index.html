@@ -130,6 +130,10 @@
       <option value="sword">Sword</option>
       <option value="hammer">Hammer</option>
       <option value="bow">Bow</option>
+      <option value="wand">Wand</option>
+      <option value="shield">Shield</option>
+      <option value="focus">Focus</option>
+      <option value="misc">Miscellaneous</option>
     </select>
   </div>
 
@@ -236,6 +240,26 @@
     </select>
   </div>
 
+  <div class="itemFields hidden" data-type="wand">
+    <label>Wand logic placeholder</label>
+    <div class="subtle">Add wand stats and scoring rules here later.</div>
+  </div>
+
+  <div class="itemFields hidden" data-type="shield">
+    <label>Shield logic placeholder</label>
+    <div class="subtle">Add shield stats and scoring rules here later.</div>
+  </div>
+
+  <div class="itemFields hidden" data-type="focus">
+    <label>Focus logic placeholder</label>
+    <div class="subtle">Add focus stats and scoring rules here later.</div>
+  </div>
+
+  <div class="itemFields hidden" data-type="misc">
+    <label>Miscellaneous logic placeholder</label>
+    <div class="subtle">Add miscellaneous item rules here later.</div>
+  </div>
+
   <div id="martialSharedFields" class="hidden">
     <label>Inherent Damage Increase:</label>
     <select id="weapon_inherent" onchange="weaponInherentChanged()">
@@ -281,240 +305,324 @@
   <div id="debug" class="subtle"></div>
 
   <script>
-    const staffTierMappings = [
-      { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Highly Collectable" },
-      { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Collectable" },
-      { noReq: "yes", hsr: "14", energy: "6", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-      { noReq: "yes", hsr: "14", energy: "5", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-      { noReq: "yes", hsr: "13", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Collectable" },
-      { noReq: "yes", hsr: "13", energy: "6", inherent: "hct", attr: "death", hctPercent: "18", tier: "Collectable" },
-    
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "blood", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "curses", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "", hctPercent: "18", tier: "Highly Collectable" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "generic", hctPercent: "9", tier: "God Tier" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "fire", hctPercent: "", tier: "High End" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "death", hctPercent: "", tier: "High End" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "blood", hctPercent: "", tier: "High End" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "curses", hctPercent: "", tier: "High End" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "dom", hctPercent: "", tier: "High End" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "heal", hctPercent: "", tier: "High End" },
-      { noReq: "", hsr: "16", energy: "", inherent: "hct", attr: "smite", hctPercent: "", tier: "High End" },
-      { noReq: "", hsr: "16", energy: "", inherent: "reduces_duration", attr: "", hctPercent: "", tier: "Collectable" },
-      { noReq: "", hsr: "16", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Collectable" },
-    
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "God Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "", hctPercent: "18", tier: "Highly Collectable" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "17", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "fire", hctPercent: "", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "blood", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "curses", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "dom", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "heal", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "smite", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "generic", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "none", attr: "", hctPercent: "", tier: "Collectable" },
-      { noReq: "", hsr: "15", energy: "8", inherent: "hct", attr: "", hctPercent: "15", tier: "Collectable" },
-    
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "7", inherent: "hct", attr: "", hctPercent: "15", tier: "Collectable" },
-    
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "death", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "15", energy: "", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
-    
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "High End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "", hctPercent: "18", tier: "Collectable" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "17", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "blood", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "curses", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "dom", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "heal", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "smite", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "generic", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "fire", hctPercent: "", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "8", inherent: "hct", attr: "death", hctPercent: "", tier: "Low End" },
-    
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "Mid Tier" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "water", hctPercent: "18", tier: "Collectable" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "air", hctPercent: "18", tier: "Collectable" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "earth", hctPercent: "18", tier: "Collectable" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "7", inherent: "hct", attr: "death", hctPercent: "17", tier: "Low End" },
-    
-      { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "14", energy: "6", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
-    
-      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "blood", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "curses", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "dom", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "heal", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "smite", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "8", inherent: "hct", attr: "generic", hctPercent: "9", tier: "Low End" },
-    
-      { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "death", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "13", energy: "7", inherent: "hct", attr: "fire", hctPercent: "17", tier: "Low End" },
-    
-      { noReq: "", hsr: "13", energy: "6", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-    
-      { noReq: "", hsr: "12", energy: "8", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-      { noReq: "", hsr: "12", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
-    
-      { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
-    ];
+    const MARTIAL_TYPES = ["axe", "sword", "hammer", "bow"];
+    const PLACEHOLDER_TYPES = ["wand", "shield", "focus", "misc"];
 
+    /*
+      Temporary fallback mappings for no-req martial weapons.
+      Fill these in as you continue converting no-req items to score systems.
+    */
     const martialTierMappings = [
-      /* temporary fallback mappings for no-req bows / other martial weapons */
+      { type: "bow", skin: "horn", noReq: "yes", damage: "9-13", inherent: "above50", percent: "14", tier: "Highly Collectable" },
+      { type: "bow", skin: "flat", noReq: "yes", damage: "9-13", inherent: "above50", percent: "14", tier: "Collectable" },
+      { type: "axe", skin: "", noReq: "yes", damage: "6-12", inherent: "above50", percent: "14", tier: "Collectable" },
+      { type: "sword", skin: "", noReq: "yes", damage: "8-10", inherent: "above50", percent: "14", tier: "Collectable" },
+      { type: "hammer", skin: "", noReq: "yes", damage: "11-15", inherent: "above50", percent: "14", tier: "Collectable" },
+      { type: "", skin: "", noReq: "", damage: "", inherent: "", percent: "", tier: "Junk" }
     ];
 
-  const reqBowDamageScores = {
-    "11-16": 0,
-    "11-17": 1,
-    "11-18": 2,
-    "11-19": 5,
-    "12-18": 5,
-    "12-19": 10,
-    "12-20": 20,
-    "12-21": 80
-  };
-  
-  const bowSkinBonuses = {
-    short: 1,
-    long: 2,
-    recurve: 2,
-    flat: 3,
-    horn: 4
-  };
-  
-  const reqBowInherentBonuses = {
-    none: 1,
-    hexedfoes: 1,
-    below50: 1,
-    enchanted: 1,
-    hexed: 2,
-    stance: 3,
-    above50: 4
-  };
-  
-  const reqBowPercentBonuses = {
-    enchanted: { "13": 2, "14": 3 },
-    stance:    { "13": 2, "14": 3 },
-    above50:   { "13": 2, "14": 3 },
-    hexedfoes: { "13": 2, "14": 3 },
-    hexed:     { "15": 2, "16": 2, "17": 2, "18": 3 },
-    below50:   { "15": 2, "16": 2, "17": 2, "18": 3 }
-  };
+    /*
+      Martial scoring configs.
+      Sword uses your axe logic with sword damage ranges and shortsword malus.
+      Hammer uses your axe logic with hammer damage ranges and no malus.
+    */
+    const martialReqConfigs = {
+      bow: {
+        damageScores: {
+          "11-16": 0,
+          "11-17": 1,
+          "11-18": 2,
+          "11-19": 5,
+          "12-18": 5,
+          "12-19": 10,
+          "12-20": 20,
+          "12-21": 80
+        },
+        skinMode: "bonus",
+        skinValues: {
+          short: 1,
+          long: 2,
+          recurve: 2,
+          flat: 3,
+          horn: 4
+        },
+        inherentBonuses: {
+          none: 1,
+          hexedfoes: 1,
+          below50: 1,
+          enchanted: 1,
+          hexed: 2,
+          stance: 3,
+          above50: 4
+        },
+        percentBonuses: {
+          enchanted: { "13": 2, "14": 3 },
+          stance:    { "13": 2, "14": 3 },
+          above50:   { "13": 2, "14": 3 },
+          hexedfoes: { "13": 2, "14": 3 },
+          hexed:     { "15": 2, "16": 2, "17": 2, "18": 3 },
+          below50:   { "15": 2, "16": 2, "17": 2, "18": 3 }
+        },
+        thresholds: {
+          god: 600,
+          high: 200,
+          mid: 100,
+          low: 25
+        }
+      },
 
- const reqAxeDamageScores = {
-  "6-15": 0,
-  "6-16": 2,
-  "6-17": 4,
-  "6-18": 8,
-  "6-19": 16,
-  "7-18": 16,
-  "6-20": 32,
-  "7-19": 32,
-  "7-20": 64,
-};
+      axe: {
+        damageScores: {
+          "6-15": 0,
+          "6-16": 2,
+          "6-17": 4,
+          "6-18": 8,
+          "6-19": 16,
+          "7-18": 16,
+          "6-20": 32,
+          "7-19": 32,
+          "7-20": 64
+        },
+        skinMode: "malus",
+        skinValues: {
+          "": 1,
+          piercing: 3
+        },
+        inherentBonuses: {
+          none: 1,
+          hexedfoes: 1,
+          below50: 1,
+          enchanted: 1,
+          stance: 3,
+          hexed: 3,
+          above50: 4
+        },
+        percentBonuses: {
+          enchanted: { "13": 2, "14": 3 },
+          stance:    { "13": 2, "14": 3 },
+          above50:   { "13": 3, "14": 4 },
+          hexedfoes: { "13": 2, "14": 3 },
+          hexed:     { "15": 2, "16": 3, "17": 3, "18": 4 },
+          below50:   { "15": 2, "16": 3, "17": 3, "18": 4 }
+        },
+        thresholds: {
+          god: 400,
+          high: 200,
+          mid: 100,
+          low: 20
+        }
+      },
 
-const axeSkinMalus = {
-  "": 1,
-  piercing: 3
-};
+      sword: {
+        damageScores: {
+          "10-13": 0,
+          "10-14": 2,
+          "11-14": 4,
+          "11-15": 8,
+          "11-16": 16,
+          "12-16": 32,
+          "12-17": 64
+        },
+        skinMode: "malus",
+        skinValues: {
+          "": 1,
+          short: 3
+        },
+        inherentBonuses: {
+          none: 1,
+          hexedfoes: 1,
+          below50: 1,
+          enchanted: 1,
+          stance: 3,
+          hexed: 3,
+          above50: 4
+        },
+        percentBonuses: {
+          enchanted: { "13": 2, "14": 3 },
+          stance:    { "13": 2, "14": 3 },
+          above50:   { "13": 3, "14": 4 },
+          hexedfoes: { "13": 2, "14": 3 },
+          hexed:     { "15": 2, "16": 3, "17": 3, "18": 4 },
+          below50:   { "15": 2, "16": 3, "17": 3, "18": 4 }
+        },
+        thresholds: {
+          god: 400,
+          high: 200,
+          mid: 100,
+          low: 20
+        }
+      },
 
-const reqAxeInherentBonuses = {
-  none: 1,
-  hexedfoes: 1,
-  below50: 1,
-  enchanted: 1,
-  stance: 3,
-  hexed: 3,
-  above50: 4
-};
+      hammer: {
+        damageScores: {
+          "14-21": 0,
+          "14-22": 2,
+          "14-23": 4,
+          "14-24": 8,
+          "15-24": 16,
+          "15-25": 32,
+          "15-26": 64
+        },
+        skinMode: "flat",
+        skinValues: {
+          "": 1
+        },
+        inherentBonuses: {
+          none: 1,
+          hexedfoes: 1,
+          below50: 1,
+          enchanted: 1,
+          stance: 3,
+          hexed: 3,
+          above50: 4
+        },
+        percentBonuses: {
+          enchanted: { "13": 2, "14": 3 },
+          stance:    { "13": 2, "14": 3 },
+          above50:   { "13": 3, "14": 4 },
+          hexedfoes: { "13": 2, "14": 3 },
+          hexed:     { "15": 2, "16": 3, "17": 3, "18": 4 },
+          below50:   { "15": 2, "16": 3, "17": 3, "18": 4 }
+        },
+        thresholds: {
+          god: 400,
+          high: 200,
+          mid: 100,
+          low: 20
+        }
+      }
+    };
 
-const reqAxePercentBonuses = {
-  enchanted: { "13": 2, "14": 3 },
-  stance:    { "13": 2, "14": 3 },
-  above50:   { "13": 3, "14": 4 },
-  hexedfoes: { "13": 2, "14": 3 },
-  hexed:     { "15": 2, "16": 3, "17": 3, "18": 4 },
-  below50:   { "15": 2, "16": 3, "17": 3, "18": 4 }
-};
+    /*
+      Staff scoring.
+      This replaces the huge hardcoded mapping with a score model.
+      You can tune the numbers easily later.
+    */
+    const premiumStaffAttrs = new Set(["fire", "death"]);
+    const usableStaffAttrs = new Set(["blood", "curses", "smite", "heal", "dom"]);
+    const collectorStaffAttrs = new Set(["air", "water", "earth", "prot", "divine", "illu"]);
 
-  function getNoReqValue() {
-    const slider = document.getElementById("no_req_slider");
-    if (!slider) return "";
+    const staffReqHsrScores = {
+      "11": 1,
+      "12": 2,
+      "13": 4,
+      "14": 8,
+      "15": 16,
+      "16": 32
+    };
 
-    if (slider.value === "0") return "yes";
-    if (slider.value === "2") return "no";
-    return "";
+    const staffReqEnergyBonuses = {
+      "5": 1,
+      "6": 2,
+      "7": 4,
+      "8": 8
+    };
+    
+    const staffNoReqHsrScores = {
+      "11": 1,
+      "12": 2,
+      "13": 4,
+      "14": 8
+    };
+    
+    const staffNoReqEnergyBonuses = {
+      "5": 1,
+      "6": 4
+    };
+
+    function getStaffAttrBonus(attr) {
+      if (!attr) return 1;
+      if (attr === "generic") return 2;
+      if (premiumStaffAttrs.has(attr)) return 8;
+      if (usableStaffAttrs.has(attr)) return 4;
+      if (collectorStaffAttrs.has(attr)) return 1;
+      return 1;
     }
 
-  function hasChosenNoReq() {
-    return getNoReqValue() !== "";
+    function getStaffHctPercentBonus(attr, pct) {
+      if (!pct) return 1;
+
+      if (attr === "generic") {
+        if (pct === "9") return 2;
+        if (pct === "8") return 1;
+        return 1;
+      }
+
+      if (pct === "18") return 8;
+      if (pct === "17") return 4;
+      if (pct === "16") return 2;
+      if (pct === "15") return 1;
+      return 1;
+    }
+
+  function scoreStaff(criteria) {
+    const isNoReq = criteria.noReq === "yes";
+  
+    const hsrScore = isNoReq
+      ? (staffNoReqHsrScores[criteria.hsr] ?? 0)
+      : (staffReqHsrScores[criteria.hsr] ?? 0);
+  
+    const energyBonus = isNoReq
+      ? (staffNoReqEnergyBonuses[criteria.energy] ?? 1)
+      : (staffReqEnergyBonuses[criteria.energy] ?? 1);
+  
+    let inherentMultiplier = 1;
+    let attrBonus = 1;
+    let hctPercentBonus = 1;
+  
+    if (criteria.inherent === "none") {
+      inherentMultiplier = 1;
+    } else if (criteria.inherent === "reduces_duration") {
+      inherentMultiplier = isNoReq ? 1 : 1.2;
+    } else if (criteria.inherent === "hct") {
+      inherentMultiplier = isNoReq ? 2 : 2.5;
+      attrBonus = getStaffAttrBonus(criteria.attr);
+      hctPercentBonus = getStaffHctPercentBonus(criteria.attr, criteria.hctPercent);
+    }
+  
+    const modBlock = inherentMultiplier * attrBonus * hctPercentBonus;
+    const totalScore = hsrScore * modBlock * energyBonus;
+  
+    return {
+      totalScore,
+      breakdown: {
+        hsrScore,
+        energyBonus,
+        inherentMultiplier,
+        attrBonus,
+        hctPercentBonus,
+        modBlock
+      }
+    };
+  }
+
+    function staffScoreToTier(score, isNoReq) {
+      if (isNoReq) {
+        if (score >= 180) return "Highly Collectable";
+        if (score >= 60) return "Collectable";
+        if (score >= 20) return "Low End";
+        return "Junk";
+      }
+
+      if (score >= 1800) return "God Tier";
+      if (score >= 700) return "High End";
+      if (score >= 250) return "Mid Tier";
+      if (score >= 80) return "Low End";
+      if (score >= 20) return "Collectable";
+      return "Junk";
+    }
+
+    function getNoReqValue() {
+      const slider = document.getElementById("no_req_slider");
+      if (!slider) return "";
+
+      if (slider.value === "0") return "yes";
+      if (slider.value === "2") return "no";
+      return "";
+    }
+
+    function hasChosenNoReq() {
+      return getNoReqValue() !== "";
     }
 
     function resetAllFields() {
@@ -523,9 +631,12 @@ const reqAxePercentBonuses = {
       });
 
       document.getElementById("no_req_slider").value = "1";
- 
-      document.getElementById("axe_piercing").checked = false;
-      document.getElementById("sword_short").checked = false;
+
+      const axePiercing = document.getElementById("axe_piercing");
+      const swordShort = document.getElementById("sword_short");
+
+      if (axePiercing) axePiercing.checked = false;
+      if (swordShort) swordShort.checked = false;
 
       document.getElementById("hctAttributeDiv").classList.add("hidden");
       document.getElementById("hctPercentDiv").classList.add("hidden");
@@ -598,7 +709,7 @@ const reqAxePercentBonuses = {
         populateEnergy();
       }
 
-      if (["axe", "sword", "hammer", "bow"].includes(type)) {
+      if (MARTIAL_TYPES.includes(type)) {
         martialSharedFields.classList.remove("hidden");
         populateWeaponDamage(type);
       }
@@ -734,9 +845,9 @@ const reqAxePercentBonuses = {
       percentDiv.classList.remove("hidden");
 
       let values = [];
-      if (["enchanted", "stance", "hexedfoes","above50"].includes(inherent)) {
+      if (["enchanted", "stance", "hexedfoes", "above50"].includes(inherent)) {
         values = [13, 14];
-      } else if ([ "below50", "hexed"].includes(inherent)) {
+      } else if (["below50", "hexed"].includes(inherent)) {
         values = [15, 16, 17, 18];
       }
 
@@ -751,15 +862,13 @@ const reqAxePercentBonuses = {
       const axePiercingRow = document.getElementById("axePiercingRow");
       const swordShortRow = document.getElementById("swordShortRow");
 
-      if (!specialQuestionFields || !axePiercingRow || !swordShortRow) {
-        return;
-      }
+      if (!specialQuestionFields || !axePiercingRow || !swordShortRow) return;
 
       const damage = document.getElementById(type + "_damage")?.value || "";
       const inherent = document.getElementById("weapon_inherent")?.value || "";
       const percent = document.getElementById("weapon_damage_percent")?.value || "";
 
-      const isMartial = ["axe", "sword", "hammer", "bow"].includes(type);
+      const isMartial = MARTIAL_TYPES.includes(type);
       const noReqChosen = hasChosenNoReq();
 
       if (!isMartial || !noReqChosen) {
@@ -798,8 +907,9 @@ const reqAxePercentBonuses = {
 
         for (const key of keys) {
           const mappingValue = mapping[key] ?? "";
+          const criteriaValue = criteria[key] ?? "";
 
-          if (mappingValue !== "" && mappingValue !== criteria[key]) {
+          if (mappingValue !== "" && mappingValue !== criteriaValue) {
             matched = false;
             break;
           }
@@ -813,85 +923,67 @@ const reqAxePercentBonuses = {
       return { tier: "Junk" };
     }
 
-  function scoreReqBow(criteria) {
-    const damageScore = reqBowDamageScores[criteria.damage] ?? 0;
-    const skinBonus = bowSkinBonuses[criteria.skin] ?? 0;
-  
-    const inherentKey = criteria.inherent || "none";
-    const inherentBonus = reqBowInherentBonuses[inherentKey] ?? 1;
-    const percentBonus = reqBowPercentBonuses[inherentKey]?.[criteria.percent] ?? 1;
-  
-    const baseScore = damageScore * skinBonus;
-  
-    let modMultiplier;
-    if (inherentKey === "none") {
-      modMultiplier = inherentBonus;
-    } else {
-      modMultiplier = inherentBonus * percentBonus;
-    }
-  
-    const totalScore = baseScore * modMultiplier;
-  
-    return {
-      totalScore,
-      breakdown: {
-        damageScore,
-        skinBonus,
-        inherentBonus,
-        percentBonus,
-        baseScore,
-        modMultiplier
+    function scoreReqMartial(type, criteria) {
+      const config = martialReqConfigs[type];
+      if (!config) {
+        return {
+          totalScore: 0,
+          breakdown: {
+            damageScore: 0,
+            skinValue: 1,
+            inherentBonus: 1,
+            percentBonus: 1,
+            baseScore: 0,
+            modMultiplier: 1,
+            skinMode: "flat"
+          }
+        };
       }
-    };
-  }
-    
-  function scoreReqAxe(criteria) {
-    const damageScore = reqAxeDamageScores[criteria.damage] ?? 0;
-    const skinMalus = axeSkinMalus[criteria.skin] ?? 1;
-  
-    const inherentKey = criteria.inherent || "none";
-    const inherentBonus = reqAxeInherentBonuses[inherentKey] ?? 1;
-    const percentBonus = reqAxePercentBonuses[inherentKey]?.[criteria.percent] ?? 1;
-  
-    const baseScore = damageScore;
-  
-    let modMultiplier;
-    if (inherentKey === "none") {
-      modMultiplier = inherentBonus;
-    } else {
-      modMultiplier = inherentBonus * percentBonus;
-    }
-  
-    const totalScore = (baseScore * modMultiplier) / skinMalus;
-  
-    return {
-      totalScore,
-      breakdown: {
-        damageScore,
-        skinMalus,
-        inherentBonus,
-        percentBonus,
-        baseScore,
-        modMultiplier
-      }
-    };
-  }
 
-  function reqBowScoreToTier(score) {
-    if (score >= 600) return "God Tier";
-    if (score >= 200) return "High End";
-    if (score >= 100) return "Mid Tier";
-    if (score >= 25) return "Low End";
-    return "Junk";
+      const damageScore = config.damageScores[criteria.damage] ?? 0;
+      const inherentKey = criteria.inherent || "none";
+      const inherentBonus = config.inherentBonuses[inherentKey] ?? 1;
+      const percentBonus = config.percentBonuses[inherentKey]?.[criteria.percent] ?? 1;
+      const skinValue = config.skinValues[criteria.skin] ?? 1;
+
+      const baseScore = config.skinMode === "bonus"
+        ? damageScore * skinValue
+        : damageScore;
+
+      const modMultiplier = inherentKey === "none"
+        ? inherentBonus
+        : inherentBonus * percentBonus;
+
+      let totalScore = baseScore * modMultiplier;
+
+      if (config.skinMode === "malus") {
+        totalScore = totalScore / skinValue;
+      }
+
+      return {
+        totalScore,
+        breakdown: {
+          damageScore,
+          skinValue,
+          inherentBonus,
+          percentBonus,
+          baseScore,
+          modMultiplier,
+          skinMode: config.skinMode
+        }
+      };
     }
 
-  function reqAxeScoreToTier(score) {
-    if (score >= 400) return "God Tier";
-    if (score >= 200) return "High End";
-    if (score >= 100) return "Mid Tier";
-    if (score >= 20) return "Low End";
-    return "Junk";
-}
+    function reqMartialScoreToTier(type, score) {
+      const thresholds = martialReqConfigs[type]?.thresholds;
+      if (!thresholds) return "Junk";
+
+      if (score >= thresholds.god) return "God Tier";
+      if (score >= thresholds.high) return "High End";
+      if (score >= thresholds.mid) return "Mid Tier";
+      if (score >= thresholds.low) return "Low End";
+      return "Junk";
+    }
 
     function getStaffCriteria() {
       return {
@@ -987,135 +1079,128 @@ const reqAxePercentBonuses = {
         hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
       };
 
+      const scoreResult = scoreStaff(normalizedCriteria);
+      const tier = staffScoreToTier(scoreResult.totalScore, normalizedCriteria.noReq === "yes");
+
+      return {
+        tier,
+        score: scoreResult.totalScore,
+        breakdown: scoreResult.breakdown
+      };
+    }
+
+    function calculateMartialTier(type) {
+      const criteria = getMartialCriteria(type);
+      const validationMessage = validateMartialInput(criteria);
+
+      if (validationMessage) {
+        return { error: validationMessage };
+      }
+
+      const scoringCriteria = {
+        ...criteria,
+        inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
+        percent: criteria.inherent === "none" ? "" : criteria.percent
+      };
+
+      if (scoringCriteria.noReq === "no" && martialReqConfigs[type]) {
+        const scoreResult = scoreReqMartial(type, scoringCriteria);
+        const tier = reqMartialScoreToTier(type, scoreResult.totalScore);
+
+        return {
+          tier,
+          score: scoreResult.totalScore,
+          breakdown: scoreResult.breakdown
+        };
+      }
+
+      const mappingCriteria = {
+        ...criteria,
+        inherent: criteria.inherent === "none" ? "" : criteria.inherent,
+        percent: criteria.inherent === "none" ? "" : criteria.percent
+      };
+
       const match = findTier(
-        normalizedCriteria,
-        staffTierMappings,
-        ["noReq", "hsr", "energy", "inherent", "attr", "hctPercent"]
+        mappingCriteria,
+        martialTierMappings,
+        ["type", "skin", "noReq", "damage", "inherent", "percent"]
       );
 
-      return { tier: match.tier, match, criteria: normalizedCriteria };
+      return { tier: match.tier, match, criteria: mappingCriteria };
     }
 
-  function calculateMartialTier(type) {
-    const criteria = getMartialCriteria(type);
-    const validationMessage = validateMartialInput(criteria);
-  
-    if (validationMessage) {
-      return { error: validationMessage };
-    }
-  
-    const scoringCriteria = {
-      ...criteria,
-      inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
-      percent: criteria.inherent === "none" ? "" : criteria.percent
-    };
-  
-    if (type === "bow" && scoringCriteria.noReq === "no") {
-      const scoreResult = scoreReqBow(scoringCriteria);
-      const tier = reqBowScoreToTier(scoreResult.totalScore);
-  
+    function calculatePlaceholderTier(type) {
       return {
-        tier,
-        score: scoreResult.totalScore,
-        breakdown: scoreResult.breakdown
-      };
-    }
-  
-    if (type === "axe" && scoringCriteria.noReq === "no") {
-      const scoreResult = scoreReqAxe(scoringCriteria);
-      const tier = reqAxeScoreToTier(scoreResult.totalScore);
-  
-      return {
-        tier,
-        score: scoreResult.totalScore,
-        breakdown: scoreResult.breakdown
+        tier: "Logic not added yet.",
+        info: `${type} framework added, but scoring rules are not defined yet.`
       };
     }
 
-  const mappingCriteria = {
-    ...criteria,
-    inherent: criteria.inherent === "none" ? "" : criteria.inherent,
-    percent: criteria.inherent === "none" ? "" : criteria.percent
-  };
+    function checkItem() {
+      const type = document.getElementById("itemType").value;
+      const resultEl = document.getElementById("result");
+      const debugEl = document.getElementById("debug");
 
-  const match = findTier(
-    mappingCriteria,
-    martialTierMappings,
-    ["type", "skin", "noReq", "damage", "inherent", "percent"]
-  );
+      if (!type) {
+        resultEl.innerText = "Please select an item type.";
+        debugEl.innerText = "";
+        return;
+      }
 
-  return { tier: match.tier, match, criteria: mappingCriteria };
-}
+      let result;
 
-  function checkItem() {
-    const type = document.getElementById("itemType").value;
-    const resultEl = document.getElementById("result");
-    const debugEl = document.getElementById("debug");
-  
-    if (!type) {
-      resultEl.innerText = "Please select an item type.";
-      debugEl.innerText = "";
-      return;
-    }
-  
-    let result;
-  
     if (type === "staff") {
-      result = calculateStaffTier();
-    } else if (["axe", "sword", "hammer", "bow"].includes(type)) {
-      result = calculateMartialTier(type);
-    } else {
-      resultEl.innerText = "Logic not added yet.";
-      debugEl.innerText = "";
-      return;
-    }
-  
-    if (result.error) {
-      resultEl.innerText = result.error;
-      debugEl.innerText = "";
-      return;
-    }
-  
-    resultEl.innerText = `Item Tier: ${result.tier}`;
-  
-    if (result.breakdown) {
-      const skinPart = result.breakdown.skinBonus !== undefined
-        ? `Skin: ${result.breakdown.skinBonus} | `
-        : result.breakdown.skinMalus !== undefined
-        ? `Skin Malus: ${result.breakdown.skinMalus} | `
-        : "";
-  
       debugEl.innerText =
         `Score: ${result.score} | ` +
-        `Damage: ${result.breakdown.damageScore} | ` +
-        skinPart +
-        `Inherent: ${result.breakdown.inherentBonus} | ` +
-        `Percent: ${result.breakdown.percentBonus} | ` +
-        `Base: ${result.breakdown.baseScore} | ` +
-        `Multiplier: ${result.breakdown.modMultiplier}`;
-    } else {
-      debugEl.innerText = "";
+        `HSR: ${result.breakdown.hsrScore} | ` +
+        `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
+        `Attr: ${result.breakdown.attrBonus} | ` +
+        `HCT%: ${result.breakdown.hctPercentBonus} | ` +
+        `Mod Block: ${result.breakdown.modBlock} | ` +
+        `Energy Mult: ${result.breakdown.energyBonus}`;
+      return;
     }
-  }
-      
-</script>
+
+      if (result.error) {
+        resultEl.innerText = result.error;
+        debugEl.innerText = "";
+        return;
+      }
+
+      resultEl.innerText = `Item Tier: ${result.tier}`;
+
+      if (result.breakdown) {
+        if (type === "staff") {
+          debugEl.innerText =
+            `Score: ${result.score} | ` +
+            `HSR: ${result.breakdown.hsrScore} | ` +
+            `Energy: ${result.breakdown.energyScore} | ` +
+            `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
+            `Attr: ${result.breakdown.attrBonus} | ` +
+            `HCT%: ${result.breakdown.hctPercentBonus} | ` +
+            `Base: ${result.breakdown.baseScore}`;
+          return;
+        }
+
+        const skinPart =
+          result.breakdown.skinMode === "bonus"
+            ? `Skin Bonus: ${result.breakdown.skinValue} | `
+            : result.breakdown.skinMode === "malus"
+            ? `Skin Malus: ${result.breakdown.skinValue} | `
+            : "";
+
+        debugEl.innerText =
+          `Score: ${result.score} | ` +
+          `Damage: ${result.breakdown.damageScore} | ` +
+          skinPart +
+          `Inherent: ${result.breakdown.inherentBonus} | ` +
+          `Percent: ${result.breakdown.percentBonus} | ` +
+          `Base: ${result.breakdown.baseScore} | ` +
+          `Multiplier: ${result.breakdown.modMultiplier}`;
+      } else {
+        debugEl.innerText = result.info || "";
+      }
+    }
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
