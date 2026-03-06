@@ -31,6 +31,22 @@
       margin-bottom: 16px;
     }
 
+    .noReqSliderWrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+.noReqSliderWrap input[type="range"] {
+  width: 180px;
+}
+
+.noReqSliderWrap input[type="range"] {
+  width: 180px;
+}
+
     #checkItemButton {
       background: #cccccc;
       color: black;
@@ -95,11 +111,22 @@
     </select>
   </div>
 
-  <div id="noReqContainer" class="hidden noReqRow">
-    <label>
-      <input type="checkbox" id="no_req" onchange="noReqChanged()">
-      No Req?
-    </label>
+  <div id="noReqContainer" class="hidden">
+    <label for="no_req_slider"><strong>No Req?</strong></label>
+    <div class="noReqSliderWrap">
+      <span>Yes</span>
+      <input
+        type="range"
+        id="no_req_slider"
+        min="0"
+        max="2"
+        step="1"
+        value="1"
+        oninput="noReqChanged()"
+      >
+      <span>No</span>
+    </div>
+    <div id="noReqStatus" class="subtle">Please choose Yes or No.</div>
   </div>
 
   <div class="itemFields hidden" data-type="staff">
@@ -364,16 +391,28 @@
     { noReq: "", hsr: "12", energy: "7", inherent: "hct", attr: "fire", hctPercent: "18", tier: "Low End" },
     { noReq: "", hsr: "", energy: "", inherent: "", attr: "", hctPercent: "", tier: "Junk" }
   ];
-  const martialTierMappings = [
-    { type: "axe", skin: "", noReq: "", damage: "7-21", inherent: "above50", percent: "14", tier: "God Tier" }
-  ];
+    
+  function getNoReqValue() {
+    const slider = document.getElementById("no_req_slider");
+    if (!slider) return "";
+
+    if (slider.value === "0") return "yes";
+    if (slider.value === "2") return "no";
+    return "";
+  }
+
+  function hasChosenNoReq() {
+    return getNoReqValue() !== "";
+  }
 
   function resetAllFields() {
     document.querySelectorAll(".itemFields select").forEach(select => {
       select.value = "";
     });
 
-    document.getElementById("no_req").checked = false;
+    document.getElementById("no_req_slider").value = "1";
+    document.getElementById("noReqStatus").innerText = "Please choose Yes or No.";
+
     document.getElementById("axe_piercing").checked = false;
     document.getElementById("sword_short").checked = false;
 
@@ -406,14 +445,53 @@
 
     resetAllFields();
 
+    noReqContainer.classList.toggle("hidden", type === "");
+
+    document.querySelectorAll(".itemFields").forEach(div => {
+      div.classList.add("hidden");
+    });
+
+    martialSharedFields.classList.add("hidden");
+    checkButton.classList.add("hidden");
+
+    updateSpecialQuestionVisibility();
+  }
+
+  function noReqChanged() {
+    const type = document.getElementById("itemType").value;
+    const chosenValue = getNoReqValue();
+    const noReqStatus = document.getElementById("noReqStatus");
+    const checkButton = document.getElementById("checkItemButton");
+    const martialSharedFields = document.getElementById("martialSharedFields");
+
+    if (chosenValue === "yes") {
+      noReqStatus.innerText = "Selected: Yes";
+    } else if (chosenValue === "no") {
+      noReqStatus.innerText = "Selected: No";
+    } else {
+      noReqStatus.innerText = "Please choose Yes or No.";
+    }
+
+    const noReqChosen = chosenValue !== "";
+
+    document.querySelectorAll(".itemFields").forEach(div => {
+      div.classList.add("hidden");
+    });
+
+    martialSharedFields.classList.add("hidden");
+    checkButton.classList.toggle("hidden", !noReqChosen);
+
+    if (!type || !noReqChosen) {
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
+      updateSpecialQuestionVisibility();
+      return;
+    }
+
     document.querySelectorAll(".itemFields").forEach(div => {
       const types = div.dataset.type.split(",");
       div.classList.toggle("hidden", !types.includes(type));
     });
-
-    noReqContainer.classList.toggle("hidden", type === "");
-    checkButton.classList.toggle("hidden", type === "");
-    martialSharedFields.classList.toggle("hidden", !["axe", "sword", "hammer", "bow"].includes(type));
 
     if (type === "staff") {
       populateHSR();
@@ -421,14 +499,18 @@
     }
 
     if (["axe", "sword", "hammer", "bow"].includes(type)) {
+      martialSharedFields.classList.remove("hidden");
       populateWeaponDamage(type);
     }
+
+    document.getElementById("result").innerText = "";
+    document.getElementById("debug").innerText = "";
 
     updateSpecialQuestionVisibility();
   }
 
   function populateHSR() {
-    const noReq = document.getElementById("no_req").checked;
+    const noReq = getNoReqValue() === "yes";
     const hsrSelect = document.getElementById("staff_hsr");
 
     hsrSelect.innerHTML = '<option value="">-- Select --</option>';
@@ -438,7 +520,7 @@
   }
 
   function populateEnergy() {
-    const noReq = document.getElementById("no_req").checked;
+    const noReq = getNoReqValue() === "yes";
     const energySelect = document.getElementById("staff_energy");
 
     energySelect.innerHTML = '<option value="">-- Select --</option>';
@@ -531,27 +613,9 @@
   }
 
   function populateWeaponDamage(type) {
-    const noReq = document.getElementById("no_req").checked;
+    const noReq = getNoReqValue() === "yes";
     const options = getDamageOptions(type, noReq);
     setSelectOptions(`${type}_damage`, options);
-  }
-
-  function noReqChanged() {
-    const type = document.getElementById("itemType").value;
-
-    if (type === "staff") {
-      populateHSR();
-      populateEnergy();
-    }
-
-    if (["axe", "sword", "hammer", "bow"].includes(type)) {
-      populateWeaponDamage(type);
-    }
-
-    document.getElementById("result").innerText = "";
-    document.getElementById("debug").innerText = "";
-
-    updateSpecialQuestionVisibility();
   }
 
   function weaponInherentChanged() {
@@ -596,8 +660,9 @@
     const percent = document.getElementById("weapon_damage_percent")?.value || "";
 
     const isMartial = ["axe", "sword", "hammer", "bow"].includes(type);
+    const noReqChosen = hasChosenNoReq();
 
-    if (!isMartial) {
+    if (!isMartial || !noReqChosen) {
       specialQuestionFields.classList.add("hidden");
       axePiercingRow.classList.add("hidden");
       swordShortRow.classList.add("hidden");
@@ -650,7 +715,7 @@
 
   function getStaffCriteria() {
     return {
-      noReq: document.getElementById("no_req").checked ? "yes" : "no",
+      noReq: getNoReqValue(),
       hsr: document.getElementById("staff_hsr").value,
       energy: document.getElementById("staff_energy").value,
       inherent: document.getElementById("staff_inherent").value,
@@ -677,7 +742,7 @@
     return {
       type,
       skin,
-      noReq: document.getElementById("no_req").checked ? "yes" : "no",
+      noReq: getNoReqValue(),
       damage: document.getElementById(type + "_damage").value,
       inherent: document.getElementById("weapon_inherent").value,
       percent: document.getElementById("weapon_damage_percent").value
@@ -685,6 +750,10 @@
   }
 
   function validateStaffInput(criteria) {
+    if (!criteria.noReq) {
+      return "Please choose Yes or No for No Req?.";
+    }
+
     if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
       return "Please complete all required staff fields.";
     }
@@ -701,6 +770,10 @@
   }
 
   function validateMartialInput(criteria) {
+    if (!criteria.noReq) {
+      return "Please choose Yes or No for No Req?.";
+    }
+
     if (criteria.type === "bow" && !criteria.skin) {
       return "Please select the bow skin.";
     }
