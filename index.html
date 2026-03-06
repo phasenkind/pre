@@ -490,7 +490,7 @@ const reqAxeInherentBonuses = {
   hexedfoes: 1,
   below50: 1,
   enchanted: 1,
-  stance: 2,
+  stance: 3,
   hexed: 3,
   above50: 4
 };
@@ -504,17 +504,17 @@ const reqAxePercentBonuses = {
   below50:   { "15": 2, "16": 3, "17": 3, "18": 4 }
 };
 
-    function getNoReqValue() {
-      const slider = document.getElementById("no_req_slider");
-      if (!slider) return "";
+  function getNoReqValue() {
+    const slider = document.getElementById("no_req_slider");
+    if (!slider) return "";
 
-      if (slider.value === "0") return "yes";
-      if (slider.value === "2") return "no";
-      return "";
+    if (slider.value === "0") return "yes";
+    if (slider.value === "2") return "no";
+    return "";
     }
 
-    function hasChosenNoReq() {
-      return getNoReqValue() !== "";
+  function hasChosenNoReq() {
+    return getNoReqValue() !== "";
     }
 
     function resetAllFields() {
@@ -886,10 +886,10 @@ const reqAxePercentBonuses = {
     }
 
   function reqAxeScoreToTier(score) {
-    if (score >= 200) return "God Tier";
-    if (score >= 100) return "High End";
-    if (score >= 50) return "Mid Tier";
-    if (score >= 10) return "Low End";
+    if (score >= 400) return "God Tier";
+    if (score >= 200) return "High End";
+    if (score >= 100) return "Mid Tier";
+    if (score >= 20) return "Low End";
     return "Junk";
 }
 
@@ -1101,6 +1101,7 @@ const reqAxePercentBonuses = {
 </script>
 </body>
 </html>
+
 
 
 
