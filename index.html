@@ -291,7 +291,7 @@
       <div id="swordShortRow" class="hidden noReqRow">
         <label>
           <input type="checkbox" id="sword_short">
-          Shortsword?
+          Short Sword?
         </label>
       </div>
     </div>
@@ -1136,71 +1136,72 @@
       };
     }
 
-    function checkItem() {
-      const type = document.getElementById("itemType").value;
-      const resultEl = document.getElementById("result");
-      const debugEl = document.getElementById("debug");
-
-      if (!type) {
-        resultEl.innerText = "Please select an item type.";
-        debugEl.innerText = "";
-        return;
-      }
-
-      let result;
-
-    if (type === "staff") {
-      debugEl.innerText =
-        `Score: ${result.score} | ` +
-        `HSR: ${result.breakdown.hsrScore} | ` +
-        `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
-        `Attr: ${result.breakdown.attrBonus} | ` +
-        `HCT%: ${result.breakdown.hctPercentBonus} | ` +
-        `Mod Block: ${result.breakdown.modBlock} | ` +
-        `Energy Mult: ${result.breakdown.energyBonus}`;
+  function checkItem() {
+    const type = document.getElementById("itemType").value;
+    const resultEl = document.getElementById("result");
+    const debugEl = document.getElementById("debug");
+  
+    if (!type) {
+      resultEl.innerText = "Please select an item type.";
+      debugEl.innerText = "";
       return;
     }
-
-      if (result.error) {
-        resultEl.innerText = result.error;
-        debugEl.innerText = "";
-        return;
-      }
-
-      resultEl.innerText = `Item Tier: ${result.tier}`;
-
-      if (result.breakdown) {
-        if (type === "staff") {
-          debugEl.innerText =
-            `Score: ${result.score} | ` +
-            `HSR: ${result.breakdown.hsrScore} | ` +
-            `Energy: ${result.breakdown.energyScore} | ` +
-            `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
-            `Attr: ${result.breakdown.attrBonus} | ` +
-            `HCT%: ${result.breakdown.hctPercentBonus} | ` +
-            `Base: ${result.breakdown.baseScore}`;
-          return;
-        }
-
-        const skinPart =
-          result.breakdown.skinMode === "bonus"
-            ? `Skin Bonus: ${result.breakdown.skinValue} | `
-            : result.breakdown.skinMode === "malus"
-            ? `Skin Malus: ${result.breakdown.skinValue} | `
-            : "";
-
+  
+    let result;
+  
+    if (type === "staff") {
+      result = calculateStaffTier();
+    } else if (MARTIAL_TYPES.includes(type)) {
+      result = calculateMartialTier(type);
+    } else if (PLACEHOLDER_TYPES.includes(type)) {
+      result = calculatePlaceholderTier(type);
+    } else {
+      resultEl.innerText = "Logic not added yet.";
+      debugEl.innerText = "";
+      return;
+    }
+  
+    if (result.error) {
+      resultEl.innerText = result.error;
+      debugEl.innerText = "";
+      return;
+    }
+  
+    resultEl.innerText = `Item Tier: ${result.tier}`;
+  
+    if (result.breakdown) {
+      if (type === "staff") {
         debugEl.innerText =
           `Score: ${result.score} | ` +
-          `Damage: ${result.breakdown.damageScore} | ` +
-          skinPart +
-          `Inherent: ${result.breakdown.inherentBonus} | ` +
-          `Percent: ${result.breakdown.percentBonus} | ` +
-          `Base: ${result.breakdown.baseScore} | ` +
-          `Multiplier: ${result.breakdown.modMultiplier}`;
-      } else {
-        debugEl.innerText = result.info || "";
+          `HSR: ${result.breakdown.hsrScore} | ` +
+          `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
+          `Attr: ${result.breakdown.attrBonus} | ` +
+          `HCT%: ${result.breakdown.hctPercentBonus} | ` +
+          `Mod Block: ${result.breakdown.modBlock} | ` +
+          `Energy Mult: ${result.breakdown.energyBonus}`;
+        return;
       }
+  
+      const skinPart =
+        result.breakdown.skinMode === "bonus"
+          ? `Skin Bonus: ${result.breakdown.skinValue} | `
+          : result.breakdown.skinMode === "malus"
+          ? `Skin Malus: ${result.breakdown.skinValue} | `
+          : "";
+  
+      debugEl.innerText =
+        `Score: ${result.score} | ` +
+        `Damage: ${result.breakdown.damageScore} | ` +
+        skinPart +
+        `Inherent: ${result.breakdown.inherentBonus} | ` +
+        `Percent: ${result.breakdown.percentBonus} | ` +
+        `Base: ${result.breakdown.baseScore} | ` +
+        `Multiplier: ${result.breakdown.modMultiplier}`;
+    } else {
+      debugEl.innerText = result.info || "";
     }
+  }
   </script>
 </body>
 </html>
+
