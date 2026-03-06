@@ -174,7 +174,6 @@
       >
       <span>No</span>
     </div>
-    <div id="noReqStatus" class="subtle">Please choose Yes or No.</div>
   </div>
 
   <div class="itemFields hidden" data-type="staff">
@@ -459,7 +458,6 @@
     });
 
     document.getElementById("no_req_slider").value = "1";
-    document.getElementById("noReqStatus").innerText = "Please choose Yes or No.";
 
     document.getElementById("axe_piercing").checked = false;
     document.getElementById("sword_short").checked = false;
@@ -508,18 +506,8 @@
   function noReqChanged() {
     const type = document.getElementById("itemType").value;
     const chosenValue = getNoReqValue();
-    const noReqStatus = document.getElementById("noReqStatus");
     const checkButton = document.getElementById("checkItemButton");
     const martialSharedFields = document.getElementById("martialSharedFields");
-
-    if (chosenValue === "yes") {
-      noReqStatus.innerText = "Selected: Yes";
-    } else if (chosenValue === "no") {
-      noReqStatus.innerText = "Selected: No";
-    } else {
-      noReqStatus.innerText = "Please choose Yes or No.";
-    }
-
     const noReqChosen = chosenValue !== "";
 
     document.querySelectorAll(".itemFields").forEach(div => {
@@ -920,5 +908,6 @@
     debugEl.innerText = "";
   }
 </script>
+
 
 
