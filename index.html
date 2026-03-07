@@ -46,7 +46,8 @@
         margin-bottom: 10px;
       }
     
-      #no_req_slider {
+      #no_req_slider,
+      #modifier_type_slider {
         -webkit-appearance: none;
         appearance: none;
         width: 80px;
@@ -56,7 +57,8 @@
         outline: none;
       }
     
-      #no_req_slider::-webkit-slider-thumb {
+      #no_req_slider::-webkit-slider-thumb,
+      #modifier_type_slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 22px;
@@ -67,7 +69,8 @@
         border: 2px solid black;
       }
     
-      #no_req_slider::-moz-range-thumb {
+      #no_req_slider::-moz-range-thumb,
+      #modifier_type_slider::-moz-range-thumb {
         width: 22px;
         height: 22px;
         background: #cccccc;
@@ -184,7 +187,35 @@
       <option value="misc">Miscellaneous</option>
     </select>
   </div>
-
+  
+  <!--
+    ============================================================
+    WEAPON / PREFIX / SUFFIX TOGGLE
+    ============================================================
+    Only used for staff, axe, sword, hammer, bow.
+    Slider values:
+      0 = prefix
+      1 = weapon
+      2 = suffix
+  -->
+  <div id="modifierTypeContainer" class="hidden">
+    <label for="modifier_type_slider"><strong>Check:</strong></label>
+    <div class="noReqSliderWrap">
+      <span>Prefix</span>
+      <input
+        type="range"
+        id="modifier_type_slider"
+        min="0"
+        max="2"
+        step="1"
+        value="1"
+        oninput="modifierTypeChanged()"
+      >
+      <span>Suffix</span>
+    </div>
+    <div class="subtle">Middle position = Weapon</div>
+  </div>
+  
   <!--
     ============================================================
     NO-REQ TOGGLE
@@ -334,7 +365,15 @@
   <div class="itemFields hidden" data-type="misc">
     <label>Miscellaneous logic placeholder</label>
   </div>
+  
+  <div id="prefixPlaceholder" class="itemFields hidden">
+    <label>Prefix logic placeholder</label>
+  </div>
 
+  <div id="suffixPlaceholder" class="itemFields hidden">
+    <label>Suffix logic placeholder</label>
+  </div>
+  
   <!--
     ============================================================
     MARTIAL SHARED MODIFIER FIELDS
@@ -427,6 +466,7 @@
     */
     const MARTIAL_TYPES = ["axe", "sword", "hammer", "bow"];
     const PLACEHOLDER_TYPES = ["wand", "shield", "focus", "misc"];
+    const MODIFIER_SUPPORTED_TYPES = ["staff", "axe", "sword", "hammer", "bow"];
 
     /*
       ============================================================
@@ -948,6 +988,28 @@
     function hasChosenNoReq() {
       return getNoReqValue() !== "";
     }
+    
+        /*
+      ============================================================
+      MODIFIER TYPE SLIDER HELPERS
+      ============================================================
+      0 = prefix
+      1 = weapon
+      2 = suffix
+    */
+    function getModifierTypeValue() {
+      const slider = document.getElementById("modifier_type_slider");
+      if (!slider) return "";
+
+      if (slider.value === "0") return "prefix";
+      if (slider.value === "1") return "weapon";
+      if (slider.value === "2") return "suffix";
+      return "";
+    }
+
+    function usesModifierTypeSlider(type) {
+      return MODIFIER_SUPPORTED_TYPES.includes(type);
+    }
 
     /*
       ============================================================
@@ -960,6 +1022,9 @@
       });
 
       document.getElementById("no_req_slider").value = "1";
+      
+      const modifierSlider = document.getElementById("modifier_type_slider");
+      if (modifierSlider) modifierSlider.value = "1";
 
       const axePiercing = document.getElementById("axe_piercing");
       const swordShort = document.getElementById("sword_short");
@@ -987,6 +1052,12 @@
       if (axePiercingRow) axePiercingRow.classList.add("hidden");
       if (swordShortRow) swordShortRow.classList.add("hidden");
 
+      const prefixPlaceholder = document.getElementById("prefixPlaceholder");
+      const suffixPlaceholder = document.getElementById("suffixPlaceholder");
+
+      if (prefixPlaceholder) prefixPlaceholder.classList.add("hidden");
+      if (suffixPlaceholder) suffixPlaceholder.classList.add("hidden");
+      
       const disclaimerEl = document.getElementById("itemDisclaimer");
       if (disclaimerEl) {
         disclaimerEl.classList.add("hidden");
@@ -1001,11 +1072,24 @@
     */
     function updateItemDisclaimer() {
       const type = document.getElementById("itemType").value;
+      const modifierType = getModifierTypeValue();
       const disclaimerEl = document.getElementById("itemDisclaimer");
 
       if (!disclaimerEl) return;
 
       const messages = [];
+
+      if (!type) {
+        disclaimerEl.classList.add("hidden");
+        disclaimerEl.innerText = "";
+        return;
+      }
+
+      if (usesModifierTypeSlider(type) && modifierType !== "weapon") {
+        disclaimerEl.classList.add("hidden");
+        disclaimerEl.innerText = "";
+        return;
+      }
 
       if (type === "staff" || type === "wand") {
         messages.push("High damage range might increase the item tier, but is not taken into consideration here for simplicity's sake.");
@@ -1037,24 +1121,87 @@
     function showFields() {
       const type = document.getElementById("itemType").value;
       const noReqContainer = document.getElementById("noReqContainer");
+      const modifierTypeContainer = document.getElementById("modifierTypeContainer");
       const checkButton = document.getElementById("checkItemButton");
       const martialSharedFields = document.getElementById("martialSharedFields");
 
       resetAllFields();
 
-      noReqContainer.classList.toggle("hidden", type === "");
+      document.querySelectorAll(".itemFields").forEach(div => {
+        div.classList.add("hidden");
+      });
+
+      document.getElementById("prefixPlaceholder").classList.add("hidden");
+      document.getElementById("suffixPlaceholder").classList.add("hidden");
+
+      noReqContainer.classList.add("hidden");
+      modifierTypeContainer.classList.add("hidden");
+      martialSharedFields.classList.add("hidden");
+      checkButton.classList.add("hidden");
+
+      if (!type) {
+        updateSpecialQuestionVisibility();
+        updateItemDisclaimer();
+        return;
+      }
+
+      if (usesModifierTypeSlider(type)) {
+        modifierTypeContainer.classList.remove("hidden");
+        checkButton.classList.remove("hidden");
+      } else {
+        noReqContainer.classList.remove("hidden");
+      }
+
+      updateSpecialQuestionVisibility();
+      updateItemDisclaimer();
+    }
+    
+        /*
+      ============================================================
+      MODIFIER TYPE CHANGE HANDLER
+      ============================================================
+    */
+    function modifierTypeChanged() {
+      const type = document.getElementById("itemType").value;
+      const modifierType = getModifierTypeValue();
+      const noReqContainer = document.getElementById("noReqContainer");
+      const checkButton = document.getElementById("checkItemButton");
+      const martialSharedFields = document.getElementById("martialSharedFields");
+      const prefixPlaceholder = document.getElementById("prefixPlaceholder");
+      const suffixPlaceholder = document.getElementById("suffixPlaceholder");
 
       document.querySelectorAll(".itemFields").forEach(div => {
         div.classList.add("hidden");
       });
 
+      noReqContainer.classList.add("hidden");
       martialSharedFields.classList.add("hidden");
-      checkButton.classList.add("hidden");
+      prefixPlaceholder.classList.add("hidden");
+      suffixPlaceholder.classList.add("hidden");
+
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
+
+      if (!type) {
+        updateSpecialQuestionVisibility();
+        updateItemDisclaimer();
+        return;
+      }
+
+      if (modifierType === "weapon") {
+        noReqContainer.classList.remove("hidden");
+      } else if (modifierType === "prefix") {
+        prefixPlaceholder.classList.remove("hidden");
+      } else if (modifierType === "suffix") {
+        suffixPlaceholder.classList.remove("hidden");
+      }
+
+      checkButton.classList.remove("hidden");
 
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
-
+    
     /*
       ============================================================
       NO-REQ CHANGE HANDLER
@@ -1062,6 +1209,7 @@
     */
     function noReqChanged() {
       const type = document.getElementById("itemType").value;
+      const modifierType = getModifierTypeValue();
       const noReqChosen = hasChosenNoReq();
       const checkButton = document.getElementById("checkItemButton");
       const martialSharedFields = document.getElementById("martialSharedFields");
@@ -1071,9 +1219,18 @@
       });
 
       martialSharedFields.classList.add("hidden");
+
+      if (!type || modifierType !== "weapon") {
+        document.getElementById("result").innerText = "";
+        document.getElementById("debug").innerText = "";
+        updateSpecialQuestionVisibility();
+        updateItemDisclaimer();
+        return;
+      }
+
       checkButton.classList.toggle("hidden", !noReqChosen);
 
-      if (!type || !noReqChosen) {
+      if (!noReqChosen) {
         document.getElementById("result").innerText = "";
         document.getElementById("debug").innerText = "";
         updateSpecialQuestionVisibility();
@@ -1102,6 +1259,7 @@
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
+
 
     /*
       ============================================================
@@ -1286,6 +1444,7 @@
     */
     function updateSpecialQuestionVisibility() {
       const type = document.getElementById("itemType").value;
+      const modifierType = getModifierTypeValue();
       const specialQuestionFields = document.getElementById("specialQuestionFields");
       const axePiercingRow = document.getElementById("axePiercingRow");
       const swordShortRow = document.getElementById("swordShortRow");
@@ -1299,7 +1458,7 @@
       const isMartial = MARTIAL_TYPES.includes(type);
       const noReqChosen = hasChosenNoReq();
 
-      if (!isMartial || !noReqChosen) {
+      if (!isMartial || !noReqChosen || modifierType !== "weapon") {
         specialQuestionFields.classList.add("hidden");
         axePiercingRow.classList.add("hidden");
         swordShortRow.classList.add("hidden");
@@ -1654,6 +1813,7 @@
     */
     function checkItem() {
       const type = document.getElementById("itemType").value;
+      const modifierType = getModifierTypeValue();
       const resultEl = document.getElementById("result");
       const debugEl = document.getElementById("debug");
 
@@ -1664,6 +1824,26 @@
       }
 
       let result;
+
+      if (usesModifierTypeSlider(type)) {
+        if (modifierType === "prefix") {
+          resultEl.innerText = "Prefix modifier logic has not been added yet.";
+          debugEl.innerText = "";
+          return;
+        }
+
+        if (modifierType === "suffix") {
+          resultEl.innerText = "Suffix modifier logic has not been added yet.";
+          debugEl.innerText = "";
+          return;
+        }
+
+        if (modifierType !== "weapon") {
+          resultEl.innerText = "Please choose Weapon, Prefix, or Suffix.";
+          debugEl.innerText = "";
+          return;
+        }
+      }
 
       if (type === "staff") {
         result = calculateStaffTier();
@@ -1721,6 +1901,7 @@
   </script>
 </body>
 </html>
+
 
 
 
