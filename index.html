@@ -119,7 +119,7 @@
 </head>
 <body>
 
-  <h2 class="header-red">Pre-Searing Item Tiers – WIP!</h2>
+  <h2 class="header-red">Pre-Searing Item Tiers – ⚠ WIP</h2>
 
   <div class="topField">
     <label>Item Type:</label>
@@ -1193,6 +1193,7 @@
     if (result.breakdown) {
       if (type === "staff") {
         debugEl.innerText =
+          `⚠ Tier attribution logic is still being finalized.\n\n` +
           `Score: ${result.score} | ` +
           `HSR: ${result.breakdown.hsrScore} | ` +
           `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
@@ -1225,6 +1226,7 @@
   </script>
 </body>
 </html>
+
 
 
 
