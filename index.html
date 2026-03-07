@@ -434,17 +434,94 @@
     */
     const hardcodedMartialTierMappings = {
       axe: [
-      { noReq: "yes", damage: "6-12", inherent: "above50", percent: "14", tier: "Highly Collectable" }
-        // Just exmaple code. Add hardcoded axe cases here
+        {
+          noReq: "yes",
+          damage: "6-12",
+          inherent: "above50",
+          percent: "14",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          damage: "6-12",
+          inherent: "hexed",
+          percent: "18",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          damage: "",
+          inherent: ["above50", "below50", "enchanted", "hexed", "stance", "hexedfoes"],
+          percent: "",
+          tier: "Collectable"
+        }
       ],
+    
       sword: [
-        // Add hardcoded sword cases here
+        {
+          noReq: "yes",
+          damage: "8-10",
+          inherent: "above50",
+          percent: "14",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          damage: "8-10",
+          inherent: "hexed",
+          percent: "18",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          damage: "",
+          inherent: ["above50", "below50", "enchanted", "hexed", "stance", "hexedfoes"],
+          percent: "",
+          tier: "Collectable"
+        }
       ],
+    
       hammer: [
-        // Add hardcoded hammer cases here
+        {
+          noReq: "yes",
+          damage: "11-15",
+          inherent: "above50",
+          percent: "14",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          damage: "11-15",
+          inherent: "hexed",
+          percent: "18",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          damage: "",
+          inherent: ["above50", "below50", "enchanted", "hexed", "stance", "hexedfoes"],
+          percent: "",
+          tier: "Collectable"
+        }
       ],
+    
       bow: [
-        // Add hardcoded bow cases here
+        {
+          noReq: "yes",
+          skin: ["horn", "flat", "recurve", "long"],
+          damage: "9-13",
+          inherent: ["above50", "stance"],
+          percent: "",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          skin: "",
+          damage: "",
+          inherent: ["above50", "below50", "enchanted", "hexed", "stance", "hexedfoes"],
+          percent: "",
+          tier: "Collectable"
+        }
       ]
     };
 
@@ -922,7 +999,7 @@
       }
 
       if (type === "axe") {
-        messages.push("Disclaimer: Sickles and Tribal Axes carry value at 6–15+ damage with inherent, 6–16 damage, or 6–12 damage without req and with an inherent modifier.");
+        messages.push("Sickles and Tribal Axes carry value at 6–15+ damage with inherent, 6–16 damage, or 6–12 damage without req and with an inherent modifier.");
       }
 
       if (messages.length === 0) {
@@ -1618,5 +1695,6 @@
   </script>
 </body>
 </html>
+
 
 
