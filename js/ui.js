@@ -66,33 +66,43 @@ function resetAllFields() {
     select.value = "";
   });
 
-  el("no_req_slider").value = "1";
+  document.getElementById("no_req_slider").value = "1";
 
-  if (el("axe_piercing")) el("axe_piercing").checked = false;
-  if (el("sword_short")) el("sword_short").checked = false;
+  const checkType = document.getElementById("checkType");
+  if (checkType) checkType.value = "";
 
-  el("hctAttributeDiv").classList.add("hidden");
-  el("hctPercentDiv").classList.add("hidden");
-  el("staff_attr").value = "";
-  el("staff_hct_percent").value = "";
+  const axePiercing = document.getElementById("axe_piercing");
+  const swordShort = document.getElementById("sword_short");
 
-  el("weapon_inherent").value = "";
-  el("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
-  el("weaponDamagePercentDiv").classList.add("hidden");
+  if (axePiercing) axePiercing.checked = false;
+  if (swordShort) swordShort.checked = false;
 
-  const specialQuestionFields = el("specialQuestionFields");
-  const axePiercingRow = el("axePiercingRow");
-  const swordShortRow = el("swordShortRow");
+  document.getElementById("hctAttributeDiv").classList.add("hidden");
+  document.getElementById("hctPercentDiv").classList.add("hidden");
+  document.getElementById("staff_attr").value = "";
+  document.getElementById("staff_hct_percent").value = "";
+
+  document.getElementById("weapon_inherent").value = "";
+  document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
+  document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
+
+  document.getElementById("result").innerText = "";
+  document.getElementById("debug").innerText = "";
+
+  const specialQuestionFields = document.getElementById("specialQuestionFields");
+  const axePiercingRow = document.getElementById("axePiercingRow");
+  const swordShortRow = document.getElementById("swordShortRow");
 
   if (specialQuestionFields) specialQuestionFields.classList.add("hidden");
   if (axePiercingRow) axePiercingRow.classList.add("hidden");
   if (swordShortRow) swordShortRow.classList.add("hidden");
 
-  const disclaimerEl = el("itemDisclaimer");
+  const disclaimerEl = document.getElementById("itemDisclaimer");
   if (disclaimerEl) {
     disclaimerEl.classList.add("hidden");
     disclaimerEl.innerText = "";
   }
+}
 
   resetResults();
 }
