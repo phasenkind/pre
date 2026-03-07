@@ -124,6 +124,7 @@
     }
 
     .bottomLinks {
+      display: inline-block;
       margin-top: 28px;
       border-top: 1px solid #333;
       padding-top: 16px;
@@ -132,16 +133,21 @@
     .bottomLinks a {
       color: #cccccc;
     }
-
-    .disclaimerBox {
-      display: inline-block;
-      margin-top: 32px;
-      padding: 10px 12px;
-      border: 1px solid #555;
-      background: #111;
-      color: #bbbbbb;
-      white-space: pre-line;
+    
+    .bottomLinks div {
+    margin-top: 6px;
     }
+
+  .disclaimerBox {
+    display: inline-block;
+    margin-top: 32px;
+    padding: 10px 12px;
+    border: 1px solid #555;
+    background: #111;
+    color: #bbbbbb;
+    white-space: pre-line;
+    max-width: 600px;
+  }
   </style>
 </head>
 <body>
@@ -391,7 +397,7 @@
     ============================================================
   -->
   <div class="bottomLinks">
-    <div style="margin-top: 10px;">
+    <div>
       <a href="https://discord.gg/B3JfepPu" target="_blank" rel="noopener noreferrer">
         <strong>Pre-Searing Discord</strong>
       </a>
@@ -1705,6 +1711,7 @@
   </script>
 </body>
 </html>
+
 
 
 
