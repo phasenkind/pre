@@ -178,19 +178,19 @@
       <select id="staff_attr" onchange="hctAttributeChanged()">
         <option value="">-- Select --</option>
         <option value="generic">Generic</option>
-        <option value="fire">Fire</option>
         <option value="air">Air</option>
-        <option value="water">Water</option>
-        <option value="earth">Earth</option>
-        <option value="death">Death</option>
         <option value="blood">Blood</option>
         <option value="curses">Curses</option>
-        <option value="smite">Smite</option>
-        <option value="heal">Heal</option>
-        <option value="prot">Prot</option>
+        <option value="death">Death</option>
         <option value="divine">Divine Favor</option>
         <option value="dom">Domination</option>
+        <option value="earth">Earth</option>
+        <option value="fire">Fire</option>
+        <option value="heal">Heal</option>
         <option value="illu">Illusion</option>
+        <option value="prot">Prot</option>
+        <option value="smite">Smite</option>
+        <option value="water">Water</option>
       </select>
     </div>
 
@@ -227,11 +227,11 @@
     <label>Skin:</label>
     <select id="bow_skin">
       <option value="">-- Select --</option>
-      <option value="short">Shortbow</option>
-      <option value="recurve">Recurve Bow</option>
-      <option value="long">Longbow</option>
       <option value="flat">Flatbow</option>
       <option value="horn">Hornbow</option>
+      <option value="long">Longbow</option>
+      <option value="recurve">Recurve Bow</option>
+      <option value="short">Shortbow</option>
     </select>
 
     <label>Damage Range:</label>
@@ -261,12 +261,12 @@
     <select id="weapon_inherent" onchange="weaponInherentChanged()">
       <option value="">-- Select --</option>
       <option value="none">None</option>
-      <option value="enchanted">while Enchanted</option>
-      <option value="stance">while in a Stance</option>
-      <option value="hexedfoes">vs. Hexed foes</option>
       <option value="above50">while Health is above 50%</option>
       <option value="below50">while Health is below 50%</option>
+      <option value="enchanted">while Enchanted</option>
       <option value="hexed">while Hexed</option>
+      <option value="stance">while in a Stance</option>
+      <option value="hexedfoes">vs. Hexed foes</option>
     </select>
 
     <div id="weaponDamagePercentDiv" class="hidden">
@@ -309,12 +309,7 @@
       Fill these in as you continue converting no-req items to score systems.
     */
     const martialTierMappings = [
-      { type: "bow", skin: "horn", noReq: "yes", damage: "9-13", inherent: "above50", percent: "14", tier: "Highly Collectable" },
-      { type: "bow", skin: "flat", noReq: "yes", damage: "9-13", inherent: "above50", percent: "14", tier: "Collectable" },
-      { type: "axe", skin: "", noReq: "yes", damage: "6-12", inherent: "above50", percent: "14", tier: "Collectable" },
-      { type: "sword", skin: "", noReq: "yes", damage: "8-10", inherent: "above50", percent: "14", tier: "Collectable" },
-      { type: "hammer", skin: "", noReq: "yes", damage: "11-15", inherent: "above50", percent: "14", tier: "Collectable" },
-      { type: "", skin: "", noReq: "", damage: "", inherent: "", percent: "", tier: "Junk" }
+      { type: "", skin: "", noReq: "yes", damage: "", inherent: "", percent: "", tier: "Add no-req logic" },
     ];
 
     /*
@@ -1226,6 +1221,7 @@
   </script>
 </body>
 </html>
+
 
 
 
