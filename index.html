@@ -592,12 +592,27 @@ function getHardcodedStaffTier(criteria) {
   
   function staffScoreToTier(score) {
     if (score >= 6000) return "God Tier";
-    if (score >= 4000) return "High End";
+    if (score >= 3000) return "High End";
     if (score >= 2000) return "Mid Tier";
     if (score >= 50) return "Low End";
     return "Junk";
   }
-
+    
+    function remapCollectorStaffTier(criteria, tier) {
+      if (criteria.noReq === "yes") return tier;
+      if (!collectorStaffAttr.has(criteria.attr)) return tier;
+    
+      if (tier === "God Tier" || tier === "High End") {
+        return "Highly Collectable";
+      }
+    
+      if (tier === "Mid Tier") {
+        return "Collectable";
+      }
+    
+      return tier;
+    }
+    
     function getNoReqValue() {
       const slider = document.getElementById("no_req_slider");
       if (!slider) return "";
@@ -1091,14 +1106,16 @@ function getHardcodedStaffTier(criteria) {
         };
       }
     
-      const scoreResult = scoreStaff(normalizedCriteria);
-      const tier = staffScoreToTier(scoreResult.totalScore);
+    const scoreResult = scoreStaff(normalizedCriteria);
     
-      return {
-        tier,
-        score: scoreResult.totalScore,
-        breakdown: scoreResult.breakdown
-      };
+    let tier = staffScoreToTier(scoreResult.totalScore);
+    tier = remapCollectorStaffTier(normalizedCriteria, tier);
+    
+    return {
+      tier,
+      score: scoreResult.totalScore,
+      breakdown: scoreResult.breakdown
+    };
     }
 
     function calculateMartialTier(type) {
@@ -1217,6 +1234,7 @@ function getHardcodedStaffTier(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
