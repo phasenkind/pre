@@ -115,6 +115,24 @@
       margin-top: -8px;
       margin-bottom: 12px;
     }
+    .bottomLinks {
+      margin-top: 28px;
+      border-top: 1px solid #333;
+      padding-top: 16px;
+    }
+    
+    .bottomLinks a {
+      color: #cccccc;
+    }
+    
+    .disclaimerBox {
+      margin-top: 18px;
+      padding: 10px 12px;
+      border: 1px solid #555;
+      background: #111;
+      color: #bbbbbb;
+      white-space: pre-line;
+    }
   </style>
 </head>
 <body>
@@ -299,6 +317,23 @@
 
   <h3 id="result"></h3>
   <div id="debug" class="subtle"></div>
+
+ <div id="itemDisclaimer" class="disclaimerBox hidden"></div>
+  
+  <div class="bottomLinks">
+    <div>
+      <strong>Item FAQ:</strong>
+      <a href="ADD-FAQ-LINK-HERE" target="_blank" rel="noopener noreferrer">
+        Add Link to explainer for prefix / inherent / suffix / HSR / HCT / etc.
+      </a>
+    </div>
+    <div style="margin-top: 10px;">
+      <strong>For Price Checks join:</strong>
+      <a href="https://discord.gg/B3JfepPu" target="_blank" rel="noopener noreferrer">
+        https://discord.gg/B3JfepPu
+      </a>
+    </div>
+  </div>
 
   <script>
     const MARTIAL_TYPES = ["axe", "sword", "hammer", "bow"];
@@ -658,26 +693,61 @@ function scoreStaff(criteria) {
       if (axePiercingRow) axePiercingRow.classList.add("hidden");
       if (swordShortRow) swordShortRow.classList.add("hidden");
     }
-
-    function showFields() {
+   
+    function updateItemDisclaimer() {
       const type = document.getElementById("itemType").value;
-      const noReqContainer = document.getElementById("noReqContainer");
-      const checkButton = document.getElementById("checkItemButton");
-      const martialSharedFields = document.getElementById("martialSharedFields");
+      const disclaimerEl = document.getElementById("itemDisclaimer");
+    
+      if (!disclaimerEl) return;
+    
+      const messages = [];
+    
+      if (type === "staff" || type === "wand") {
+        messages.push("High damage range might increase the item tier, but is not taken into consideration here for simplicity's sake.");
+      }
+    
+      if (MARTIAL_TYPES.includes(type)) {
+        messages.push("Low attribute requirement might increase the item tier, but is not taken into consideration here for simplicity's sake.");
+      }
+    
+      if (type === "axe") {
+        messages.push("Disclaimer: Sickles and Tribal Axes carry value at 6–15+ damage with inherent, 6–16 damage, or 6–12 damage without req and with an inherent modifier.");
+      }
+    
+      if (messages.length === 0) {
+        disclaimerEl.classList.add("hidden");
+        disclaimerEl.innerText = "";
+        return;
+      }
 
-      resetAllFields();
-
-      noReqContainer.classList.toggle("hidden", type === "");
-
-      document.querySelectorAll(".itemFields").forEach(div => {
-        div.classList.add("hidden");
-      });
-
-      martialSharedFields.classList.add("hidden");
-      checkButton.classList.add("hidden");
-
-      updateSpecialQuestionVisibility();
-    }
+  disclaimerEl.classList.remove("hidden");
+  disclaimerEl.innerText = messages.join("\n\n");
+  }
+  function showFields() {
+    const type = document.getElementById("itemType").value;
+    const noReqContainer = document.getElementById("noReqContainer");
+    const checkButton = document.getElementById("checkItemButton");
+    const martialSharedFields = document.getElementById("martialSharedFields");
+  
+    resetAllFields();
+  
+    noReqContainer.classList.toggle("hidden", type === "");
+  
+    document.querySelectorAll(".itemFields").forEach(div => {
+      div.classList.add("hidden");
+    });
+  
+    martialSharedFields.classList.add("hidden");
+    checkButton.classList.add("hidden");
+  
+    updateSpecialQuestionVisibility();
+    updateItemDisclaimer();
+    const disclaimerEl = document.getElementById("itemDisclaimer");
+      if (disclaimerEl) {
+        disclaimerEl.classList.add("hidden");
+        disclaimerEl.innerText = "";
+}
+  }
 
     function noReqChanged() {
       const type = document.getElementById("itemType").value;
@@ -1233,6 +1303,7 @@ function scoreStaff(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
