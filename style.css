@@ -33,6 +33,41 @@ body {
   margin-bottom: 10px;
 }
 
+#checkTypeContainer {
+  margin-top: 10px;
+  margin-bottom: 14px;
+}
+
+#check_type_slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 12px;
+  background: #444;
+  border-radius: 6px;
+  outline: none;
+}
+
+#check_type_slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  background: #cccccc;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid black;
+}
+
+#check_type_slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  background: #cccccc;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid black;
+}
+
 #no_req_slider {
   -webkit-appearance: none;
   appearance: none;
