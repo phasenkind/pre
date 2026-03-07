@@ -126,12 +126,16 @@
       margin-bottom: 12px;
     }
    
+    .modifierSliderGroup {
+      width: fit-content;
+    }
+    
     .modifierCenterLabel {
       text-align: center;
       font-weight: bold;
       margin-top: 12px;
       margin-bottom: 6px;
-}
+    }
 
     .disclaimerBox {
       display: block;
@@ -206,19 +210,21 @@
       2 = suffix
   -->
     <div id="modifierTypeContainer" class="hidden">
-      <div id="modifierCenterLabel" class="modifierCenterLabel"></div>
-      <div class="noReqSliderWrap">
-        <span>Prefix</span>
-        <input
-          type="range"
-          id="modifier_type_slider"
-          min="0"
-          max="2"
-          step="1"
-          value="1"
-          oninput="modifierTypeChanged()"
-        >
-        <span>Suffix</span>
+      <div class="modifierSliderGroup">
+        <div id="modifierCenterLabel" class="modifierCenterLabel"></div>
+        <div class="noReqSliderWrap">
+          <span>Prefix</span>
+          <input
+            type="range"
+            id="modifier_type_slider"
+            min="0"
+            max="2"
+            step="1"
+            value="1"
+            oninput="modifierTypeChanged()"
+          >
+          <span>Suffix</span>
+        </div>
       </div>
     </div>
 
@@ -1921,3 +1927,4 @@
   </script>
 </body>
 </html>
+
