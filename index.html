@@ -8,7 +8,7 @@
       ============================================================
       GLOBAL PAGE STYLING
       ============================================================
-      Dark theme, compact form layout, and a few helper classes for
+      Dark theme, compact form layout, and helper classes for
       hiding sections, disclaimers, and bottom links.
     */
     body {
@@ -369,9 +369,6 @@
     ============================================================
     ACTION + OUTPUT AREA
     ============================================================
-    The button runs the tier check.
-    Result shows the final tier.
-    Debug shows the score breakdown used to get there.
   -->
   <button id="checkItemButton" onclick="checkItem()" class="hidden">
     Check Item
@@ -384,7 +381,6 @@
     ============================================================
     DYNAMIC DISCLAIMER BOX
     ============================================================
-    This is populated based on the selected item type.
   -->
   <div id="itemDisclaimer" class="disclaimerBox hidden"></div>
 
@@ -392,7 +388,6 @@
     ============================================================
     BOTTOM LINKS
     ============================================================
-    Static helpful links for FAQ / explainer and price-check Discord.
   -->
   <div class="bottomLinks">
     <div>
@@ -414,23 +409,55 @@
       ============================================================
       GLOBAL TYPE GROUPS
       ============================================================
-      These arrays are used throughout the UI and logic to decide
-      which item types share behavior.
     */
     const MARTIAL_TYPES = ["axe", "sword", "hammer", "bow"];
     const PLACEHOLDER_TYPES = ["wand", "shield", "focus", "misc"];
 
     /*
       ============================================================
-      NO-REQ MARTIAL FALLBACK MAPPINGS
+      TEMPORARY NO-REQ MARTIAL FALLBACK MAPPINGS
       ============================================================
-      Placeholder system for martial no-req logic.
-      Right now these are not fully implemented and simply serve as
-      a fallback until detailed no-req martial scoring is added.
+      This is the old fallback system. It still exists as a backup
+      until each martial type gets its proper no-req logic.
     */
     const martialTierMappings = [
       { type: "", skin: "", noReq: "yes", damage: "", inherent: "", percent: "", tier: "Add no-req logic" },
     ];
+
+    /*
+      ============================================================
+      HARDcoded MARTIAL TIER FOUNDATION
+      ============================================================
+      This mirrors the staff setup and is the place to add exact
+      special-case martial results later.
+
+      Intended use:
+      - especially for no-req martial exceptions
+      - but can also be used for req martial edge cases if wanted
+
+      Example entry shape:
+      { noReq: "yes", damage: "6-12", inherent: "above50", percent: "14", skin: "", tier: "Collectable" }
+
+      For bow, skin should be "horn", "flat", etc.
+      For axe, skin should be "" or "piercing".
+      For sword, skin should be "" or "short".
+      For hammer, skin is usually "".
+    */
+    const hardcodedMartialTierMappings = {
+      axe: [
+      { noReq: "yes", damage: "6-12", inherent: "above50", percent: "14", tier: "Highly Collectable" }
+        // Just exmaple code. Add hardcoded axe cases here
+      ],
+      sword: [
+        // Add hardcoded sword cases here
+      ],
+      hammer: [
+        // Add hardcoded hammer cases here
+      ],
+      bow: [
+        // Add hardcoded bow cases here
+      ]
+    };
 
     /*
       ============================================================
@@ -620,8 +647,6 @@
       - premium
       - normal
       - collector
-
-      These groups affect staff scoring and special tier remapping.
     */
     const premiumStaffAttr = new Set(["fire", "death"]);
     const normalStaffAttr = new Set(["blood", "curses", "smite", "heal", "dom"]);
@@ -688,10 +713,6 @@
       ============================================================
       This completely handles the special no-req staff cases you
       wanted to rely on directly instead of scoring them numerically.
-
-      Current rules:
-      - 14 HSR / 6e / 18 HCT / premium attr = Highly Collectable
-      - broader no-req HCT cases = Collectable
     */
     function getHardcodedStaffTier(criteria) {
       const isNoReq = criteria.noReq === "yes";
@@ -717,6 +738,31 @@
       }
 
       return "";
+    }
+
+    /*
+      ============================================================
+      HARDcoded MARTIAL TIER LOOKUP
+      ============================================================
+      Checks the dedicated hardcoded martial mapping tables first.
+      This is the clean foundation for special-case martial results,
+      exactly like the staff setup above.
+    */
+    function getHardcodedMartialTier(criteria) {
+      const mappings = hardcodedMartialTierMappings[criteria.type] || [];
+      if (mappings.length === 0) return "";
+
+      const match = findTier(
+        criteria,
+        mappings,
+        ["type", "skin", "noReq", "damage", "inherent", "percent"]
+      );
+
+      if (!match || !match.tier || match.tier === "Junk") {
+        return "";
+      }
+
+      return match.tier;
     }
 
     /*
@@ -767,8 +813,6 @@
       ============================================================
       REQUIRED STAFF SCORE -> TIER
       ============================================================
-      Converts req staff score totals into the standard req staff
-      tier buckets.
     */
     function staffScoreToTier(score) {
       if (score >= 6000) return "God Tier";
@@ -808,8 +852,6 @@
       ============================================================
       NO-REQ SLIDER HELPERS
       ============================================================
-      Converts the slider value into a readable string and checks
-      whether the user has made a real yes/no choice yet.
     */
     function getNoReqValue() {
       const slider = document.getElementById("no_req_slider");
@@ -828,8 +870,6 @@
       ============================================================
       UI RESET
       ============================================================
-      Clears fields, hides conditional areas, clears results, and
-      resets disclaimers whenever the item type changes.
     */
     function resetAllFields() {
       document.querySelectorAll(".itemFields select").forEach(select => {
@@ -875,10 +915,6 @@
       ============================================================
       TYPE-BASED DISCLAIMERS
       ============================================================
-      Shows extra notes depending on the selected item type:
-      - staff / wand: damage range disclaimer
-      - martial: low requirement disclaimer
-      - axe: special note for sickles / tribal axes
     */
     function updateItemDisclaimer() {
       const type = document.getElementById("itemType").value;
@@ -914,9 +950,6 @@
       ============================================================
       INITIAL TYPE SWITCHING
       ============================================================
-      Runs when item type changes.
-      Resets the page, shows the no-req slider, and updates the
-      disclaimer for the selected category.
     */
     function showFields() {
       const type = document.getElementById("itemType").value;
@@ -943,8 +976,6 @@
       ============================================================
       NO-REQ CHANGE HANDLER
       ============================================================
-      Once the user picks yes or no, this reveals the correct fields
-      for the chosen item type and repopulates dependent selects.
     */
     function noReqChanged() {
       const type = document.getElementById("itemType").value;
@@ -993,8 +1024,6 @@
       ============================================================
       STAFF SELECT POPULATION
       ============================================================
-      These populate staff HSR and energy options based on req/no-req.
-      Existing valid selections are preserved when switching.
     */
     function populateHSR() {
       const noReq = getNoReqValue() === "yes";
@@ -1030,8 +1059,6 @@
       ============================================================
       STAFF HCT CONDITIONAL UI
       ============================================================
-      If the staff inherent is HCT, show attribute + HCT %.
-      If not, hide and clear those fields.
     */
     function inherentChanged() {
       const inherent = document.getElementById("staff_inherent").value;
@@ -1069,8 +1096,6 @@
       ============================================================
       DAMAGE OPTION TABLES
       ============================================================
-      Returns the available damage ranges for each martial type and
-      req/no-req state.
     */
     function getDamageOptions(type, noReq) {
       const damageOptions = {
@@ -1112,8 +1137,6 @@
       ============================================================
       GENERIC SELECT-OPTION HELPER
       ============================================================
-      Small utility to refill a select element from either plain
-      strings or { value, label } objects.
     */
     function setSelectOptions(selectId, options) {
       const select = document.getElementById(selectId);
@@ -1134,7 +1157,6 @@
       ============================================================
       MARTIAL DAMAGE POPULATION
       ============================================================
-      Fills the relevant martial damage select when req/no-req changes.
     */
     function populateWeaponDamage(type) {
       const noReq = getNoReqValue() === "yes";
@@ -1146,8 +1168,6 @@
       ============================================================
       MARTIAL INHERENT % POPULATION
       ============================================================
-      Once the user chooses a martial inherent, this reveals the
-      correct % roll options for that inherent type.
     */
     function weaponInherentChanged() {
       const inherent = document.getElementById("weapon_inherent").value;
@@ -1180,8 +1200,6 @@
       ============================================================
       SPECIAL MARTIAL QUESTION VISIBILITY
       ============================================================
-      Shows the extra "Piercing Axe?" or "Short Sword?" questions only
-      after the base martial fields are complete.
     */
     function updateSpecialQuestionVisibility() {
       const type = document.getElementById("itemType").value;
@@ -1232,8 +1250,9 @@
       ============================================================
       GENERIC MAPPING MATCHER
       ============================================================
-      Used by the temporary no-req martial fallback system.
-      Looks for the first mapping that matches all non-empty keys.
+      Used by both:
+      - the temporary old martial fallback
+      - the new hardcoded martial foundation
     */
     function findTier(criteria, mappings, keys) {
       for (const mapping of mappings) {
@@ -1261,11 +1280,6 @@
       ============================================================
       REQUIRED MARTIAL SCORE CALCULATION
       ============================================================
-      Computes the full martial score for req weapons by combining:
-      - damage score
-      - skin modifier
-      - inherent bonus
-      - % bonus
     */
     function scoreReqMartial(type, criteria) {
       const config = martialReqConfigs[type];
@@ -1322,8 +1336,6 @@
       ============================================================
       REQUIRED MARTIAL SCORE -> TIER
       ============================================================
-      Converts req martial score totals into the configured labels for
-      that weapon family.
     */
     function reqMartialScoreToTier(type, score) {
       const thresholds = martialReqConfigs[type]?.thresholds;
@@ -1340,8 +1352,6 @@
       ============================================================
       CRITERIA READERS
       ============================================================
-      These pull the current values out of the UI and normalize them
-      into compact criteria objects used by validators and scorers.
     */
     function getStaffCriteria() {
       return {
@@ -1383,8 +1393,6 @@
       ============================================================
       INPUT VALIDATION
       ============================================================
-      These make sure the user has filled the needed fields before any
-      scoring logic is attempted.
     */
     function validateStaffInput(criteria) {
       if (!criteria.noReq) {
@@ -1434,12 +1442,12 @@
       ============================================================
       STAFF TIER CALCULATION
       ============================================================
-      Order of operations:
-      1. Read and validate input
-      2. Normalize HCT-only fields
-      3. Check hardcoded no-req tier rules first
-      4. Otherwise score req staff numerically
-      5. Remap collector req staffs if needed
+      Order:
+      1. validate
+      2. normalize HCT-only fields
+      3. check hardcoded no-req staff rules
+      4. otherwise score req staff numerically
+      5. remap collector req staffs if needed
     */
     function calculateStaffTier() {
       const criteria = getStaffCriteria();
@@ -1487,9 +1495,15 @@
       ============================================================
       MARTIAL TIER CALCULATION
       ============================================================
-      Req martials use the numeric score system.
-      No-req martials currently fall back to the temporary mapping
-      table until their dedicated logic is added.
+      Order:
+      1. validate
+      2. normalize criteria
+      3. check hardcoded martial rules first
+      4. if req, use req martial score system
+      5. otherwise fall back to the temporary old mapping system
+
+      This gives you the same kind of foundation for martial weapons
+      that staffs already have.
     */
     function calculateMartialTier(type) {
       const criteria = getMartialCriteria(type);
@@ -1499,14 +1513,31 @@
         return { error: validationMessage };
       }
 
-      const scoringCriteria = {
+      const normalizedCriteria = {
         ...criteria,
         inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
         percent: criteria.inherent === "none" ? "" : criteria.percent
       };
 
-      if (scoringCriteria.noReq === "no" && martialReqConfigs[type]) {
-        const scoreResult = scoreReqMartial(type, scoringCriteria);
+      const hardcodedTier = getHardcodedMartialTier(normalizedCriteria);
+      if (hardcodedTier) {
+        return {
+          tier: hardcodedTier,
+          score: "hardcoded",
+          breakdown: {
+            damageScore: "hardcoded",
+            skinValue: "hardcoded",
+            inherentBonus: "hardcoded",
+            percentBonus: "hardcoded",
+            baseScore: "hardcoded",
+            modMultiplier: "hardcoded",
+            skinMode: "hardcoded"
+          }
+        };
+      }
+
+      if (normalizedCriteria.noReq === "no" && martialReqConfigs[type]) {
+        const scoreResult = scoreReqMartial(type, normalizedCriteria);
         const tier = reqMartialScoreToTier(type, scoreResult.totalScore);
 
         return {
@@ -1516,27 +1547,25 @@
         };
       }
 
-      const mappingCriteria = {
+      const fallbackCriteria = {
         ...criteria,
         inherent: criteria.inherent === "none" ? "" : criteria.inherent,
         percent: criteria.inherent === "none" ? "" : criteria.percent
       };
 
       const match = findTier(
-        mappingCriteria,
+        fallbackCriteria,
         martialTierMappings,
         ["type", "skin", "noReq", "damage", "inherent", "percent"]
       );
 
-      return { tier: match.tier, match, criteria: mappingCriteria };
+      return { tier: match.tier, match, criteria: fallbackCriteria };
     }
 
     /*
       ============================================================
       PLACEHOLDER TIER CALCULATION
       ============================================================
-      Used for item types that are already in the UI but do not yet
-      have real scoring logic.
     */
     function calculatePlaceholderTier(type) {
       return {
@@ -1549,10 +1578,6 @@
       ============================================================
       MAIN CHECK BUTTON HANDLER
       ============================================================
-      Central entry point for the tool:
-      - decides which calculation path to use
-      - shows final tier
-      - prints debug output / score breakdown
     */
     function checkItem() {
       const type = document.getElementById("itemType").value;
