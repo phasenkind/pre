@@ -497,7 +497,7 @@
       "13": 2,
       "14": 4,
       "15": 8,
-      "16": 16
+      "16": 24
     };
 
     const staffReqEnergyBonuses = {
@@ -591,9 +591,9 @@ function getHardcodedStaffTier(criteria) {
   }
   
   function staffScoreToTier(score) {
-    if (score >= 2000) return "God Tier";
-    if (score >= 1000) return "High End";
-    if (score >= 200) return "Mid Tier";
+    if (score >= 6000) return "God Tier";
+    if (score >= 4000) return "High End";
+    if (score >= 2000) return "Mid Tier";
     if (score >= 50) return "Low End";
     return "Junk";
   }
@@ -1217,6 +1217,7 @@ function getHardcodedStaffTier(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
