@@ -538,6 +538,12 @@ function getHardcodedStaffTier(criteria) {
   if (!isNoReq) return "";
 
   if (
+    (premiumStaffAttr.has(criteria.attr) && criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "18")
+  ) {
+    return "Highly Collectable";
+  }
+
+  if (
     (premiumStaffAttr.has(criteria.attr) && criteria.energy === "6" && criteria.hsr === "13" && criteria.hctPercent === "18") ||
     (premiumStaffAttr.has(criteria.attr) && criteria.energy === "5" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
     (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
@@ -547,48 +553,41 @@ function getHardcodedStaffTier(criteria) {
   }
 
   return "";
+}
+  
+function scoreStaff(criteria) {
+  const hsrScore = staffReqHsrScores[criteria.hsr] ?? 0;
+  const energyBonus = staffReqEnergyBonuses[criteria.energy] ?? 1;
+
+  let inherentMultiplier = 1;
+  let attrBonus = 1;
+  let hctPercentBonus = 1;
+
+  if (criteria.inherent === "none") {
+    inherentMultiplier = 1;
+  } else if (criteria.inherent === "reduces_duration") {
+    inherentMultiplier = 1.2;
+  } else if (criteria.inherent === "hct") {
+    inherentMultiplier = 2;
+    attrBonus = getStaffAttrBonus(criteria.attr);
+    hctPercentBonus = getStaffHctPercentBonus(criteria.attr, criteria.hctPercent);
   }
-  
-  function scoreStaff(criteria) {
-    const isNoReq = criteria.noReq === "yes";
-  
-    const hsrScore = isNoReq
-      ? (staffNoReqHsrScores[criteria.hsr] ?? 0)
-      : (staffReqHsrScores[criteria.hsr] ?? 0);
-  
-    const energyBonus = isNoReq
-      ? (staffNoReqEnergyBonuses[criteria.energy] ?? 1)
-      : (staffReqEnergyBonuses[criteria.energy] ?? 1);
-  
-    let inherentMultiplier = 1;
-    let attrBonus = 1;
-    let hctPercentBonus = 1;
-  
-    if (criteria.inherent === "none") {
-      inherentMultiplier = 1;
-    } else if (criteria.inherent === "reduces_duration") {
-      inherentMultiplier = 1.2;
-    } else if (criteria.inherent === "hct") {
-      inherentMultiplier = 2;
-      attrBonus = getStaffAttrBonus(criteria.attr);
-      hctPercentBonus = getStaffHctPercentBonus(criteria.attr, criteria.hctPercent);
+
+  const modBlock = inherentMultiplier * attrBonus * hctPercentBonus;
+  const totalScore = hsrScore * modBlock * energyBonus;
+
+  return {
+    totalScore,
+    breakdown: {
+      hsrScore,
+      energyBonus,
+      inherentMultiplier,
+      attrBonus,
+      hctPercentBonus,
+      modBlock
     }
-  
-    const modBlock = inherentMultiplier * attrBonus * hctPercentBonus;
-    const totalScore = hsrScore * modBlock * energyBonus;
-  
-    return {
-      totalScore,
-      breakdown: {
-        hsrScore,
-        energyBonus,
-        inherentMultiplier,
-        attrBonus,
-        hctPercentBonus,
-        modBlock
-      }
-    };
-  }
+  };
+}
   
   function staffScoreToTier(score) {
     if (score >= 6000) return "God Tier";
@@ -1234,6 +1233,7 @@ function getHardcodedStaffTier(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
