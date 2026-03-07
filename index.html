@@ -493,25 +493,25 @@
 
     const staffReqHsrScores = {
       "11": 1,
-      "12": 2,
-      "13": 3,
+      "12": 1.5,
+      "13": 2,
       "14": 4,
-      "15": 5,
-      "16": 6
+      "15": 8,
+      "16": 16
     };
 
     const staffReqEnergyBonuses = {
       "5": 1,
-      "6": 2,
-      "7": 3,
+      "6": 1.5,
+      "7": 2,
       "8": 4
     };
     
     function getStaffAttrBonus(attr) {
       if (!attr) return 1;
       if (attr === "generic") return 2;
-      if (premiumStaffAttr.has(attr)) return 4;
-      if (normalStaffAttr.has(attr)) return 3;
+      if (premiumStaffAttr.has(attr)) return 8;
+      if (normalStaffAttr.has(attr)) return 4;
       if (collectorStaffAttr.has(attr)) return 2;
       return 1;
     }
@@ -520,14 +520,14 @@
     if (!pct) return 1;
 
   if (attr === "generic") {
-    if (pct === "9") return 2;
-    if (pct === "8") return 1;
+    if (pct === "9") return 32;
+    if (pct === "8") return 8;
     return 1;
   }
 
-  if (pct === "18") return 5;
+  if (pct === "18") return 8;
   if (pct === "17") return 4;
-  if (pct === "16") return 3;
+  if (pct === "16") return 2;
   if (pct === "15") return 2;
   return 1;
 }
@@ -1218,6 +1218,7 @@ function getHardcodedStaffTier(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
