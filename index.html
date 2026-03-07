@@ -3,163 +3,170 @@
 <head>
   <title>Pre-Searing Item Tiers – WIP!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      /*
-        ============================================================
-        GLOBAL PAGE STYLING
-        ============================================================
-        Dark theme, compact form layout, and helper classes for
-        hiding sections, disclaimers, and bottom links.
-      */
-      body {
-        background: black;
-        color: #cccccc;
-        font-family: Arial, sans-serif;
-        padding: 20px;
-      }
-    
-      .itemFields label,
-      .topField label,
-      #martialSharedFields label {
-        display: block;
-        margin-top: 12px;
-        font-weight: bold;
-      }
-    
-      .itemFields select,
-      .topField select,
-      #martialSharedFields select {
-        background: black;
-        color: #cccccc;
-        border: 1px solid #cccccc;
-        padding: 6px;
-        display: block;
-        margin-top: 4px;
-        margin-bottom: 16px;
-      }
-    
-      .noReqSliderWrap {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-      }
-    
-      #no_req_slider,
-      #modifier_type_slider {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 80px;
-        height: 12px;
-        background: #444;
-        border-radius: 6px;
-        outline: none;
-      }
-    
-      #no_req_slider::-webkit-slider-thumb,
-      #modifier_type_slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 22px;
-        height: 22px;
-        background: #cccccc;
-        border-radius: 50%;
-        cursor: pointer;
-        border: 2px solid black;
-      }
-    
-      #no_req_slider::-moz-range-thumb,
-      #modifier_type_slider::-moz-range-thumb {
-        width: 22px;
-        height: 22px;
-        background: #cccccc;
-        border-radius: 50%;
-        cursor: pointer;
-        border: 2px solid black;
-      }
-    
-      #checkItemButton {
-        background: #cccccc;
-        color: black;
-        border: 1px solid black;
-        padding: 6px 10px;
-        margin-top: 20px;
-        font-weight: bold;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-    
-      .compact select,
-      .compact input[type="checkbox"] {
-        margin-bottom: 12px;
-      }
-    
-      .header-red {
-        color: #8a090c;
-      }
-    
-      .hidden {
-        display: none !important;
-      }
-    
-      h3 {
-        margin-top: 24px;
-      }
-    
-      .noReqRow {
-        margin-top: 12px;
-        margin-bottom: 12px;
-      }
-    
-      .noReqRow label {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-weight: bold;
-      }
-    
-      .subtle {
-        color: #999999;
-        font-size: 0.95em;
-        margin-top: -8px;
-        margin-bottom: 12px;
-      }
-    
-      .disclaimerBox {
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        margin-top: 30px;
-        margin-bottom: 18px;
-        padding: 10px 12px;
-        border: 1px solid #555;
-        background: #111;
-        color: #bbbbbb;
-        white-space: pre-line;
-      }
-    
-      .bottomLinks {
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        margin-top: 0;
-        border-top: 1px solid #333;
-        padding-top: 16px;
-      }
-    
-      .bottomLinks a {
-        color: #cccccc;
-      }
-    
-      .bottomLinks div {
-        margin-top: 6px;
-      }
-    
-      .bottomLinks div:first-child {
-        margin-top: 0;
-      }
-    </style>
+  <style>
+    /*
+      ============================================================
+      GLOBAL PAGE STYLING
+      ============================================================
+      Dark theme, compact form layout, and helper classes for
+      hiding sections, disclaimers, and bottom links.
+    */
+    body {
+      background: black;
+      color: #cccccc;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .itemFields label,
+    .topField label,
+    #martialSharedFields label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    .itemFields select,
+    .topField select,
+    #martialSharedFields select {
+      background: black;
+      color: #cccccc;
+      border: 1px solid #cccccc;
+      padding: 6px;
+      display: block;
+      margin-top: 4px;
+      margin-bottom: 16px;
+    }
+
+    .noReqSliderWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    #no_req_slider,
+    #modifier_type_slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 80px;
+      height: 12px;
+      background: #444;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    #no_req_slider::-webkit-slider-thumb,
+    #modifier_type_slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      background: #cccccc;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+}
+
+    #no_req_slider::-moz-range-thumb,
+    #modifier_type_slider::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      background: #cccccc;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+
+    #checkItemButton {
+      background: #cccccc;
+      color: black;
+      border: none;
+      padding: 6px 10px;
+      margin-top: 20px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .compact select,
+    .compact input[type="checkbox"] {
+      margin-bottom: 12px;
+    }
+
+    .header-red {
+      color: #8a090c;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    h3 {
+      margin-top: 24px;
+    }
+
+    .noReqRow {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    .noReqRow label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+    }
+
+    .subtle {
+      color: #999999;
+      font-size: 0.95em;
+      margin-top: -8px;
+      margin-bottom: 12px;
+    }
+   
+    .modifierCenterLabel {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 12px;
+      margin-bottom: 6px;
+}
+
+    .disclaimerBox {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 30px;
+      margin-bottom: 18px;
+      padding: 10px 12px;
+      border: 1px solid #555;
+      background: #111;
+      color: #bbbbbb;
+      white-space: pre-line;
+    }
+
+    .bottomLinks {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 0;
+      border-top: 1px solid #333;
+      padding-top: 16px;
+    }
+
+    .bottomLinks a {
+      color: #cccccc;
+    }
+
+    .bottomLinks div {
+      margin-top: 6px;
+    }
+
+    .bottomLinks div:first-child {
+      margin-top: 0;
+    }
+  </style>
 </head>
 <body>
 
@@ -187,7 +194,7 @@
       <option value="misc">Miscellaneous</option>
     </select>
   </div>
-  
+
   <!--
     ============================================================
     WEAPON / PREFIX / SUFFIX TOGGLE
@@ -198,29 +205,28 @@
       1 = weapon
       2 = suffix
   -->
-  <div id="modifierTypeContainer" class="hidden">
-    <label for="modifier_type_slider"><strong>Check:</strong></label>
-    <div class="noReqSliderWrap">
-      <span>Prefix</span>
-      <input
-        type="range"
-        id="modifier_type_slider"
-        min="0"
-        max="2"
-        step="1"
-        value="1"
-        oninput="modifierTypeChanged()"
-      >
-      <span>Suffix</span>
+    <div id="modifierTypeContainer" class="hidden">
+      <div id="modifierCenterLabel" class="modifierCenterLabel"></div>
+      <div class="noReqSliderWrap">
+        <span>Prefix</span>
+        <input
+          type="range"
+          id="modifier_type_slider"
+          min="0"
+          max="2"
+          step="1"
+          value="1"
+          oninput="modifierTypeChanged()"
+        >
+        <span>Suffix</span>
+      </div>
     </div>
-    <div class="subtle">Middle position = Weapon</div>
-  </div>
-  
+
   <!--
     ============================================================
     NO-REQ TOGGLE
     ============================================================
-    Shared slider for all item types.
+    Shared slider for weapon checks.
     Slider values:
       0 = yes
       1 = unset
@@ -365,7 +371,7 @@
   <div class="itemFields hidden" data-type="misc">
     <label>Miscellaneous logic placeholder</label>
   </div>
-  
+
   <div id="prefixPlaceholder" class="itemFields hidden">
     <label>Prefix logic placeholder</label>
   </div>
@@ -373,7 +379,7 @@
   <div id="suffixPlaceholder" class="itemFields hidden">
     <label>Suffix logic placeholder</label>
   </div>
-  
+
   <!--
     ============================================================
     MARTIAL SHARED MODIFIER FIELDS
@@ -511,7 +517,7 @@
           tier: "Collectable"
         }
       ],
-    
+
       sword: [
         {
           noReq: "yes",
@@ -535,7 +541,7 @@
           tier: "Collectable"
         }
       ],
-    
+
       hammer: [
         {
           noReq: "yes",
@@ -559,7 +565,7 @@
           tier: "Collectable"
         }
       ],
-    
+
       bow: [
         {
           noReq: "yes",
@@ -988,8 +994,8 @@
     function hasChosenNoReq() {
       return getNoReqValue() !== "";
     }
-    
-        /*
+
+    /*
       ============================================================
       MODIFIER TYPE SLIDER HELPERS
       ============================================================
@@ -1011,6 +1017,22 @@
       return MODIFIER_SUPPORTED_TYPES.includes(type);
     }
 
+    function updateModifierCenterLabel() {
+      const type = document.getElementById("itemType").value;
+      const labelEl = document.getElementById("modifierCenterLabel");
+      if (!labelEl) return;
+    
+      const names = {
+        staff: "Staff",
+        axe: "Axe",
+        sword: "Sword",
+        hammer: "Hammer",
+        bow: "Bow"
+      };
+    
+      labelEl.innerText = names[type] || "";
+    }
+
     /*
       ============================================================
       UI RESET
@@ -1022,7 +1044,7 @@
       });
 
       document.getElementById("no_req_slider").value = "1";
-      
+
       const modifierSlider = document.getElementById("modifier_type_slider");
       if (modifierSlider) modifierSlider.value = "1";
 
@@ -1057,7 +1079,7 @@
 
       if (prefixPlaceholder) prefixPlaceholder.classList.add("hidden");
       if (suffixPlaceholder) suffixPlaceholder.classList.add("hidden");
-      
+
       const disclaimerEl = document.getElementById("itemDisclaimer");
       if (disclaimerEl) {
         disclaimerEl.classList.add("hidden");
@@ -1147,16 +1169,21 @@
 
       if (usesModifierTypeSlider(type)) {
         modifierTypeContainer.classList.remove("hidden");
+        updateModifierCenterLabel();
         checkButton.classList.remove("hidden");
-      } else {
-        noReqContainer.classList.remove("hidden");
+      } else if (PLACEHOLDER_TYPES.includes(type)) {
+        document.querySelectorAll(".itemFields").forEach(div => {
+          const types = div.dataset.type.split(",");
+          div.classList.toggle("hidden", !types.includes(type));
+        });
+        checkButton.classList.remove("hidden");
       }
 
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
-    
-        /*
+
+    /*
       ============================================================
       MODIFIER TYPE CHANGE HANDLER
       ============================================================
@@ -1188,6 +1215,8 @@
         return;
       }
 
+      updateModifierCenterLabel();
+
       if (modifierType === "weapon") {
         noReqContainer.classList.remove("hidden");
       } else if (modifierType === "prefix") {
@@ -1201,7 +1230,7 @@
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
-    
+
     /*
       ============================================================
       NO-REQ CHANGE HANDLER
@@ -1259,7 +1288,6 @@
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
-
 
     /*
       ============================================================
@@ -1499,15 +1527,15 @@
     function findTier(criteria, mappings, keys) {
       for (const mapping of mappings) {
         let matched = true;
-    
+
         for (const key of keys) {
           const mappingValue = mapping[key] ?? "";
           const criteriaValue = criteria[key] ?? "";
-    
+
           if (mappingValue === "") {
             continue;
           }
-    
+
           if (Array.isArray(mappingValue)) {
             if (!mappingValue.includes(criteriaValue)) {
               matched = false;
@@ -1518,12 +1546,12 @@
             break;
           }
         }
-    
+
         if (matched) {
           return mapping;
         }
       }
-    
+
       return { tier: "Junk" };
     }
 
@@ -1752,25 +1780,24 @@
       3. check hardcoded martial rules first
       4. if req, use req martial score system
       5. otherwise return Junk for unmatched no-req items
-    
+
       This gives martial weapons the same hardcoded-first structure
       that staffs already use.
     */
     function calculateMartialTier(type) {
-    
       const criteria = getMartialCriteria(type);
       const validationMessage = validateMartialInput(criteria);
-    
+
       if (validationMessage) {
         return { error: validationMessage };
       }
-    
+
       const normalizedCriteria = {
         ...criteria,
         inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
         percent: criteria.inherent === "none" ? "" : criteria.percent
       };
-    
+
       const hardcodedTier = getHardcodedMartialTier(normalizedCriteria);
       if (hardcodedTier) {
         return {
@@ -1778,19 +1805,18 @@
           score: "hardcoded"
         };
       }
-    
+
       if (normalizedCriteria.noReq === "no") {
-    
         const scoreResult = scoreReqMartial(type, normalizedCriteria);
         const tier = reqMartialScoreToTier(type, scoreResult.totalScore);
-    
+
         return {
           tier,
           score: scoreResult.totalScore,
           breakdown: scoreResult.breakdown
         };
       }
-    
+
       return { tier: "Junk" };
     }
 
@@ -1834,12 +1860,6 @@
 
         if (modifierType === "suffix") {
           resultEl.innerText = "Suffix modifier logic has not been added yet.";
-          debugEl.innerText = "";
-          return;
-        }
-
-        if (modifierType !== "weapon") {
-          resultEl.innerText = "Please choose Weapon, Prefix, or Suffix.";
           debugEl.innerText = "";
           return;
         }
@@ -1901,23 +1921,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
