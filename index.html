@@ -528,98 +528,88 @@
       return 1;
     }
 
-    function getStaffHctPercentBonus(attr, pct) {
-      if (!pct) return 1;
+   function getStaffHctPercentBonus(attr, pct) {
+  if (!pct) return 1;
 
-      if (attr === "generic") {
-        if (pct === "9") return 2;
-        if (pct === "8") return 1;
-        return 1;
-      }
+  if (attr === "generic") {
+    if (pct === "9") return 2;
+    if (pct === "8") return 1;
+    return 1;
+  }
 
-      if (pct === "18") return 8;
-      if (pct === "17") return 4;
-      if (pct === "16") return 2;
-      if (pct === "15") return 1;
-      return 1;
-    }
-
-    function scoreStaff(criteria) {
-      const isNoReq = criteria.noReq === "yes";
-
-      // Check if the conditions meet the specified cases:
-      if (isNoReq) {
-        if (
-          // non req + premiumStaffAttr + hct 18 + hsr 13
-          (premiumStaffAttr.has(criteria.attr) && criteria.hsr === "13" && criteria.hctPercent === "18") || 
-          // non req + premiumStaffAttr + hct 18 + hsr 14
-          (premiumStaffAttr.has(criteria.attr) && criteria.hsr === "14" && criteria.hctPercent === "18") || 
-          // non req + normalStaffAttr + hct 18 + hsr 14
-          (normalStaffAttr.has(criteria.attr) && criteria.hsr === "14" && criteria.hctPercent === "18") ||
-          // non req + hct generic 9 + hsr 14
-          (criteria.attr === "generic" && criteria.hsr === "14" && criteria.hctPercent === "9")
-        ) {
-        return {
-          totalScore: 100, // adjust to a set value for collectables maybe
-          breakdown: {
-            hsrScore: "hardcoded",
-            inherentMultiplier: "hardcoded",
-            attrBonus: "hardcoded",
-            hctPercentBonus: "hardcoded",
-            modBlock: "hardcoded",
-            energyBonus: "hardcoded"
-          }
-        };
-        }
-      }
-    
-      // Existing scoring logic (fallback) for items that don't match the hardcoded "Collectable" tier
-      const hsrScore = isNoReq
-        ? (staffNoReqHsrScores[criteria.hsr] ?? 0)
-        : (staffReqHsrScores[criteria.hsr] ?? 0);
-    
-      const energyBonus = isNoReq
-        ? (staffNoReqEnergyBonuses[criteria.energy] ?? 1)
-        : (staffReqEnergyBonuses[criteria.energy] ?? 1);
-    
-      let inherentMultiplier = 1;
-      let attrBonus = 1;
-      let hctPercentBonus = 1;
-    
-      if (criteria.inherent === "none") {
-        inherentMultiplier = 1;
-      } else if (criteria.inherent === "reduces_duration") {
-        inherentMultiplier = 1.2;
-      } else if (criteria.inherent === "hct") {
-        inherentMultiplier = 2;
-        attrBonus = getStaffAttrBonus(criteria.attr);
-        hctPercentBonus = getStaffHctPercentBonus(criteria.attr, criteria.hctPercent);
-      }
-    
-      const modBlock = inherentMultiplier * attrBonus * hctPercentBonus;
-      const totalScore = hsrScore * modBlock * energyBonus;
-    
-      return {
-        totalScore,
-        breakdown: {
-          hsrScore,
-          energyBonus,
-          inherentMultiplier,
-          attrBonus,
-          hctPercentBonus,
-          modBlock
-        }
-      };
+  if (pct === "18") return 8;
+  if (pct === "17") return 4;
+  if (pct === "16") return 2;
+  if (pct === "15") return 1;
+  return 1;
 }
 
-    function staffScoreToTier(score) {
-      if (score >= 1800) return "God Tier";
-      if (score >= 700) return "High End";
-      if (score >= 250) return "Mid Tier";
-      if (score >= 80) return "Low End";
-      if (score >= 20) return "Collectable";
-      return "Junk";
+function getHardcodedStaffTier(criteria) {
+  const isNoReq = criteria.noReq === "yes";
+
+  if (!isNoReq) return "";
+
+  if (
+    (premiumStaffAttr.has(criteria.attr) && criteria.hsr === "13" && criteria.hctPercent === "18") ||
+    (premiumStaffAttr.has(criteria.attr) && criteria.hsr === "14" && criteria.hctPercent === "18") ||
+    (normalStaffAttr.has(criteria.attr) && criteria.hsr === "14" && criteria.hctPercent === "18") ||
+    (criteria.attr === "generic" && criteria.hsr === "14" && criteria.hctPercent === "9")
+  ) {
+    return "Collectable";
+  }
+
+  return "";
+  }
+  
+  function scoreStaff(criteria) {
+    const isNoReq = criteria.noReq === "yes";
+  
+    const hsrScore = isNoReq
+      ? (staffNoReqHsrScores[criteria.hsr] ?? 0)
+      : (staffReqHsrScores[criteria.hsr] ?? 0);
+  
+    const energyBonus = isNoReq
+      ? (staffNoReqEnergyBonuses[criteria.energy] ?? 1)
+      : (staffReqEnergyBonuses[criteria.energy] ?? 1);
+  
+    let inherentMultiplier = 1;
+    let attrBonus = 1;
+    let hctPercentBonus = 1;
+  
+    if (criteria.inherent === "none") {
+      inherentMultiplier = 1;
+    } else if (criteria.inherent === "reduces_duration") {
+      inherentMultiplier = 1.2;
+    } else if (criteria.inherent === "hct") {
+      inherentMultiplier = 2;
+      attrBonus = getStaffAttrBonus(criteria.attr);
+      hctPercentBonus = getStaffHctPercentBonus(criteria.attr, criteria.hctPercent);
     }
+  
+    const modBlock = inherentMultiplier * attrBonus * hctPercentBonus;
+    const totalScore = hsrScore * modBlock * energyBonus;
+  
+    return {
+      totalScore,
+      breakdown: {
+        hsrScore,
+        energyBonus,
+        inherentMultiplier,
+        attrBonus,
+        hctPercentBonus,
+        modBlock
+      }
+    };
+  }
+  
+  function staffScoreToTier(score) {
+    if (score >= 1800) return "God Tier";
+    if (score >= 700) return "High End";
+    if (score >= 250) return "Mid Tier";
+    if (score >= 80) return "Low End";
+    if (score >= 20) return "Collectable";
+    return "Junk";
+  }
 
     function getNoReqValue() {
       const slider = document.getElementById("no_req_slider");
@@ -1087,25 +1077,42 @@
     function calculateStaffTier() {
       const criteria = getStaffCriteria();
       const validationMessage = validateStaffInput(criteria);
-
+    
       if (validationMessage) {
         return { error: validationMessage };
       }
-
+    
       const normalizedCriteria = {
         ...criteria,
         attr: criteria.inherent === "hct" ? criteria.attr : "",
         hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
       };
-
+    
+      const hardcodedTier = getHardcodedStaffTier(normalizedCriteria);
+      if (hardcodedTier) {
+        return {
+          tier: hardcodedTier,
+          score: "hardcoded",
+          breakdown: {
+            hsrScore: "hardcoded",
+            inherentMultiplier: "hardcoded",
+            attrBonus: "hardcoded",
+            hctPercentBonus: "hardcoded",
+            modBlock: "hardcoded",
+            energyBonus: "hardcoded"
+          }
+        };
+      }
+    
       const scoreResult = scoreStaff(normalizedCriteria);
       const tier = staffScoreToTier(scoreResult.totalScore);
-
+    
       return {
         tier,
         score: scoreResult.totalScore,
         breakdown: scoreResult.breakdown
       };
+    }
     }
 
     function calculateMartialTier(type) {
@@ -1224,6 +1231,7 @@
   </script>
 </body>
 </html>
+
 
 
 
