@@ -546,11 +546,7 @@
 
     function scoreStaff(criteria) {
       const isNoReq = criteria.noReq === "yes";
-      
-      // Define premium and normal staff attributes
-      const premiumStaffAttr = new Set(["fire", "death"]);
-      const normalStaffAttr = new Set(["blood", "curses", "smite", "heal", "dom"]);
-      
+
       // Check if the conditions meet the specified cases:
       if (isNoReq) {
         if (
@@ -563,10 +559,17 @@
           // non req + hct generic 9 + hsr 14
           (criteria.attr === "generic" && criteria.hsr === "14" && criteria.hctPercent === "9")
         ) {
-          return {
-            totalScore: 100, // You can adjust this score as needed
-            breakdown: { tier: "Collectable" }
-          };
+        return {
+          totalScore: 100, // adjust to a set value for collectables maybe
+          breakdown: {
+            hsrScore: "hardcoded",
+            inherentMultiplier: "hardcoded",
+            attrBonus: "hardcoded",
+            hctPercentBonus: "hardcoded",
+            modBlock: "hardcoded",
+            energyBonus: "hardcoded"
+          }
+        };
         }
       }
     
@@ -1096,7 +1099,7 @@
       };
 
       const scoreResult = scoreStaff(normalizedCriteria);
-      const tier = staffScoreToTier(scoreResult.totalScore, normalizedCriteria.noReq === "yes");
+      const tier = staffScoreToTier(scoreResult.totalScore);
 
       return {
         tier,
@@ -1221,6 +1224,7 @@
   </script>
 </body>
 </html>
+
 
 
 
