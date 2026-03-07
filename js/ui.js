@@ -46,6 +46,16 @@ function getNoReqValue() {
   return "";
 }
 
+function getCheckTypeValue() {
+  const slider = document.getElementById("check_type_slider");
+
+  if (!slider) return "weapon";
+
+  if (slider.value === "0") return "prefix";
+  if (slider.value === "2") return "suffix";
+  return "weapon";
+}
+
 function hasChosenNoReq() {
   return getNoReqValue() !== "";
 }
@@ -67,6 +77,9 @@ function resetAllFields() {
   });
 
   document.getElementById("no_req_slider").value = "1";
+  
+  const checkTypeSlider = document.getElementById("check_type_slider");
+  if (checkTypeSlider) checkTypeSlider.value = "1";
 
   const checkType = document.getElementById("checkType");
   if (checkType) checkType.value = "";
