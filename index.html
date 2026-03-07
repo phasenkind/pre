@@ -504,7 +504,7 @@
       "5": 1,
       "6": 1.5,
       "7": 2,
-      "8": 4
+      "8": 3
     };
     
     function getStaffAttrBonus(attr) {
@@ -525,7 +525,7 @@
     return 1;
   }
 
-  if (pct === "18") return 8;
+  if (pct === "18") return 16;
   if (pct === "17") return 4;
   if (pct === "16") return 2;
   if (pct === "15") return 2;
@@ -591,11 +591,10 @@ function getHardcodedStaffTier(criteria) {
   }
   
   function staffScoreToTier(score) {
-    if (score >= 1800) return "God Tier";
-    if (score >= 700) return "High End";
-    if (score >= 250) return "Mid Tier";
-    if (score >= 80) return "Low End";
-    if (score >= 20) return "Collectable";
+    if (score >= 2000) return "God Tier";
+    if (score >= 1000) return "High End";
+    if (score >= 200) return "Mid Tier";
+    if (score >= 50) return "Low End";
     return "Junk";
   }
 
@@ -1218,6 +1217,7 @@ function getHardcodedStaffTier(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
