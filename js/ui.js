@@ -181,7 +181,15 @@ function checkTypeChanged() {
   if (checkType === "weapon") {
     el("noReqContainer").classList.remove("hidden");
     el("checkItemButton").classList.remove("hidden");
-  } else {
+  }
+  
+  else if (checkType === "prefix") {
+    el("prefixPlaceholder").classList.remove("hidden");
+    el("checkItemButton").classList.remove("hidden");
+  }
+  
+  else if (checkType === "suffix") {
+    el("suffixPlaceholder").classList.remove("hidden");
     el("checkItemButton").classList.remove("hidden");
   }
 
