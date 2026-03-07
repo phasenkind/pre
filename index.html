@@ -68,7 +68,7 @@
       border-radius: 50%;
       cursor: pointer;
       border: none;
-}
+    }
 
     #no_req_slider::-moz-range-thumb,
     #modifier_type_slider::-moz-range-thumb {
@@ -126,15 +126,16 @@
       margin-top: -8px;
       margin-bottom: 12px;
     }
-   
+
     .modifierSliderGroup {
       width: fit-content;
     }
-    
+
     #noReqContainer .modifierSliderGroup {
       margin-top: 6px;
+      margin-left: 28px;
     }
-    
+
     .modifierCenterLabel {
       text-align: center;
       font-weight: bold;
@@ -214,24 +215,24 @@
       1 = weapon
       2 = suffix
   -->
-    <div id="modifierTypeContainer" class="hidden">
-      <div class="modifierSliderGroup">
-        <div id="modifierCenterLabel" class="modifierCenterLabel"></div>
-        <div class="noReqSliderWrap">
-          <span>Prefix</span>
-          <input
-            type="range"
-            id="modifier_type_slider"
-            min="0"
-            max="2"
-            step="1"
-            value="1"
-            oninput="modifierTypeChanged()"
-          >
-          <span>Suffix</span>
-        </div>
+  <div id="modifierTypeContainer" class="hidden">
+    <div class="modifierSliderGroup">
+      <div id="modifierCenterLabel" class="modifierCenterLabel"></div>
+      <div class="noReqSliderWrap">
+        <span>Prefix</span>
+        <input
+          type="range"
+          id="modifier_type_slider"
+          min="0"
+          max="2"
+          step="1"
+          value="1"
+          oninput="modifierTypeChanged()"
+        >
+        <span>Suffix</span>
       </div>
     </div>
+  </div>
 
   <!--
     ============================================================
@@ -244,23 +245,23 @@
       2 = no
   -->
   <div id="noReqContainer" class="hidden">
-  <div class="modifierSliderGroup">
-    <div class="modifierCenterLabel">No Req?</div>
-    <div class="noReqSliderWrap">
-      <span>Yes</span>
-      <input
-        type="range"
-        id="no_req_slider"
-        min="0"
-        max="2"
-        step="1"
-        value="1"
-        oninput="noReqChanged()"
-      >
-      <span>No</span>
+    <div class="modifierSliderGroup">
+      <div class="modifierCenterLabel">No Req?</div>
+      <div class="noReqSliderWrap">
+        <span>Yes</span>
+        <input
+          type="range"
+          id="no_req_slider"
+          min="0"
+          max="2"
+          step="1"
+          value="1"
+          oninput="noReqChanged()"
+        >
+        <span>No</span>
+      </div>
     </div>
   </div>
-</div>
 
   <!--
     ============================================================
@@ -385,11 +386,11 @@
     <label>Miscellaneous logic placeholder</label>
   </div>
 
-  <div id="prefixPlaceholder" class="itemFields hidden">
+  <div id="prefixPlaceholder" class="hidden">
     <label>Prefix logic placeholder</label>
   </div>
 
-  <div id="suffixPlaceholder" class="itemFields hidden">
+  <div id="suffixPlaceholder" class="hidden">
     <label>Suffix logic placeholder</label>
   </div>
 
@@ -1034,7 +1035,7 @@
       const type = document.getElementById("itemType").value;
       const labelEl = document.getElementById("modifierCenterLabel");
       if (!labelEl) return;
-    
+
       const names = {
         staff: "Staff",
         axe: "Axe",
@@ -1042,7 +1043,7 @@
         hammer: "Hammer",
         bow: "Bow"
       };
-    
+
       labelEl.innerText = names[type] || "";
     }
 
@@ -1153,57 +1154,57 @@
       INITIAL TYPE SWITCHING
       ============================================================
     */
-function showFields() {
-  const type = document.getElementById("itemType").value;
-  const noReqContainer = document.getElementById("noReqContainer");
-  const modifierTypeContainer = document.getElementById("modifierTypeContainer");
-  const checkButton = document.getElementById("checkItemButton");
-  const martialSharedFields = document.getElementById("martialSharedFields");
+    function showFields() {
+      const type = document.getElementById("itemType").value;
+      const noReqContainer = document.getElementById("noReqContainer");
+      const modifierTypeContainer = document.getElementById("modifierTypeContainer");
+      const checkButton = document.getElementById("checkItemButton");
+      const martialSharedFields = document.getElementById("martialSharedFields");
 
-  resetAllFields();
+      resetAllFields();
 
-  document.querySelectorAll(".itemFields").forEach(div => {
-    div.classList.add("hidden");
-  });
+      document.querySelectorAll(".itemFields").forEach(div => {
+        div.classList.add("hidden");
+      });
 
-  document.getElementById("prefixPlaceholder").classList.add("hidden");
-  document.getElementById("suffixPlaceholder").classList.add("hidden");
+      document.getElementById("prefixPlaceholder").classList.add("hidden");
+      document.getElementById("suffixPlaceholder").classList.add("hidden");
 
-  noReqContainer.classList.add("hidden");
-  modifierTypeContainer.classList.add("hidden");
-  martialSharedFields.classList.add("hidden");
-  checkButton.classList.add("hidden");
+      noReqContainer.classList.add("hidden");
+      modifierTypeContainer.classList.add("hidden");
+      martialSharedFields.classList.add("hidden");
+      checkButton.classList.add("hidden");
 
-  if (!type) {
-    updateSpecialQuestionVisibility();
-    updateItemDisclaimer();
-    return;
-  }
+      if (!type) {
+        updateSpecialQuestionVisibility();
+        updateItemDisclaimer();
+        return;
+      }
 
-  if (usesModifierTypeSlider(type)) {
-    modifierTypeContainer.classList.remove("hidden");
-    updateModifierCenterLabel();
+      if (usesModifierTypeSlider(type)) {
+        modifierTypeContainer.classList.remove("hidden");
+        updateModifierCenterLabel();
 
-    if (getModifierTypeValue() === "weapon") {
-      noReqContainer.classList.remove("hidden");
-    } else if (getModifierTypeValue() === "prefix") {
-      document.getElementById("prefixPlaceholder").classList.remove("hidden");
-    } else if (getModifierTypeValue() === "suffix") {
-      document.getElementById("suffixPlaceholder").classList.remove("hidden");
+        if (getModifierTypeValue() === "weapon") {
+          noReqContainer.classList.remove("hidden");
+        } else if (getModifierTypeValue() === "prefix") {
+          document.getElementById("prefixPlaceholder").classList.remove("hidden");
+        } else if (getModifierTypeValue() === "suffix") {
+          document.getElementById("suffixPlaceholder").classList.remove("hidden");
+        }
+
+        checkButton.classList.remove("hidden");
+      } else if (PLACEHOLDER_TYPES.includes(type)) {
+        document.querySelectorAll(".itemFields").forEach(div => {
+          const types = div.dataset.type ? div.dataset.type.split(",") : [];
+          div.classList.toggle("hidden", !types.includes(type));
+        });
+        checkButton.classList.remove("hidden");
+      }
+
+      updateSpecialQuestionVisibility();
+      updateItemDisclaimer();
     }
-
-    checkButton.classList.remove("hidden");
-  } else if (PLACEHOLDER_TYPES.includes(type)) {
-    document.querySelectorAll(".itemFields").forEach(div => {
-      const types = div.dataset.type.split(",");
-      div.classList.toggle("hidden", !types.includes(type));
-    });
-    checkButton.classList.remove("hidden");
-  }
-
-  updateSpecialQuestionVisibility();
-  updateItemDisclaimer();
-}
 
     /*
       ============================================================
@@ -1290,7 +1291,7 @@ function showFields() {
       }
 
       document.querySelectorAll(".itemFields").forEach(div => {
-        const types = div.dataset.type.split(",");
+        const types = div.dataset.type ? div.dataset.type.split(",") : [];
         div.classList.toggle("hidden", !types.includes(type));
       });
 
@@ -1943,5 +1944,3 @@ function showFields() {
   </script>
 </body>
 </html>
-
-
