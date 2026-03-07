@@ -415,17 +415,6 @@
 
     /*
       ============================================================
-      TEMPORARY NO-REQ MARTIAL FALLBACK MAPPINGS
-      ============================================================
-      This is the old fallback system. It still exists as a backup
-      until each martial type gets its proper no-req logic.
-    */
-    const martialTierMappings = [
-      { type: "", skin: "", noReq: "yes", damage: "", inherent: "", percent: "", tier: "Add no-req logic" },
-    ];
-
-    /*
-      ============================================================
       HARDcoded MARTIAL TIER FOUNDATION
       ============================================================
       This mirrors the staff setup and is the place to add exact
@@ -1506,60 +1495,41 @@
       that staffs already have.
     */
     function calculateMartialTier(type) {
+    
       const criteria = getMartialCriteria(type);
       const validationMessage = validateMartialInput(criteria);
-
+    
       if (validationMessage) {
         return { error: validationMessage };
       }
-
+    
       const normalizedCriteria = {
         ...criteria,
         inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
         percent: criteria.inherent === "none" ? "" : criteria.percent
       };
-
+    
       const hardcodedTier = getHardcodedMartialTier(normalizedCriteria);
       if (hardcodedTier) {
         return {
           tier: hardcodedTier,
-          score: "hardcoded",
-          breakdown: {
-            damageScore: "hardcoded",
-            skinValue: "hardcoded",
-            inherentBonus: "hardcoded",
-            percentBonus: "hardcoded",
-            baseScore: "hardcoded",
-            modMultiplier: "hardcoded",
-            skinMode: "hardcoded"
-          }
+          score: "hardcoded"
         };
       }
-
-      if (normalizedCriteria.noReq === "no" && martialReqConfigs[type]) {
+    
+      if (normalizedCriteria.noReq === "no") {
+    
         const scoreResult = scoreReqMartial(type, normalizedCriteria);
         const tier = reqMartialScoreToTier(type, scoreResult.totalScore);
-
+    
         return {
           tier,
           score: scoreResult.totalScore,
           breakdown: scoreResult.breakdown
         };
       }
-
-      const fallbackCriteria = {
-        ...criteria,
-        inherent: criteria.inherent === "none" ? "" : criteria.inherent,
-        percent: criteria.inherent === "none" ? "" : criteria.percent
-      };
-
-      const match = findTier(
-        fallbackCriteria,
-        martialTierMappings,
-        ["type", "skin", "noReq", "damage", "inherent", "percent"]
-      );
-
-      return { tier: match.tier, match, criteria: fallbackCriteria };
+    
+      return { tier: "Junk" };
     }
 
     /*
@@ -1648,4 +1618,5 @@
   </script>
 </body>
 </html>
+
 
