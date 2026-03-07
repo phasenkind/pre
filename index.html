@@ -4,6 +4,13 @@
   <title>Pre-Searing Item Tiers – WIP!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /*
+      ============================================================
+      GLOBAL PAGE STYLING
+      ============================================================
+      Dark theme, compact form layout, and a few helper classes for
+      hiding sections, disclaimers, and bottom links.
+    */
     body {
       background: black;
       color: #cccccc;
@@ -115,16 +122,17 @@
       margin-top: -8px;
       margin-bottom: 12px;
     }
+
     .bottomLinks {
       margin-top: 28px;
       border-top: 1px solid #333;
       padding-top: 16px;
     }
-    
+
     .bottomLinks a {
       color: #cccccc;
     }
-    
+
     .disclaimerBox {
       margin-top: 18px;
       padding: 10px 12px;
@@ -137,6 +145,13 @@
 </head>
 <body>
 
+  <!--
+    ============================================================
+    HEADER + ITEM TYPE SELECTION
+    ============================================================
+    Main entry point. The selected item type controls which fields
+    are shown below.
+  -->
   <h2 class="header-red">Pre-Searing Item Tiers – ⚠ WIP</h2>
 
   <div class="topField">
@@ -155,6 +170,16 @@
     </select>
   </div>
 
+  <!--
+    ============================================================
+    NO-REQ TOGGLE
+    ============================================================
+    Shared slider for all item types.
+    Slider values:
+      0 = yes
+      1 = unset
+      2 = no
+  -->
   <div id="noReqContainer" class="hidden">
     <label for="no_req_slider"><strong>No Req?</strong></label>
     <div class="noReqSliderWrap">
@@ -172,6 +197,13 @@
     </div>
   </div>
 
+  <!--
+    ============================================================
+    STAFF FIELDS
+    ============================================================
+    Staffs use HSR, Energy, inherent type, and optionally HCT
+    attribute + HCT percent if the inherent is HCT.
+  -->
   <div class="itemFields hidden" data-type="staff">
     <label>HSR %:</label>
     <select id="staff_hsr">
@@ -220,6 +252,13 @@
     </div>
   </div>
 
+  <!--
+    ============================================================
+    MARTIAL-SPECIFIC MAIN FIELDS
+    ============================================================
+    Each martial type has its own base damage input.
+    Bows additionally have a skin field because skin affects value.
+  -->
   <div class="itemFields hidden" data-type="axe">
     <label>Damage Range:</label>
     <select id="axe_damage" onchange="updateSpecialQuestionVisibility()">
@@ -258,6 +297,13 @@
     </select>
   </div>
 
+  <!--
+    ============================================================
+    PLACEHOLDER ITEM TYPES
+    ============================================================
+    These are wired into the UI already so they can be expanded later,
+    but no tier logic exists for them yet.
+  -->
   <div class="itemFields hidden" data-type="wand">
     <label>Wand logic placeholder</label>
   </div>
@@ -274,6 +320,14 @@
     <label>Miscellaneous logic placeholder</label>
   </div>
 
+  <!--
+    ============================================================
+    MARTIAL SHARED MODIFIER FIELDS
+    ============================================================
+    Shared by axe, sword, hammer, and bow.
+    Covers inherent damage modifier, percent roll, and special
+    skin-related questions such as piercing axes and shortswords.
+  -->
   <div id="martialSharedFields" class="hidden">
     <label>Inherent Damage Increase:</label>
     <select id="weapon_inherent" onchange="weaponInherentChanged()">
@@ -311,6 +365,14 @@
     </div>
   </div>
 
+  <!--
+    ============================================================
+    ACTION + OUTPUT AREA
+    ============================================================
+    The button runs the tier check.
+    Result shows the final tier.
+    Debug shows the score breakdown used to get there.
+  -->
   <button id="checkItemButton" onclick="checkItem()" class="hidden">
     Check Item
   </button>
@@ -318,8 +380,20 @@
   <h3 id="result"></h3>
   <div id="debug" class="subtle"></div>
 
- <div id="itemDisclaimer" class="disclaimerBox hidden"></div>
-  
+  <!--
+    ============================================================
+    DYNAMIC DISCLAIMER BOX
+    ============================================================
+    This is populated based on the selected item type.
+  -->
+  <div id="itemDisclaimer" class="disclaimerBox hidden"></div>
+
+  <!--
+    ============================================================
+    BOTTOM LINKS
+    ============================================================
+    Static helpful links for FAQ / explainer and price-check Discord.
+  -->
   <div class="bottomLinks">
     <div>
       <strong>Item FAQ:</strong>
@@ -336,21 +410,42 @@
   </div>
 
   <script>
+    /*
+      ============================================================
+      GLOBAL TYPE GROUPS
+      ============================================================
+      These arrays are used throughout the UI and logic to decide
+      which item types share behavior.
+    */
     const MARTIAL_TYPES = ["axe", "sword", "hammer", "bow"];
     const PLACEHOLDER_TYPES = ["wand", "shield", "focus", "misc"];
 
     /*
-      Temporary fallback mappings for no-req martial weapons.
-      Fill these in as you continue converting no-req items to score systems.
+      ============================================================
+      NO-REQ MARTIAL FALLBACK MAPPINGS
+      ============================================================
+      Placeholder system for martial no-req logic.
+      Right now these are not fully implemented and simply serve as
+      a fallback until detailed no-req martial scoring is added.
     */
     const martialTierMappings = [
       { type: "", skin: "", noReq: "yes", damage: "", inherent: "", percent: "", tier: "Add no-req logic" },
     ];
 
     /*
-      Martial scoring configs.
-      Sword uses your axe logic with sword damage ranges and shortsword malus.
-      Hammer uses your axe logic with hammer damage ranges and no malus.
+      ============================================================
+      REQUIRED MARTIAL SCORING CONFIGS
+      ============================================================
+      Each martial weapon has:
+      - damageScores: how valuable a damage range is
+      - skinMode / skinValues: skin bonus or malus handling
+      - inherentBonuses: value of the inherent type itself
+      - percentBonuses: value of the % roll for that inherent
+      - thresholds: final score cutoffs for tier naming
+
+      Sword uses your axe logic with sword damage ranges and a
+      shortsword malus.
+      Hammer uses similar logic but without a skin malus.
     */
     const martialReqConfigs = {
       bow: {
@@ -518,14 +613,27 @@
     };
 
     /*
-      Staff scoring.
-      This replaces the huge hardcoded mapping with a score model.
-      You can tune the numbers easily later.
+      ============================================================
+      STAFF ATTRIBUTE GROUPS
+      ============================================================
+      Staff HCT attributes are split into:
+      - premium
+      - normal
+      - collector
+
+      These groups affect staff scoring and special tier remapping.
     */
     const premiumStaffAttr = new Set(["fire", "death"]);
     const normalStaffAttr = new Set(["blood", "curses", "smite", "heal", "dom"]);
     const collectorStaffAttr = new Set(["air", "water", "earth", "prot", "divine", "illu"]);
 
+    /*
+      ============================================================
+      REQUIRED STAFF BASE SCORE TABLES
+      ============================================================
+      These are only used for req staffs.
+      No-req staffs are handled by hardcoded logic later in the file.
+    */
     const staffReqHsrScores = {
       "11": 1,
       "12": 1.5,
@@ -541,7 +649,14 @@
       "7": 2,
       "8": 3
     };
-    
+
+    /*
+      ============================================================
+      SIMPLE VALUE HELPERS
+      ============================================================
+      These convert staff attribute / HCT choices into numeric score
+      multipliers used by the staff scoring formula.
+    */
     function getStaffAttrBonus(attr) {
       if (!attr) return 1;
       if (attr === "generic") return 2;
@@ -551,102 +666,151 @@
       return 1;
     }
 
- function getStaffHctPercentBonus(attr, pct) {
-    if (!pct) return 1;
+    function getStaffHctPercentBonus(attr, pct) {
+      if (!pct) return 1;
 
-  if (attr === "generic") {
-    if (pct === "9") return 32;
-    if (pct === "8") return 8;
-    return 1;
-  }
+      if (attr === "generic") {
+        if (pct === "9") return 32;
+        if (pct === "8") return 8;
+        return 1;
+      }
 
-  if (pct === "18") return 16;
-  if (pct === "17") return 4;
-  if (pct === "16") return 2;
-  if (pct === "15") return 2;
-  return 1;
-}
-
-function getHardcodedStaffTier(criteria) {
-  const isNoReq = criteria.noReq === "yes";
-
-  if (!isNoReq) return "";
-
-  if (
-    (premiumStaffAttr.has(criteria.attr) && criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "18")
-  ) {
-    return "Highly Collectable";
-  }
-
-  if (
-    (premiumStaffAttr.has(criteria.attr) && criteria.energy === "6" && criteria.hsr === "13" && criteria.hctPercent === "18") ||
-    (premiumStaffAttr.has(criteria.attr) && criteria.energy === "5" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
-    (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
-    (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "9")
-  ) {
-    return "Collectable";
-  }
-
-  return "";
-}
-  
-function scoreStaff(criteria) {
-  const hsrScore = staffReqHsrScores[criteria.hsr] ?? 0;
-  const energyBonus = staffReqEnergyBonuses[criteria.energy] ?? 1;
-
-  let inherentMultiplier = 1;
-  let attrBonus = 1;
-  let hctPercentBonus = 1;
-
-  if (criteria.inherent === "none") {
-    inherentMultiplier = 1;
-  } else if (criteria.inherent === "reduces_duration") {
-    inherentMultiplier = 1.2;
-  } else if (criteria.inherent === "hct") {
-    inherentMultiplier = 2;
-    attrBonus = getStaffAttrBonus(criteria.attr);
-    hctPercentBonus = getStaffHctPercentBonus(criteria.attr, criteria.hctPercent);
-  }
-
-  const modBlock = inherentMultiplier * attrBonus * hctPercentBonus;
-  const totalScore = hsrScore * modBlock * energyBonus;
-
-  return {
-    totalScore,
-    breakdown: {
-      hsrScore,
-      energyBonus,
-      inherentMultiplier,
-      attrBonus,
-      hctPercentBonus,
-      modBlock
+      if (pct === "18") return 16;
+      if (pct === "17") return 4;
+      if (pct === "16") return 2;
+      if (pct === "15") return 2;
+      return 1;
     }
-  };
-}
-  
-  function staffScoreToTier(score) {
-    if (score >= 6000) return "God Tier";
-    if (score >= 3000) return "High End";
-    if (score >= 2000) return "Mid Tier";
-    if (score >= 50) return "Low End";
-    return "Junk";
-  }
-    
+
+    /*
+      ============================================================
+      HARDcoded NO-REQ STAFF TIERS
+      ============================================================
+      This completely handles the special no-req staff cases you
+      wanted to rely on directly instead of scoring them numerically.
+
+      Current rules:
+      - 14 HSR / 6e / 18 HCT / premium attr = Highly Collectable
+      - broader no-req HCT cases = Collectable
+    */
+    function getHardcodedStaffTier(criteria) {
+      const isNoReq = criteria.noReq === "yes";
+
+      if (!isNoReq) return "";
+
+      if (
+        premiumStaffAttr.has(criteria.attr) &&
+        criteria.energy === "6" &&
+        criteria.hsr === "14" &&
+        criteria.hctPercent === "18"
+      ) {
+        return "Highly Collectable";
+      }
+
+      if (
+        (premiumStaffAttr.has(criteria.attr) && criteria.energy === "6" && criteria.hsr === "13" && criteria.hctPercent === "18") ||
+        (premiumStaffAttr.has(criteria.attr) && criteria.energy === "5" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
+        (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
+        (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "9")
+      ) {
+        return "Collectable";
+      }
+
+      return "";
+    }
+
+    /*
+      ============================================================
+      REQUIRED STAFF SCORE FORMULA
+      ============================================================
+      Formula:
+        hsrScore * (inherentMultiplier * attrBonus * hctPercentBonus) * energyBonus
+
+      This only applies to req staffs.
+      No-req staffs first go through the hardcoded logic above.
+    */
+    function scoreStaff(criteria) {
+      const hsrScore = staffReqHsrScores[criteria.hsr] ?? 0;
+      const energyBonus = staffReqEnergyBonuses[criteria.energy] ?? 1;
+
+      let inherentMultiplier = 1;
+      let attrBonus = 1;
+      let hctPercentBonus = 1;
+
+      if (criteria.inherent === "none") {
+        inherentMultiplier = 1;
+      } else if (criteria.inherent === "reduces_duration") {
+        inherentMultiplier = 1.2;
+      } else if (criteria.inherent === "hct") {
+        inherentMultiplier = 2;
+        attrBonus = getStaffAttrBonus(criteria.attr);
+        hctPercentBonus = getStaffHctPercentBonus(criteria.attr, criteria.hctPercent);
+      }
+
+      const modBlock = inherentMultiplier * attrBonus * hctPercentBonus;
+      const totalScore = hsrScore * modBlock * energyBonus;
+
+      return {
+        totalScore,
+        breakdown: {
+          hsrScore,
+          energyBonus,
+          inherentMultiplier,
+          attrBonus,
+          hctPercentBonus,
+          modBlock
+        }
+      };
+    }
+
+    /*
+      ============================================================
+      REQUIRED STAFF SCORE -> TIER
+      ============================================================
+      Converts req staff score totals into the standard req staff
+      tier buckets.
+    */
+    function staffScoreToTier(score) {
+      if (score >= 6000) return "God Tier";
+      if (score >= 3000) return "High End";
+      if (score >= 2000) return "Mid Tier";
+      if (score >= 50) return "Low End";
+      return "Junk";
+    }
+
+    /*
+      ============================================================
+      COLLECTOR STAFF REMAPPING
+      ============================================================
+      Collector-attribute req staffs get remapped away from the
+      normal req-staff labels:
+      - High End / God Tier -> Highly Collectable
+      - Mid Tier -> Collectable
+
+      No-req staffs are excluded because those are already hardcoded.
+    */
     function remapCollectorStaffTier(criteria, tier) {
       if (criteria.noReq === "yes") return tier;
       if (!collectorStaffAttr.has(criteria.attr)) return tier;
-    
+
       if (tier === "God Tier" || tier === "High End") {
         return "Highly Collectable";
       }
-    
+
       if (tier === "Mid Tier") {
         return "Collectable";
       }
-    
+
       return tier;
     }
-    
+
+    /*
+      ============================================================
+      NO-REQ SLIDER HELPERS
+      ============================================================
+      Converts the slider value into a readable string and checks
+      whether the user has made a real yes/no choice yet.
+    */
     function getNoReqValue() {
       const slider = document.getElementById("no_req_slider");
       if (!slider) return "";
@@ -660,6 +824,13 @@ function scoreStaff(criteria) {
       return getNoReqValue() !== "";
     }
 
+    /*
+      ============================================================
+      UI RESET
+      ============================================================
+      Clears fields, hides conditional areas, clears results, and
+      resets disclaimers whenever the item type changes.
+    */
     function resetAllFields() {
       document.querySelectorAll(".itemFields select").forEach(select => {
         select.value = "";
@@ -692,64 +863,89 @@ function scoreStaff(criteria) {
       if (specialQuestionFields) specialQuestionFields.classList.add("hidden");
       if (axePiercingRow) axePiercingRow.classList.add("hidden");
       if (swordShortRow) swordShortRow.classList.add("hidden");
-          
+
       const disclaimerEl = document.getElementById("itemDisclaimer");
       if (disclaimerEl) {
         disclaimerEl.classList.add("hidden");
         disclaimerEl.innerText = "";
+      }
     }
-   
+
+    /*
+      ============================================================
+      TYPE-BASED DISCLAIMERS
+      ============================================================
+      Shows extra notes depending on the selected item type:
+      - staff / wand: damage range disclaimer
+      - martial: low requirement disclaimer
+      - axe: special note for sickles / tribal axes
+    */
     function updateItemDisclaimer() {
       const type = document.getElementById("itemType").value;
       const disclaimerEl = document.getElementById("itemDisclaimer");
-    
+
       if (!disclaimerEl) return;
-    
+
       const messages = [];
-    
+
       if (type === "staff" || type === "wand") {
         messages.push("High damage range might increase the item tier, but is not taken into consideration here for simplicity's sake.");
       }
-    
+
       if (MARTIAL_TYPES.includes(type)) {
         messages.push("Low attribute requirement might increase the item tier, but is not taken into consideration here for simplicity's sake.");
       }
-    
+
       if (type === "axe") {
         messages.push("Disclaimer: Sickles and Tribal Axes carry value at 6–15+ damage with inherent, 6–16 damage, or 6–12 damage without req and with an inherent modifier.");
       }
-    
+
       if (messages.length === 0) {
         disclaimerEl.classList.add("hidden");
         disclaimerEl.innerText = "";
         return;
       }
 
-  disclaimerEl.classList.remove("hidden");
-  disclaimerEl.innerText = messages.join("\n\n");
-  }
-  function showFields() {
-    const type = document.getElementById("itemType").value;
-    const noReqContainer = document.getElementById("noReqContainer");
-    const checkButton = document.getElementById("checkItemButton");
-    const martialSharedFields = document.getElementById("martialSharedFields");
-  
-    resetAllFields();
-  
-    noReqContainer.classList.toggle("hidden", type === "");
-  
-    document.querySelectorAll(".itemFields").forEach(div => {
-      div.classList.add("hidden");
-    });
-  
-    martialSharedFields.classList.add("hidden");
-    checkButton.classList.add("hidden");
-  
-    updateSpecialQuestionVisibility();
-    updateItemDisclaimer();
-  }
-  }
+      disclaimerEl.classList.remove("hidden");
+      disclaimerEl.innerText = messages.join("\n\n");
+    }
 
+    /*
+      ============================================================
+      INITIAL TYPE SWITCHING
+      ============================================================
+      Runs when item type changes.
+      Resets the page, shows the no-req slider, and updates the
+      disclaimer for the selected category.
+    */
+    function showFields() {
+      const type = document.getElementById("itemType").value;
+      const noReqContainer = document.getElementById("noReqContainer");
+      const checkButton = document.getElementById("checkItemButton");
+      const martialSharedFields = document.getElementById("martialSharedFields");
+
+      resetAllFields();
+
+      noReqContainer.classList.toggle("hidden", type === "");
+
+      document.querySelectorAll(".itemFields").forEach(div => {
+        div.classList.add("hidden");
+      });
+
+      martialSharedFields.classList.add("hidden");
+      checkButton.classList.add("hidden");
+
+      updateSpecialQuestionVisibility();
+      updateItemDisclaimer();
+    }
+
+    /*
+      ============================================================
+      NO-REQ CHANGE HANDLER
+      ============================================================
+      Once the user picks yes or no, this reveals the correct fields
+      for the chosen item type and repopulates dependent selects.
+    */
     function noReqChanged() {
       const type = document.getElementById("itemType").value;
       const noReqChosen = hasChosenNoReq();
@@ -767,6 +963,7 @@ function scoreStaff(criteria) {
         document.getElementById("result").innerText = "";
         document.getElementById("debug").innerText = "";
         updateSpecialQuestionVisibility();
+        updateItemDisclaimer();
         return;
       }
 
@@ -789,38 +986,53 @@ function scoreStaff(criteria) {
       document.getElementById("debug").innerText = "";
 
       updateSpecialQuestionVisibility();
+      updateItemDisclaimer();
     }
 
-  function populateHSR() {
-    const noReq = getNoReqValue() === "yes";
-    const hsrSelect = document.getElementById("staff_hsr");
-    const previousValue = hsrSelect.value;
-  
-    hsrSelect.innerHTML = '<option value="">-- Select --</option>';
-  
-    const values = noReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
-    values.forEach(v => hsrSelect.add(new Option(v, v)));
-  
-    if (values.map(String).includes(previousValue)) {
-      hsrSelect.value = previousValue;
-    }
-  }
-    
-  function populateEnergy() {
-    const noReq = getNoReqValue() === "yes";
-    const energySelect = document.getElementById("staff_energy");
-    const previousValue = energySelect.value;
-  
-    energySelect.innerHTML = '<option value="">-- Select --</option>';
-  
-    const values = noReq ? [5, 6] : [5, 6, 7, 8];
-    values.forEach(v => energySelect.add(new Option(v, v)));
-  
-    if (values.map(String).includes(previousValue)) {
-      energySelect.value = previousValue;
-    }
-  }
+    /*
+      ============================================================
+      STAFF SELECT POPULATION
+      ============================================================
+      These populate staff HSR and energy options based on req/no-req.
+      Existing valid selections are preserved when switching.
+    */
+    function populateHSR() {
+      const noReq = getNoReqValue() === "yes";
+      const hsrSelect = document.getElementById("staff_hsr");
+      const previousValue = hsrSelect.value;
 
+      hsrSelect.innerHTML = '<option value="">-- Select --</option>';
+
+      const values = noReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
+      values.forEach(v => hsrSelect.add(new Option(v, v)));
+
+      if (values.map(String).includes(previousValue)) {
+        hsrSelect.value = previousValue;
+      }
+    }
+
+    function populateEnergy() {
+      const noReq = getNoReqValue() === "yes";
+      const energySelect = document.getElementById("staff_energy");
+      const previousValue = energySelect.value;
+
+      energySelect.innerHTML = '<option value="">-- Select --</option>';
+
+      const values = noReq ? [5, 6] : [5, 6, 7, 8];
+      values.forEach(v => energySelect.add(new Option(v, v)));
+
+      if (values.map(String).includes(previousValue)) {
+        energySelect.value = previousValue;
+      }
+    }
+
+    /*
+      ============================================================
+      STAFF HCT CONDITIONAL UI
+      ============================================================
+      If the staff inherent is HCT, show attribute + HCT %.
+      If not, hide and clear those fields.
+    */
     function inherentChanged() {
       const inherent = document.getElementById("staff_inherent").value;
       const hctDiv = document.getElementById("hctAttributeDiv");
@@ -853,6 +1065,13 @@ function scoreStaff(criteria) {
       values.forEach(v => percentSelect.add(new Option(v, v)));
     }
 
+    /*
+      ============================================================
+      DAMAGE OPTION TABLES
+      ============================================================
+      Returns the available damage ranges for each martial type and
+      req/no-req state.
+    */
     function getDamageOptions(type, noReq) {
       const damageOptions = {
         axe: {
@@ -889,6 +1108,13 @@ function scoreStaff(criteria) {
       return noReq ? damageOptions[type].noReq : damageOptions[type].req;
     }
 
+    /*
+      ============================================================
+      GENERIC SELECT-OPTION HELPER
+      ============================================================
+      Small utility to refill a select element from either plain
+      strings or { value, label } objects.
+    */
     function setSelectOptions(selectId, options) {
       const select = document.getElementById(selectId);
       if (!select) return;
@@ -904,12 +1130,25 @@ function scoreStaff(criteria) {
       });
     }
 
+    /*
+      ============================================================
+      MARTIAL DAMAGE POPULATION
+      ============================================================
+      Fills the relevant martial damage select when req/no-req changes.
+    */
     function populateWeaponDamage(type) {
       const noReq = getNoReqValue() === "yes";
       const options = getDamageOptions(type, noReq);
       setSelectOptions(`${type}_damage`, options);
     }
 
+    /*
+      ============================================================
+      MARTIAL INHERENT % POPULATION
+      ============================================================
+      Once the user chooses a martial inherent, this reveals the
+      correct % roll options for that inherent type.
+    */
     function weaponInherentChanged() {
       const inherent = document.getElementById("weapon_inherent").value;
       const percentDiv = document.getElementById("weaponDamagePercentDiv");
@@ -937,6 +1176,13 @@ function scoreStaff(criteria) {
       updateSpecialQuestionVisibility();
     }
 
+    /*
+      ============================================================
+      SPECIAL MARTIAL QUESTION VISIBILITY
+      ============================================================
+      Shows the extra "Piercing Axe?" or "Short Sword?" questions only
+      after the base martial fields are complete.
+    */
     function updateSpecialQuestionVisibility() {
       const type = document.getElementById("itemType").value;
       const specialQuestionFields = document.getElementById("specialQuestionFields");
@@ -982,6 +1228,13 @@ function scoreStaff(criteria) {
       }
     }
 
+    /*
+      ============================================================
+      GENERIC MAPPING MATCHER
+      ============================================================
+      Used by the temporary no-req martial fallback system.
+      Looks for the first mapping that matches all non-empty keys.
+    */
     function findTier(criteria, mappings, keys) {
       for (const mapping of mappings) {
         let matched = true;
@@ -1004,6 +1257,16 @@ function scoreStaff(criteria) {
       return { tier: "Junk" };
     }
 
+    /*
+      ============================================================
+      REQUIRED MARTIAL SCORE CALCULATION
+      ============================================================
+      Computes the full martial score for req weapons by combining:
+      - damage score
+      - skin modifier
+      - inherent bonus
+      - % bonus
+    */
     function scoreReqMartial(type, criteria) {
       const config = martialReqConfigs[type];
       if (!config) {
@@ -1055,6 +1318,13 @@ function scoreStaff(criteria) {
       };
     }
 
+    /*
+      ============================================================
+      REQUIRED MARTIAL SCORE -> TIER
+      ============================================================
+      Converts req martial score totals into the configured labels for
+      that weapon family.
+    */
     function reqMartialScoreToTier(type, score) {
       const thresholds = martialReqConfigs[type]?.thresholds;
       if (!thresholds) return "Junk";
@@ -1066,6 +1336,13 @@ function scoreStaff(criteria) {
       return "Junk";
     }
 
+    /*
+      ============================================================
+      CRITERIA READERS
+      ============================================================
+      These pull the current values out of the UI and normalize them
+      into compact criteria objects used by validators and scorers.
+    */
     function getStaffCriteria() {
       return {
         noReq: getNoReqValue(),
@@ -1102,6 +1379,13 @@ function scoreStaff(criteria) {
       };
     }
 
+    /*
+      ============================================================
+      INPUT VALIDATION
+      ============================================================
+      These make sure the user has filled the needed fields before any
+      scoring logic is attempted.
+    */
     function validateStaffInput(criteria) {
       if (!criteria.noReq) {
         return "Please choose Yes or No for No Req?.";
@@ -1146,20 +1430,31 @@ function scoreStaff(criteria) {
       return "";
     }
 
+    /*
+      ============================================================
+      STAFF TIER CALCULATION
+      ============================================================
+      Order of operations:
+      1. Read and validate input
+      2. Normalize HCT-only fields
+      3. Check hardcoded no-req tier rules first
+      4. Otherwise score req staff numerically
+      5. Remap collector req staffs if needed
+    */
     function calculateStaffTier() {
       const criteria = getStaffCriteria();
       const validationMessage = validateStaffInput(criteria);
-    
+
       if (validationMessage) {
         return { error: validationMessage };
       }
-    
+
       const normalizedCriteria = {
         ...criteria,
         attr: criteria.inherent === "hct" ? criteria.attr : "",
         hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
       };
-    
+
       const hardcodedTier = getHardcodedStaffTier(normalizedCriteria);
       if (hardcodedTier) {
         return {
@@ -1175,19 +1470,27 @@ function scoreStaff(criteria) {
           }
         };
       }
-    
-    const scoreResult = scoreStaff(normalizedCriteria);
-    
-    let tier = staffScoreToTier(scoreResult.totalScore);
-    tier = remapCollectorStaffTier(normalizedCriteria, tier);
-    
-    return {
-      tier,
-      score: scoreResult.totalScore,
-      breakdown: scoreResult.breakdown
-    };
+
+      const scoreResult = scoreStaff(normalizedCriteria);
+
+      let tier = staffScoreToTier(scoreResult.totalScore);
+      tier = remapCollectorStaffTier(normalizedCriteria, tier);
+
+      return {
+        tier,
+        score: scoreResult.totalScore,
+        breakdown: scoreResult.breakdown
+      };
     }
 
+    /*
+      ============================================================
+      MARTIAL TIER CALCULATION
+      ============================================================
+      Req martials use the numeric score system.
+      No-req martials currently fall back to the temporary mapping
+      table until their dedicated logic is added.
+    */
     function calculateMartialTier(type) {
       const criteria = getMartialCriteria(type);
       const validationMessage = validateMartialInput(criteria);
@@ -1228,6 +1531,13 @@ function scoreStaff(criteria) {
       return { tier: match.tier, match, criteria: mappingCriteria };
     }
 
+    /*
+      ============================================================
+      PLACEHOLDER TIER CALCULATION
+      ============================================================
+      Used for item types that are already in the UI but do not yet
+      have real scoring logic.
+    */
     function calculatePlaceholderTier(type) {
       return {
         tier: "Logic not added yet.",
@@ -1235,118 +1545,81 @@ function scoreStaff(criteria) {
       };
     }
 
-  function checkItem() {
-    const type = document.getElementById("itemType").value;
-    const resultEl = document.getElementById("result");
-    const debugEl = document.getElementById("debug");
-  
-    if (!type) {
-      resultEl.innerText = "Please select an item type.";
-      debugEl.innerText = "";
-      return;
-    }
-  
-    let result;
-  
-    if (type === "staff") {
-      result = calculateStaffTier();
-    } else if (MARTIAL_TYPES.includes(type)) {
-      result = calculateMartialTier(type);
-    } else if (PLACEHOLDER_TYPES.includes(type)) {
-      result = calculatePlaceholderTier(type);
-    } else {
-      resultEl.innerText = "Logic not added yet.";
-      debugEl.innerText = "";
-      return;
-    }
-  
-    if (result.error) {
-      resultEl.innerText = result.error;
-      debugEl.innerText = "";
-      return;
-    }
-  
-    resultEl.innerText = `${result.tier}`;
-  
-    if (result.breakdown) {
-      if (type === "staff") {
-        debugEl.innerText =
-          `⚠ Tier attribution logic is still being finalized.\n\n` +
-          `Score: ${result.score} | ` +
-          `HSR: ${result.breakdown.hsrScore} | ` +
-          `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
-          `Attr: ${result.breakdown.attrBonus} | ` +
-          `HCT%: ${result.breakdown.hctPercentBonus} | ` +
-          `Mod Block: ${result.breakdown.modBlock} | ` +
-          `Energy Mult: ${result.breakdown.energyBonus}`;
+    /*
+      ============================================================
+      MAIN CHECK BUTTON HANDLER
+      ============================================================
+      Central entry point for the tool:
+      - decides which calculation path to use
+      - shows final tier
+      - prints debug output / score breakdown
+    */
+    function checkItem() {
+      const type = document.getElementById("itemType").value;
+      const resultEl = document.getElementById("result");
+      const debugEl = document.getElementById("debug");
+
+      if (!type) {
+        resultEl.innerText = "Please select an item type.";
+        debugEl.innerText = "";
         return;
       }
-  
-      const skinPart =
-        result.breakdown.skinMode === "bonus"
-          ? `Skin Bonus: ${result.breakdown.skinValue} | `
-          : result.breakdown.skinMode === "malus"
-          ? `Skin Malus: ${result.breakdown.skinValue} | `
-          : "";
-  
-      debugEl.innerText =
-        `Score: ${result.score} | ` +
-        `Damage: ${result.breakdown.damageScore} | ` +
-        skinPart +
-        `Inherent: ${result.breakdown.inherentBonus} | ` +
-        `Percent: ${result.breakdown.percentBonus} | ` +
-        `Base: ${result.breakdown.baseScore} | ` +
-        `Multiplier: ${result.breakdown.modMultiplier}`;
-    } else {
-      debugEl.innerText = result.info || "";
+
+      let result;
+
+      if (type === "staff") {
+        result = calculateStaffTier();
+      } else if (MARTIAL_TYPES.includes(type)) {
+        result = calculateMartialTier(type);
+      } else if (PLACEHOLDER_TYPES.includes(type)) {
+        result = calculatePlaceholderTier(type);
+      } else {
+        resultEl.innerText = "Logic not added yet.";
+        debugEl.innerText = "";
+        return;
+      }
+
+      if (result.error) {
+        resultEl.innerText = result.error;
+        debugEl.innerText = "";
+        return;
+      }
+
+      resultEl.innerText = `${result.tier}`;
+
+      if (result.breakdown) {
+        if (type === "staff") {
+          debugEl.innerText =
+            `⚠ Tier attribution logic is still being finalized.\n\n` +
+            `Score: ${result.score} | ` +
+            `HSR: ${result.breakdown.hsrScore} | ` +
+            `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
+            `Attr: ${result.breakdown.attrBonus} | ` +
+            `HCT%: ${result.breakdown.hctPercentBonus} | ` +
+            `Mod Block: ${result.breakdown.modBlock} | ` +
+            `Energy Mult: ${result.breakdown.energyBonus}`;
+          return;
+        }
+
+        const skinPart =
+          result.breakdown.skinMode === "bonus"
+            ? `Skin Bonus: ${result.breakdown.skinValue} | `
+            : result.breakdown.skinMode === "malus"
+            ? `Skin Malus: ${result.breakdown.skinValue} | `
+            : "";
+
+        debugEl.innerText =
+          `Score: ${result.score} | ` +
+          `Damage: ${result.breakdown.damageScore} | ` +
+          skinPart +
+          `Inherent: ${result.breakdown.inherentBonus} | ` +
+          `Percent: ${result.breakdown.percentBonus} | ` +
+          `Base: ${result.breakdown.baseScore} | ` +
+          `Multiplier: ${result.breakdown.modMultiplier}`;
+      } else {
+        debugEl.innerText = result.info || "";
+      }
     }
-  }
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
