@@ -494,10 +494,10 @@
     const staffReqHsrScores = {
       "11": 1,
       "12": 2,
-      "13": 4,
-      "14": 8,
-      "15": 16,
-      "16": 32
+      "13": 3,
+      "14": 4,
+      "15": 5,
+      "16": 6
     };
 
     const staffReqEnergyBonuses = {
@@ -507,29 +507,17 @@
       "8": 4
     };
     
-    const staffNoReqHsrScores = {
-      "11": 1,
-      "12": 2,
-      "13": 4,
-      "14": 8
-    };
-    
-    const staffNoReqEnergyBonuses = {
-      "5": 1,
-      "6": 2
-    };
-
     function getStaffAttrBonus(attr) {
       if (!attr) return 1;
       if (attr === "generic") return 2;
-      if (premiumStaffAttr.has(attr)) return 8;
-      if (normalStaffAttr.has(attr)) return 4;
-      if (collectorStaffAttr.has(attr)) return 1;
+      if (premiumStaffAttr.has(attr)) return 4;
+      if (normalStaffAttr.has(attr)) return 3;
+      if (collectorStaffAttr.has(attr)) return 2;
       return 1;
     }
 
-   function getStaffHctPercentBonus(attr, pct) {
-  if (!pct) return 1;
+ function getStaffHctPercentBonus(attr, pct) {
+    if (!pct) return 1;
 
   if (attr === "generic") {
     if (pct === "9") return 2;
@@ -537,10 +525,10 @@
     return 1;
   }
 
-  if (pct === "18") return 8;
+  if (pct === "18") return 5;
   if (pct === "17") return 4;
-  if (pct === "16") return 2;
-  if (pct === "15") return 1;
+  if (pct === "16") return 3;
+  if (pct === "15") return 2;
   return 1;
 }
 
@@ -1230,6 +1218,7 @@ function getHardcodedStaffTier(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
