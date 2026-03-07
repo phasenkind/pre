@@ -692,6 +692,11 @@ function scoreStaff(criteria) {
       if (specialQuestionFields) specialQuestionFields.classList.add("hidden");
       if (axePiercingRow) axePiercingRow.classList.add("hidden");
       if (swordShortRow) swordShortRow.classList.add("hidden");
+          
+      const disclaimerEl = document.getElementById("itemDisclaimer");
+      if (disclaimerEl) {
+        disclaimerEl.classList.add("hidden");
+        disclaimerEl.innerText = "";
     }
    
     function updateItemDisclaimer() {
@@ -742,11 +747,7 @@ function scoreStaff(criteria) {
   
     updateSpecialQuestionVisibility();
     updateItemDisclaimer();
-    const disclaimerEl = document.getElementById("itemDisclaimer");
-      if (disclaimerEl) {
-        disclaimerEl.classList.add("hidden");
-        disclaimerEl.innerText = "";
-}
+  }
   }
 
     function noReqChanged() {
@@ -1303,6 +1304,7 @@ function scoreStaff(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
