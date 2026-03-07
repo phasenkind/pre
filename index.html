@@ -26,14 +26,24 @@
     </select>
   </div>
 
-  <div id="checkTypeContainer" class="topField hidden">
-    <label for="checkType">Check Type:</label>
-    <select id="checkType">
-      <option value="">-- Select --</option>
-      <option value="weapon">Weapon</option>
-      <option value="prefix">Prefix Modifier</option>
-      <option value="suffix">Suffix Modifier</option>
-    </select>
+  <div id="checkTypeContainer" class="hidden">
+    <div class="noReqSliderWrap">
+      <span>Prefix</span>
+  
+      <input
+        type="range"
+        id="check_type_slider"
+        min="0"
+        max="2"
+        step="1"
+        value="1"
+        oninput="checkTypeChanged()"
+      >
+  
+      <span>Suffix</span>
+    </div>
+  
+    <div class="subtle" style="text-align:center;">Weapon</div>
   </div>
 
   <div id="noReqContainer" class="hidden">
@@ -226,5 +236,6 @@
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
+
 
 
