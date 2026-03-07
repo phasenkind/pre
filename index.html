@@ -821,7 +821,7 @@
       const match = findTier(
         criteria,
         mappings,
-        ["type", "skin", "noReq", "damage", "inherent", "percent"]
+        ["skin", "noReq", "damage", "inherent", "percent"]
       );
 
       if (!match || !match.tier || match.tier === "Junk") {
@@ -1323,22 +1323,31 @@
     function findTier(criteria, mappings, keys) {
       for (const mapping of mappings) {
         let matched = true;
-
+    
         for (const key of keys) {
           const mappingValue = mapping[key] ?? "";
           const criteriaValue = criteria[key] ?? "";
-
-          if (mappingValue !== "" && mappingValue !== criteriaValue) {
+    
+          if (mappingValue === "") {
+            continue;
+          }
+    
+          if (Array.isArray(mappingValue)) {
+            if (!mappingValue.includes(criteriaValue)) {
+              matched = false;
+              break;
+            }
+          } else if (mappingValue !== criteriaValue) {
             matched = false;
             break;
           }
         }
-
+    
         if (matched) {
           return mapping;
         }
       }
-
+    
       return { tier: "Junk" };
     }
 
@@ -1695,6 +1704,7 @@
   </script>
 </body>
 </html>
+
 
 
 
