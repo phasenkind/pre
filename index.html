@@ -41,6 +41,7 @@
     .noReqSliderWrap {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       margin-top: 10px;
       margin-bottom: 10px;
@@ -128,6 +129,10 @@
    
     .modifierSliderGroup {
       width: fit-content;
+    }
+    
+    #noReqContainer .modifierSliderGroup {
+      margin-top: 6px;
     }
     
     .modifierCenterLabel {
@@ -239,7 +244,8 @@
       2 = no
   -->
   <div id="noReqContainer" class="hidden">
-    <label for="no_req_slider"><strong>No Req?</strong></label>
+  <div class="modifierSliderGroup">
+    <div class="modifierCenterLabel">No Req?</div>
     <div class="noReqSliderWrap">
       <span>Yes</span>
       <input
@@ -254,6 +260,7 @@
       <span>No</span>
     </div>
   </div>
+</div>
 
   <!--
     ============================================================
@@ -1146,48 +1153,57 @@
       INITIAL TYPE SWITCHING
       ============================================================
     */
-    function showFields() {
-      const type = document.getElementById("itemType").value;
-      const noReqContainer = document.getElementById("noReqContainer");
-      const modifierTypeContainer = document.getElementById("modifierTypeContainer");
-      const checkButton = document.getElementById("checkItemButton");
-      const martialSharedFields = document.getElementById("martialSharedFields");
+function showFields() {
+  const type = document.getElementById("itemType").value;
+  const noReqContainer = document.getElementById("noReqContainer");
+  const modifierTypeContainer = document.getElementById("modifierTypeContainer");
+  const checkButton = document.getElementById("checkItemButton");
+  const martialSharedFields = document.getElementById("martialSharedFields");
 
-      resetAllFields();
+  resetAllFields();
 
-      document.querySelectorAll(".itemFields").forEach(div => {
-        div.classList.add("hidden");
-      });
+  document.querySelectorAll(".itemFields").forEach(div => {
+    div.classList.add("hidden");
+  });
 
-      document.getElementById("prefixPlaceholder").classList.add("hidden");
-      document.getElementById("suffixPlaceholder").classList.add("hidden");
+  document.getElementById("prefixPlaceholder").classList.add("hidden");
+  document.getElementById("suffixPlaceholder").classList.add("hidden");
 
-      noReqContainer.classList.add("hidden");
-      modifierTypeContainer.classList.add("hidden");
-      martialSharedFields.classList.add("hidden");
-      checkButton.classList.add("hidden");
+  noReqContainer.classList.add("hidden");
+  modifierTypeContainer.classList.add("hidden");
+  martialSharedFields.classList.add("hidden");
+  checkButton.classList.add("hidden");
 
-      if (!type) {
-        updateSpecialQuestionVisibility();
-        updateItemDisclaimer();
-        return;
-      }
+  if (!type) {
+    updateSpecialQuestionVisibility();
+    updateItemDisclaimer();
+    return;
+  }
 
-      if (usesModifierTypeSlider(type)) {
-        modifierTypeContainer.classList.remove("hidden");
-        updateModifierCenterLabel();
-        checkButton.classList.remove("hidden");
-      } else if (PLACEHOLDER_TYPES.includes(type)) {
-        document.querySelectorAll(".itemFields").forEach(div => {
-          const types = div.dataset.type.split(",");
-          div.classList.toggle("hidden", !types.includes(type));
-        });
-        checkButton.classList.remove("hidden");
-      }
+  if (usesModifierTypeSlider(type)) {
+    modifierTypeContainer.classList.remove("hidden");
+    updateModifierCenterLabel();
 
-      updateSpecialQuestionVisibility();
-      updateItemDisclaimer();
+    if (getModifierTypeValue() === "weapon") {
+      noReqContainer.classList.remove("hidden");
+    } else if (getModifierTypeValue() === "prefix") {
+      document.getElementById("prefixPlaceholder").classList.remove("hidden");
+    } else if (getModifierTypeValue() === "suffix") {
+      document.getElementById("suffixPlaceholder").classList.remove("hidden");
     }
+
+    checkButton.classList.remove("hidden");
+  } else if (PLACEHOLDER_TYPES.includes(type)) {
+    document.querySelectorAll(".itemFields").forEach(div => {
+      const types = div.dataset.type.split(",");
+      div.classList.toggle("hidden", !types.includes(type));
+    });
+    checkButton.classList.remove("hidden");
+  }
+
+  updateSpecialQuestionVisibility();
+  updateItemDisclaimer();
+}
 
     /*
       ============================================================
@@ -1927,4 +1943,5 @@
   </script>
 </body>
 </html>
+
 
