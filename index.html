@@ -47,8 +47,7 @@
       margin-bottom: 10px;
     }
 
-    #no_req_slider,
-    #modifier_type_slider {
+    #no_req_slider {
       -webkit-appearance: none;
       appearance: none;
       width: 80px;
@@ -57,9 +56,8 @@
       border-radius: 6px;
       outline: none;
     }
-
-    #no_req_slider::-webkit-slider-thumb,
-    #modifier_type_slider::-webkit-slider-thumb {
+    
+    #no_req_slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
       width: 22px;
@@ -69,9 +67,8 @@
       cursor: pointer;
       border: none;
     }
-
-    #no_req_slider::-moz-range-thumb,
-    #modifier_type_slider::-moz-range-thumb {
+    
+    #no_req_slider::-moz-range-thumb {
       width: 22px;
       height: 22px;
       background: #cccccc;
@@ -125,22 +122,6 @@
       font-size: 0.95em;
       margin-top: -8px;
       margin-bottom: 12px;
-    }
-
-    .modifierSliderGroup {
-      width: fit-content;
-    }
-
-    #noReqContainer .modifierSliderGroup {
-      margin-top: 6px;
-      margin-left: 28px;
-    }
-
-    .modifierCenterLabel {
-      text-align: center;
-      font-weight: bold;
-      margin-top: 12px;
-      margin-bottom: 6px;
     }
 
     .disclaimerBox {
@@ -207,31 +188,22 @@
 
   <!--
     ============================================================
-    WEAPON / PREFIX / SUFFIX TOGGLE
+    BASE / PREFIX / SUFFIX DROPDOWN
     ============================================================
     Only used for staff, axe, sword, hammer, bow.
-    Slider values:
-      0 = prefix
-      1 = weapon
-      2 = suffix
+    Placeholder for choosing whether to check:
+    - Base Weapon
+    - Prefix Modifier
+    - Suffix Modifier
   -->
-  <div id="modifierTypeContainer" class="hidden">
-    <div class="modifierSliderGroup">
-      <div id="modifierCenterLabel" class="modifierCenterLabel"></div>
-      <div class="noReqSliderWrap">
-        <span>Prefix</span>
-        <input
-          type="range"
-          id="modifier_type_slider"
-          min="0"
-          max="2"
-          step="1"
-          value="1"
-          oninput="modifierTypeChanged()"
-        >
-        <span>Suffix</span>
-      </div>
-    </div>
+  <div id="modifierTypeContainer" class="hidden topField">
+    <label>Placeholder Name:</label>
+    <select id="modifierType" onchange="modifierTypeChanged()">
+      <option value="">-- Select --</option>
+      <option value="weapon">Base Weapon</option>
+      <option value="prefix">Prefix Modifier</option>
+      <option value="suffix">Suffix Modifier</option>
+    </select>
   </div>
 
   <!--
@@ -244,25 +216,23 @@
       1 = unset
       2 = no
   -->
-  <div id="noReqContainer" class="hidden">
-    <div class="modifierSliderGroup">
-      <div class="modifierCenterLabel">No Req?</div>
-      <div class="noReqSliderWrap">
-        <span>Yes</span>
-        <input
-          type="range"
-          id="no_req_slider"
-          min="0"
-          max="2"
-          step="1"
-          value="1"
-          oninput="noReqChanged()"
-        >
-        <span>No</span>
-      </div>
-    </div>
+ <div id="noReqContainer" class="hidden">
+  <label for="no_req_slider"><strong>No Req?</strong></label>
+  <div class="noReqSliderWrap">
+    <span>Yes</span>
+    <input
+      type="range"
+      id="no_req_slider"
+      min="0"
+      max="2"
+      step="1"
+      value="1"
+      oninput="noReqChanged()"
+    >
+    <span>No</span>
   </div>
-
+</div>
+  
   <!--
     ============================================================
     STAFF FIELDS
@@ -386,11 +356,11 @@
     <label>Miscellaneous logic placeholder</label>
   </div>
 
-  <div id="prefixPlaceholder" class="hidden">
+  <div id="prefixPlaceholder" class="itemFields hidden">
     <label>Prefix logic placeholder</label>
   </div>
 
-  <div id="suffixPlaceholder" class="hidden">
+  <div id="suffixPlaceholder" class="itemFields hidden">
     <label>Suffix logic placeholder</label>
   </div>
 
@@ -1018,33 +988,13 @@
       2 = suffix
     */
     function getModifierTypeValue() {
-      const slider = document.getElementById("modifier_type_slider");
-      if (!slider) return "";
-
-      if (slider.value === "0") return "prefix";
-      if (slider.value === "1") return "weapon";
-      if (slider.value === "2") return "suffix";
-      return "";
+      const select = document.getElementById("modifierType");
+      if (!select) return "";
+      return select.value || "";
     }
 
     function usesModifierTypeSlider(type) {
       return MODIFIER_SUPPORTED_TYPES.includes(type);
-    }
-
-    function updateModifierCenterLabel() {
-      const type = document.getElementById("itemType").value;
-      const labelEl = document.getElementById("modifierCenterLabel");
-      if (!labelEl) return;
-
-      const names = {
-        staff: "Staff",
-        axe: "Axe",
-        sword: "Sword",
-        hammer: "Hammer",
-        bow: "Bow"
-      };
-
-      labelEl.innerText = names[type] || "";
     }
 
     /*
@@ -1059,8 +1009,8 @@
 
       document.getElementById("no_req_slider").value = "1";
 
-      const modifierSlider = document.getElementById("modifier_type_slider");
-      if (modifierSlider) modifierSlider.value = "1";
+      const modifierSelect = document.getElementById("modifierType");
+      if (modifierSelect) modifierSelect.value = "";
 
       const axePiercing = document.getElementById("axe_piercing");
       const swordShort = document.getElementById("sword_short");
@@ -1160,40 +1110,29 @@
       const modifierTypeContainer = document.getElementById("modifierTypeContainer");
       const checkButton = document.getElementById("checkItemButton");
       const martialSharedFields = document.getElementById("martialSharedFields");
-
+    
       resetAllFields();
-
+    
       document.querySelectorAll(".itemFields").forEach(div => {
         div.classList.add("hidden");
       });
-
+    
       document.getElementById("prefixPlaceholder").classList.add("hidden");
       document.getElementById("suffixPlaceholder").classList.add("hidden");
-
+    
       noReqContainer.classList.add("hidden");
       modifierTypeContainer.classList.add("hidden");
       martialSharedFields.classList.add("hidden");
       checkButton.classList.add("hidden");
-
+    
       if (!type) {
         updateSpecialQuestionVisibility();
         updateItemDisclaimer();
         return;
       }
-
+    
       if (usesModifierTypeSlider(type)) {
         modifierTypeContainer.classList.remove("hidden");
-        updateModifierCenterLabel();
-
-        if (getModifierTypeValue() === "weapon") {
-          noReqContainer.classList.remove("hidden");
-        } else if (getModifierTypeValue() === "prefix") {
-          document.getElementById("prefixPlaceholder").classList.remove("hidden");
-        } else if (getModifierTypeValue() === "suffix") {
-          document.getElementById("suffixPlaceholder").classList.remove("hidden");
-        }
-
-        checkButton.classList.remove("hidden");
       } else if (PLACEHOLDER_TYPES.includes(type)) {
         document.querySelectorAll(".itemFields").forEach(div => {
           const types = div.dataset.type ? div.dataset.type.split(",") : [];
@@ -1201,7 +1140,7 @@
         });
         checkButton.classList.remove("hidden");
       }
-
+    
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
@@ -1219,41 +1158,42 @@
       const martialSharedFields = document.getElementById("martialSharedFields");
       const prefixPlaceholder = document.getElementById("prefixPlaceholder");
       const suffixPlaceholder = document.getElementById("suffixPlaceholder");
-
+    
       document.querySelectorAll(".itemFields").forEach(div => {
         div.classList.add("hidden");
       });
-
+    
       noReqContainer.classList.add("hidden");
       martialSharedFields.classList.add("hidden");
       prefixPlaceholder.classList.add("hidden");
       suffixPlaceholder.classList.add("hidden");
-
+    
       document.getElementById("result").innerText = "";
       document.getElementById("debug").innerText = "";
-
+    
       if (!type) {
         updateSpecialQuestionVisibility();
         updateItemDisclaimer();
         return;
       }
-
-      updateModifierCenterLabel();
-
+    
       if (modifierType === "weapon") {
         noReqContainer.classList.remove("hidden");
+        checkButton.classList.remove("hidden");
       } else if (modifierType === "prefix") {
         prefixPlaceholder.classList.remove("hidden");
+        checkButton.classList.remove("hidden");
       } else if (modifierType === "suffix") {
         suffixPlaceholder.classList.remove("hidden");
+        checkButton.classList.remove("hidden");
+      } else {
+        checkButton.classList.add("hidden");
       }
-
-      checkButton.classList.remove("hidden");
-
+    
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
-
+    
     /*
       ============================================================
       NO-REQ CHANGE HANDLER
@@ -1944,3 +1884,4 @@
   </script>
 </body>
 </html>
+
