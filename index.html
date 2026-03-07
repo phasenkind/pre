@@ -551,9 +551,8 @@ function getHardcodedStaffTier(criteria) {
 
   if (
     (premiumStaffAttr.has(criteria.attr) && criteria.hsr === "13" && criteria.hctPercent === "18") ||
-    (premiumStaffAttr.has(criteria.attr) && criteria.hsr === "14" && criteria.hctPercent === "18") ||
-    (normalStaffAttr.has(criteria.attr) && criteria.hsr === "14" && criteria.hctPercent === "18") ||
-    (criteria.attr === "generic" && criteria.hsr === "14" && criteria.hctPercent === "9")
+    (criteria.hsr === "14" && criteria.hctPercent === "18") ||
+    (criteria.hsr === "14" && criteria.hctPercent === "9")
   ) {
     return "Collectable";
   }
@@ -1230,6 +1229,7 @@ function getHardcodedStaffTier(criteria) {
   </script>
 </body>
 </html>
+
 
 
 
