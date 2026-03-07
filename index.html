@@ -1814,6 +1814,12 @@
       let result;
 
       if (usesModifierTypeSlider(type)) {
+        if (!modifierType) {
+          resultEl.innerText = "Please choose Base Weapon, Prefix Modifier, or Suffix Modifier.";
+          debugEl.innerText = "";
+          return;
+        }
+
         if (modifierType === "prefix") {
           resultEl.innerText = "Prefix modifier logic has not been added yet.";
           debugEl.innerText = "";
@@ -1883,5 +1889,6 @@
   </script>
 </body>
 </html>
+
 
 
