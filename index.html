@@ -526,7 +526,7 @@
           skin: ["horn", "flat", "recurve", "long"],
           damage: "9-13",
           inherent: ["above50", "stance"],
-          percent: "",
+          percent: "14",
           tier: "Highly Collectable"
         },
         {
@@ -1016,7 +1016,7 @@
       }
 
       if (type === "axe") {
-        messages.push("Sickles and Tribal Axes carry value at 6-15+ damage with inherent, 6-16 damage, or 6-12 damage without req and with an inherent modifier.");
+        messages.push("Blue Sickles and Tribal Axes carry value at 6-12 no-req with an inherent, 6-15 with an inherent, and 6-16 regardless of inherent.");
       }
 
       if (messages.length === 0) {
@@ -1592,10 +1592,10 @@
       2. normalize criteria
       3. check hardcoded martial rules first
       4. if req, use req martial score system
-      5. otherwise fall back to the temporary old mapping system
-
-      This gives you the same kind of foundation for martial weapons
-      that staffs already have.
+      5. otherwise return Junk for unmatched no-req items
+    
+      This gives martial weapons the same hardcoded-first structure
+      that staffs already use.
     */
     function calculateMartialTier(type) {
     
@@ -1721,6 +1721,7 @@
   </script>
 </body>
 </html>
+
 
 
 
