@@ -818,39 +818,75 @@
       if (pct === "15") return 2;
       return 1;
     }
+    
+/*
+  ============================================================
+  HARDcoded STAFF TIERS
+  ============================================================
+  Handles special-case staff outputs directly instead of relying
+  on numeric scoring.
 
-    /*
-      ============================================================
-      HARDcoded NO-REQ STAFF TIERS
-      ============================================================
-      This completely handles the special no-req staff cases you
-      wanted to rely on directly instead of scoring them numerically.
-    */
-    function getHardcodedStaffTier(criteria) {
-      const isNoReq = criteria.noReq === "yes";
-
-      if (!isNoReq) return "";
-
-      if (
-        premiumStaffAttr.has(criteria.attr) &&
-        criteria.energy === "6" &&
-        criteria.hsr === "14" &&
-        criteria.hctPercent === "18"
-      ) {
-        return "Highly Collectable";
-      }
-
-      if (
-        (premiumStaffAttr.has(criteria.attr) && criteria.energy === "6" && criteria.hsr === "13" && criteria.hctPercent === "18") ||
-        (premiumStaffAttr.has(criteria.attr) && criteria.energy === "5" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
+  Currently used for:
+  - collector-attribute HCT staffs with premium collector rolls
+  - special no-req HCT staff combinations
+*/
+  function getHardcodedStaffTier(criteria) {
+    const isNoReq = criteria.noReq === "yes";
+    const isCollector = collectorStaffAttr.has(criteria.attr);
+    const isPremium = premiumStaffAttr.has(criteria.attr);
+    const isHct = criteria.inherent === "hct";
+  
+    if (
+      isHct &&
+      isCollector &&
+      criteria.hsr === "16" &&
+      criteria.hctPercent === "18"
+    ) {
+      return "Highly Collectable";
+    }
+  
+    if (
+      isCollector &&
+      criteria.hsr === "16"
+    ) {
+      return "Collectable";
+    }
+  
+    if (
+      isHct &&
+      isCollector &&
+      criteria.hsr === "15" &&
+      criteria.hctPercent === "18"
+    ) {
+      return "Collectable";
+    }
+  
+    if (!isNoReq) return "";
+  
+    if (
+      isHct &&
+      isPremium &&
+      criteria.energy === "6" &&
+      criteria.hsr === "14" &&
+      criteria.hctPercent === "18"
+    ) {
+      return "Highly Collectable";
+    }
+  
+    if (
+      isHct &&
+      (
+        (isPremium && criteria.energy === "6" && criteria.hsr === "13" && criteria.hctPercent === "18") ||
+        (isPremium && criteria.energy === "5" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
         (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
         (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "9")
-      ) {
-        return "Collectable";
-      }
-
-      return "";
+      )
+    ) {
+      return "Collectable";
     }
+  
+    return "";
+  }
 
     /*
       ============================================================
@@ -932,32 +968,6 @@
       if (score >= 2000) return "Mid Tier";
       if (score >= 50) return "Low End";
       return "Junk";
-    }
-
-    /*
-      ============================================================
-      COLLECTOR STAFF REMAPPING
-      ============================================================
-      Collector-attribute req staffs get remapped away from the
-      normal req-staff labels:
-      - High End / God Tier -> Highly Collectable
-      - Mid Tier -> Collectable
-
-      No-req staffs are excluded because those are already hardcoded.
-    */
-    function remapCollectorStaffTier(criteria, tier) {
-      if (criteria.noReq === "yes") return tier;
-      if (!collectorStaffAttr.has(criteria.attr)) return tier;
-
-      if (tier === "God Tier" || tier === "High End") {
-        return "Highly Collectable";
-      }
-
-      if (tier === "Mid Tier") {
-        return "Collectable";
-      }
-
-      return tier;
     }
 
     /*
@@ -1720,17 +1730,15 @@
         };
       }
 
-      const scoreResult = scoreStaff(normalizedCriteria);
-
-      let tier = staffScoreToTier(scoreResult.totalScore);
-      tier = remapCollectorStaffTier(normalizedCriteria, tier);
-
-      return {
-        tier,
-        score: scoreResult.totalScore,
-        breakdown: scoreResult.breakdown
-      };
-    }
+    const scoreResult = scoreStaff(normalizedCriteria);
+    
+    const tier = staffScoreToTier(scoreResult.totalScore);
+    
+    return {
+      tier,
+      score: scoreResult.totalScore,
+      breakdown: scoreResult.breakdown
+    };
 
     /*
       ============================================================
@@ -1889,6 +1897,7 @@
   </script>
 </body>
 </html>
+
 
 
 
