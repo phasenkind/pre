@@ -456,51 +456,52 @@
     const MARTIAL_TYPES = ["axe", "sword", "hammer", "bow"];
     const PLACEHOLDER_TYPES = ["wand", "shield", "focus", "misc"];
     const MODIFIER_SUPPORTED_TYPES = ["staff", "axe", "sword", "hammer", "bow"];
-
+   
     /*
       ============================================================
       HARDcoded MARTIAL TIER FOUNDATION
       ============================================================
       This mirrors the staff setup and is the place to add exact
       special-case martial results later.
-
+    
       Intended use:
       - especially for no-req martial exceptions
       - but can also be used for req martial edge cases if wanted
-
+    
       Example entry shape:
       { noReq: "yes", damage: "6-12", inherent: "above50", percent: "14", skin: "", tier: "Collectable" }
-
+    
       For bow, skin should be "horn", "flat", etc.
       For axe, skin should be "" or "piercing".
       For sword, skin should be "" or "short".
       For hammer, skin is usually "".
     */
-    axe: [
-      {
-        noReq: "yes",
-        damage: "6-12",
-        inherent: "above50",
-        percent: "14",
-        tier: "Highly Collectable"
-      },
-      {
-        noReq: "yes",
-        damage: "6-12",
-        inherent: "hexed",
-        percent: "18",
-        tier: "Highly Collectable"
-      },
-      {
-        noReq: "yes",
-        damage: ["5-10", "6-12"],
-        inherent: ["above50", "below50", "enchanted", "hexed", "stance", "hexedfoes"],
-        percent: "",
-        tier: "Collectable"
-      }
-    ],
+    const hardcodedMartialTierMappings = {
+      axe: [
+        {
+          noReq: "yes",
+          damage: "6-12",
+          inherent: "above50",
+          percent: "14",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          damage: "6-12",
+          inherent: "hexed",
+          percent: "18",
+          tier: "Highly Collectable"
+        },
+        {
+          noReq: "yes",
+          damage: ["5-10", "6-12"],
+          inherent: ["above50", "below50", "enchanted", "hexed", "stance", "hexedfoes"],
+          percent: "",
+          tier: "Collectable"
+        }
+      ],
 
-      sword: [
+  sword: [
         {
           noReq: "yes",
           damage: "8-10",
@@ -1896,6 +1897,7 @@
   </script>
 </body>
 </html>
+
 
 
 
