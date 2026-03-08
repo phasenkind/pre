@@ -1696,9 +1696,8 @@
       Order:
       1. validate
       2. normalize HCT-only fields
-      3. check hardcoded no-req staff rules
-      4. otherwise score req staff numerically
-      5. remap collector req staffs if needed
+      3. check hardcoded staff rules first
+      4. otherwise score staff numerically
     */
     function calculateStaffTier() {
       const criteria = getStaffCriteria();
@@ -1739,6 +1738,7 @@
       score: scoreResult.totalScore,
       breakdown: scoreResult.breakdown
     };
+  }
 
     /*
       ============================================================
@@ -1897,6 +1897,7 @@
   </script>
 </body>
 </html>
+
 
 
 
