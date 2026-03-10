@@ -233,27 +233,28 @@
     Staffs use requirement, HSR, Energy, inherent type, and
     optionally HCT attribute + HCT percent if the inherent is HCT.
   -->
-  <div class="itemFields hidden" data-type="staff">
-    <label>Requirement:</label>
-    <select id="staff_req" onchange="staffRequirementChanged()">
-      <option value="">-- Select --</option>
-      <option value="none">None</option>
-      <option value="air">Air</option>
-      <option value="blood">Blood</option>
-      <option value="curses">Curses</option>
-      <option value="death">Death</option>
-      <option value="divine">Divine Favor</option>
-      <option value="dom">Domination</option>
-      <option value="earth">Earth</option>
-      <option value="fire">Fire</option>
-      <option value="heal">Heal</option>
-      <option value="illu">Illusion</option>
-      <option value="inspi">Inspiration</option>
-      <option value="prot">Prot</option>
-      <option value="smite">Smite</option>
-      <option value="water">Water</option>
-    </select>
+<div class="itemFields hidden" data-type="staff">
+  <label>Requirement:</label>
+  <select id="staff_req" onchange="staffRequirementChanged()">
+    <option value="">-- Select --</option>
+    <option value="none">None</option>
+    <option value="air">Air</option>
+    <option value="blood">Blood</option>
+    <option value="curses">Curses</option>
+    <option value="death">Death</option>
+    <option value="divine">Divine Favor</option>
+    <option value="dom">Domination</option>
+    <option value="earth">Earth</option>
+    <option value="fire">Fire</option>
+    <option value="heal">Heal</option>
+    <option value="illu">Illusion</option>
+    <option value="inspi">Inspiration</option>
+    <option value="prot">Prot</option>
+    <option value="smite">Smite</option>
+    <option value="water">Water</option>
+  </select>
 
+  <div id="staffMainFields" class="hidden">
     <label>HSR %:</label>
     <select id="staff_hsr">
       <option value="">-- Select --</option>
@@ -286,6 +287,7 @@
       </select>
     </div>
   </div>
+</div>
 
   <!--
     ============================================================
@@ -1089,12 +1091,13 @@
 
       if (axePiercing) axePiercing.checked = false;
       if (swordShort) swordShort.checked = false;
-
+      
+      document.getElementById("staffMainFields").classList.add("hidden");
       document.getElementById("hctAttributeDiv").classList.add("hidden");
       document.getElementById("hctPercentDiv").classList.add("hidden");
       document.getElementById("staff_attr").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("staff_hct_percent").innerHTML = '<option value="">-- Select --</option>';
-
+      
       document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("staff_energy").innerHTML = '<option value="">-- Select --</option>';
 
@@ -1251,17 +1254,16 @@
         updateItemDisclaimer();
         return;
       }
-    
+          
       if (modifierType === "weapon") {
         checkButton.classList.remove("hidden");
-
+      
         if (type === "staff") {
           document.querySelector('[data-type="staff"]').classList.remove("hidden");
-          populateHSR();
-          populateEnergy();
         } else if (MARTIAL_TYPES.includes(type)) {
           noReqContainer.classList.remove("hidden");
         }
+      }
       } else if (modifierType === "prefix") {
         prefixPlaceholder.classList.remove("hidden");
         checkButton.classList.remove("hidden");
@@ -1330,13 +1332,28 @@
       ============================================================
     */
     function staffRequirementChanged() {
-      populateHSR();
-      populateEnergy();
-
-      if (document.getElementById("staff_inherent").value === "hct") {
-        populateStaffHctAttributes();
+      const req = getStaffReqValue();
+      const staffMainFields = document.getElementById("staffMainFields");
+    
+      if (!req) {
+        staffMainFields.classList.add("hidden");
+        document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("staff_energy").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("staff_inherent").value = "";
+        document.getElementById("hctAttributeDiv").classList.add("hidden");
+        document.getElementById("hctPercentDiv").classList.add("hidden");
+        document.getElementById("staff_attr").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("staff_hct_percent").innerHTML = '<option value="">-- Select --</option>';
+      } else {
+        staffMainFields.classList.remove("hidden");
+        populateHSR();
+        populateEnergy();
+    
+        if (document.getElementById("staff_inherent").value === "hct") {
+          populateStaffHctAttributes();
+        }
       }
-
+    
       document.getElementById("result").innerText = "";
       document.getElementById("debug").innerText = "";
     }
@@ -1994,3 +2011,4 @@
   </script>
 </body>
 </html>
+
