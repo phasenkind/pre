@@ -771,180 +771,41 @@
       req = requirement attribute score
       hct = HCT attribute score for that req
     */
-    const staffAttributeScoreTable = {
-      none: {
-        req: 1,
-        hct: {
-          generic: 1,
-          air: 1,
-          blood: 1,
-          curses: 1,
-          death: 1,
-          divine: 1,
-          dom: 1,
-          earth: 1,
-          fire: 1,
-          heal: 1,
-          illu: 1,
-          inspi: 1,
-          prot: 1,
-          smite: 1,
-          water: 1
-        }
-      },
-
-      air: {
-        req: 1,
-        hct: {
-          generic: 1,
-          air: 1,
-          earth: 1,
-          fire: 1,
-          water: 1
-        }
-      },
-
-      blood: {
-        req: 1,
-        hct: {
-          generic: 1,
-          blood: 1,
-          curses: 1,
-          death: 1
-        }
-      },
-
-      curses: {
-        req: 1,
-        hct: {
-          generic: 1,
-          blood: 1,
-          curses: 1,
-          death: 1
-        }
-      },
-
-      death: {
-        req: 1,
-        hct: {
-          generic: 1,
-          blood: 1,
-          curses: 1,
-          death: 1
-        }
-      },
-
-      divine: {
-        req: 1,
-        hct: {
-          generic: 1,
-          divine: 1,
-          heal: 1,
-          prot: 1,
-          smite: 1
-        }
-      },
-
-      dom: {
-        req: 1,
-        hct: {
-          generic: 1,
-          dom: 1,
-          illu: 1,
-          inspi: 1
-        }
-      },
-
-      earth: {
-        req: 1,
-        hct: {
-          generic: 1,
-          air: 1,
-          earth: 1,
-          fire: 1,
-          water: 1
-        }
-      },
-
-      fire: {
-        req: 1,
-        hct: {
-          generic: 1,
-          air: 1,
-          earth: 1,
-          fire: 1,
-          water: 1
-        }
-      },
-
-      heal: {
-        req: 1,
-        hct: {
-          generic: 1,
-          divine: 1,
-          heal: 1,
-          prot: 1,
-          smite: 1
-        }
-      },
-
-      illu: {
-        req: 1,
-        hct: {
-          generic: 1,
-          dom: 1,
-          illu: 1,
-          inspi: 1
-        }
-      },
-
-      inspi: {
-        req: 1,
-        hct: {
-          generic: 1,
-          dom: 1,
-          illu: 1,
-          inspi: 1
-        }
-      },
-
-      prot: {
-        req: 1,
-        hct: {
-          generic: 1,
-          divine: 1,
-          heal: 1,
-          prot: 1,
-          smite: 1
-        }
-      },
-
-      smite: {
-        req: 1,
-        hct: {
-          generic: 1,
-          divine: 1,
-          heal: 1,
-          prot: 1,
-          smite: 1
-        }
-      },
-
-      water: {
-        req: 1,
-        hct: {
-          generic: 1,
-          air: 1,
-          earth: 1,
-          fire: 1,
-          water: 1
-        }
-      }
+    const staffReqAttributeScores = {
+      none: 1,
+      air: 1,
+      curses: 1,
+      death: 1,
+      divine: 1,
+      dom: 1,
+      earth: 1,
+      fire: 1,
+      illu: 1,
+      smite: 1,
+      water: 1
+    };
+    
+    const staffHctAttributeScores = {
+      generic: 1,
+      air: 1,
+      blood: 1,
+      curses: 1,
+      death: 1,
+      divine: 1,
+      dom: 1,
+      earth: 1,
+      fire: 1,
+      heal: 1,
+      illu: 1,
+      inspi: 1,
+      prot: 1,
+      smite: 1,
+      water: 1
     };
 
     const premiumStaffAttr = new Set(["fire", "death"]);
     const normalStaffAttr = new Set(["blood", "curses", "smite", "heal", "dom"]);
-    const collectorStaffAttr = new Set(["air", "water", "earth", "prot", "divine", "illu"]);
+    const collectorStaffAttr = new Set(["air", "water", "earth", "prot", "divine", "illu", "inspi"]);
 
     /*
       ============================================================
@@ -1000,14 +861,19 @@
       ============================================================
     */
     function getStaffReqAttributeScore(req) {
-      if (!req) return 1;
-      return staffAttributeScoreTable[req]?.req ?? 1;
-    }
-
-    function getStaffHctAttributeScore(req, attr) {
-      if (!req || !attr) return 1;
-      return staffAttributeScoreTable[req]?.hct?.[attr] ?? 1;
-    }
+    if (!req) return 1;
+    return staffReqAttributeScores[req] ?? 1;
+  }
+  
+  function getStaffHctAttributeScore(attr) {
+    if (!attr) return 1;
+    return staffHctAttributeScores[attr] ?? 1;
+  }
+  
+  function getStaffSameAttributeBonus(req, attr) {
+    if (!req || !attr) return 1;
+    return req === attr ? 2 : 1;
+  }
 
     function getStaffHctPercentScore(attr, pct) {
       if (!pct) return 1;
@@ -1118,36 +984,40 @@
         hsrScore *
         reqAttributeScore *
         hctAttributeScore *
+        sameAttributeBonus *
         hctPercentScore *
         energyBonus
     */
     function scoreStaff(criteria) {
       const hsrScore = staffHsrScores[criteria.hsr] ?? 0;
       const energyBonus = staffEnergyBonuses[criteria.energy] ?? 1;
-
       const reqAttributeScore = getStaffReqAttributeScore(criteria.req);
-
+    
       let hctAttributeScore = 1;
+      let sameAttributeBonus = 1;
       let hctPercentScore = 1;
-
+    
       if (criteria.inherent === "hct") {
-        hctAttributeScore = getStaffHctAttributeScore(criteria.req, criteria.attr);
+        hctAttributeScore = getStaffHctAttributeScore(criteria.attr);
+        sameAttributeBonus = getStaffSameAttributeBonus(criteria.req, criteria.attr);
         hctPercentScore = getStaffHctPercentScore(criteria.attr, criteria.hctPercent);
       }
-
+    
       const totalScore =
         hsrScore *
         reqAttributeScore *
         hctAttributeScore *
+        sameAttributeBonus *
         hctPercentScore *
         energyBonus;
-
+    
       return {
         totalScore,
         breakdown: {
           hsrScore,
           reqAttributeScore,
           hctAttributeScore,
+          sameAttributeBonus,
           hctPercentScore,
           energyBonus
         }
@@ -1982,6 +1852,7 @@
             hsrScore: "hardcoded",
             reqAttributeScore: "hardcoded",
             hctAttributeScore: "hardcoded",
+            sameAttributeBonus: "hardcoded",
             hctPercentScore: "hardcoded",
             energyBonus: "hardcoded"
           }
@@ -2112,14 +1983,15 @@
 
       if (result.breakdown) {
         if (type === "staff") {
-          debugEl.innerText =
-            `⚠ Tier attribution logic is still being finalized.\n\n` +
-            `Score: ${result.score} | ` +
-            `HSR: ${result.breakdown.hsrScore} | ` +
-            `Req Attr: ${result.breakdown.reqAttributeScore} | ` +
-            `HCT Attr: ${result.breakdown.hctAttributeScore} | ` +
-            `HCT%: ${result.breakdown.hctPercentScore} | ` +
-            `Energy Mult: ${result.breakdown.energyBonus}`;
+        debugEl.innerText =
+          `⚠ Tier attribution logic is still being finalized.\n\n` +
+          `Score: ${result.score} | ` +
+          `HSR: ${result.breakdown.hsrScore} | ` +
+          `Req Attr: ${result.breakdown.reqAttributeScore} | ` +
+          `HCT Attr: ${result.breakdown.hctAttributeScore} | ` +
+          `Same Attr: ${result.breakdown.sameAttributeBonus} | ` +
+          `HCT%: ${result.breakdown.hctPercentScore} | ` +
+          `Energy Mult: ${result.breakdown.energyBonus}`;
           return;
         }
 
@@ -2145,3 +2017,4 @@
   </script>
 </body>
 </html>
+
