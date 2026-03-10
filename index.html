@@ -8,8 +8,6 @@
       ============================================================
       GLOBAL PAGE STYLING
       ============================================================
-      Dark theme, compact form layout, and helper classes for
-      hiding sections, disclaimers, and bottom links.
     */
     body {
       background: black;
@@ -203,91 +201,84 @@
     ============================================================
     MARTIAL NO-REQ TOGGLE
     ============================================================
-    Used for axe / sword / hammer / bow only.
-    Slider values:
-      0 = yes
-      1 = unset
-      2 = no
   -->
- <div id="noReqContainer" class="hidden">
-  <label for="no_req_slider"><strong>No Req?</strong></label>
-  <div class="noReqSliderWrap">
-    <span>Yes</span>
-    <input
-      type="range"
-      id="no_req_slider"
-      min="0"
-      max="2"
-      step="1"
-      value="1"
-      oninput="noReqChanged()"
-    >
-    <span>No</span>
+  <div id="noReqContainer" class="hidden">
+    <label for="no_req_slider"><strong>No Req?</strong></label>
+    <div class="noReqSliderWrap">
+      <span>Yes</span>
+      <input
+        type="range"
+        id="no_req_slider"
+        min="0"
+        max="2"
+        step="1"
+        value="1"
+        oninput="noReqChanged()"
+      >
+      <span>No</span>
+    </div>
   </div>
-</div>
   
   <!--
     ============================================================
     STAFF FIELDS
     ============================================================
-    Staffs use requirement, HSR, Energy, inherent type, and
-    optionally HCT attribute + HCT percent if the inherent is HCT.
   -->
-<div class="itemFields hidden" data-type="staff">
-  <label>Requirement:</label>
-  <select id="staff_req" onchange="staffRequirementChanged()">
-    <option value="">-- Select --</option>
-    <option value="none">None</option>
-    <option value="air">Air</option>
-    <option value="blood">Blood</option>
-    <option value="curses">Curses</option>
-    <option value="death">Death</option>
-    <option value="divine">Divine Favor</option>
-    <option value="dom">Domination</option>
-    <option value="earth">Earth</option>
-    <option value="fire">Fire</option>
-    <option value="heal">Heal</option>
-    <option value="illu">Illusion</option>
-    <option value="inspi">Inspiration</option>
-    <option value="prot">Prot</option>
-    <option value="smite">Smite</option>
-    <option value="water">Water</option>
-  </select>
-
-  <div id="staffMainFields" class="hidden">
-    <label>HSR %:</label>
-    <select id="staff_hsr">
-      <option value="">-- Select --</option>
-    </select>
-
-    <label>Energy:</label>
-    <select id="staff_energy">
-      <option value="">-- Select --</option>
-    </select>
-
-    <label>Inherent Modifier:</label>
-    <select id="staff_inherent" onchange="inherentChanged()">
+  <div class="itemFields hidden" data-type="staff">
+    <label>Requirement:</label>
+    <select id="staff_req" onchange="staffRequirementChanged()">
       <option value="">-- Select --</option>
       <option value="none">None</option>
-      <option value="reduces_duration">Reduces condition duration</option>
-      <option value="hct">HCT</option>
+      <option value="air">Air</option>
+      <option value="blood">Blood</option>
+      <option value="curses">Curses</option>
+      <option value="death">Death</option>
+      <option value="divine">Divine Favor</option>
+      <option value="dom">Domination</option>
+      <option value="earth">Earth</option>
+      <option value="fire">Fire</option>
+      <option value="heal">Heal</option>
+      <option value="illu">Illusion</option>
+      <option value="inspi">Inspiration</option>
+      <option value="prot">Prot</option>
+      <option value="smite">Smite</option>
+      <option value="water">Water</option>
     </select>
 
-    <div id="hctAttributeDiv" class="hidden compact">
-      <label>HCT Attribute:</label>
-      <select id="staff_attr" onchange="hctAttributeChanged()">
+    <div id="staffMainFields" class="hidden">
+      <label>HSR %:</label>
+      <select id="staff_hsr">
         <option value="">-- Select --</option>
       </select>
-    </div>
 
-    <div id="hctPercentDiv" class="hidden compact">
-      <label>HCT %:</label>
-      <select id="staff_hct_percent">
+      <label>Energy:</label>
+      <select id="staff_energy">
         <option value="">-- Select --</option>
       </select>
+
+      <label>Inherent Modifier:</label>
+      <select id="staff_inherent" onchange="inherentChanged()">
+        <option value="">-- Select --</option>
+        <option value="none">None</option>
+        <option value="reduces_duration">Reduces condition duration</option>
+        <option value="hct">HCT</option>
+      </select>
+
+      <div id="hctAttributeDiv" class="hidden compact">
+        <label>HCT Attribute:</label>
+        <select id="staff_attr" onchange="hctAttributeChanged()">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+
+      <div id="hctPercentDiv" class="hidden compact">
+        <label>HCT %:</label>
+        <select id="staff_hct_percent">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
     </div>
   </div>
-</div>
 
   <!--
     ============================================================
@@ -724,13 +715,9 @@
 
     /*
       ============================================================
-      STAFF ATTRIBUTE GROUPS
+      STAFF FAMILY / FILTERING HELPERS
       ============================================================
     */
-    const premiumStaffAttr = new Set(["fire", "death"]);
-    const normalStaffAttr = new Set(["blood", "curses", "smite", "heal", "dom"]);
-    const collectorStaffAttr = new Set(["air", "water", "earth", "prot", "divine", "illu"]);
-
     const ELEMENTAL_STAFF_ATTRS = ["air", "earth", "fire", "water"];
     const NECRO_STAFF_ATTRS = ["blood", "curses", "death"];
     const MONK_STAFF_ATTRS = ["divine", "heal", "prot", "smite"];
@@ -776,34 +763,195 @@
       inspi: ["generic", ...MESMER_STAFF_ATTRS]
     };
 
-    function createBaselineStaffReqHctSynergy(optionsByReq) {
-      const result = {};
+    /*
+      ============================================================
+      STAFF SCORING TABLES
+      ============================================================
+      Fill in the numbers however you want.
+      req = requirement attribute score
+      hct = HCT attribute score for that req
+    */
+    const staffAttributeScoreTable = {
+      none: {
+        req: 1,
+        hct: {
+          generic: 1,
+          air: 1,
+          blood: 1,
+          curses: 1,
+          death: 1,
+          divine: 1,
+          dom: 1,
+          earth: 1,
+          fire: 1,
+          heal: 1,
+          illu: 1,
+          inspi: 1,
+          prot: 1,
+          smite: 1,
+          water: 1
+        }
+      },
 
-      for (const [req, attrs] of Object.entries(optionsByReq)) {
-        result[req] = {};
-        attrs.forEach(attr => {
-          result[req][attr] = 1;
-        });
+      air: {
+        req: 1,
+        hct: {
+          generic: 1,
+          air: 1,
+          earth: 1,
+          fire: 1,
+          water: 1
+        }
+      },
+
+      blood: {
+        req: 1,
+        hct: {
+          generic: 1,
+          blood: 1,
+          curses: 1,
+          death: 1
+        }
+      },
+
+      curses: {
+        req: 1,
+        hct: {
+          generic: 1,
+          blood: 1,
+          curses: 1,
+          death: 1
+        }
+      },
+
+      death: {
+        req: 1,
+        hct: {
+          generic: 1,
+          blood: 1,
+          curses: 1,
+          death: 1
+        }
+      },
+
+      divine: {
+        req: 1,
+        hct: {
+          generic: 1,
+          divine: 1,
+          heal: 1,
+          prot: 1,
+          smite: 1
+        }
+      },
+
+      dom: {
+        req: 1,
+        hct: {
+          generic: 1,
+          dom: 1,
+          illu: 1,
+          inspi: 1
+        }
+      },
+
+      earth: {
+        req: 1,
+        hct: {
+          generic: 1,
+          air: 1,
+          earth: 1,
+          fire: 1,
+          water: 1
+        }
+      },
+
+      fire: {
+        req: 1,
+        hct: {
+          generic: 1,
+          air: 1,
+          earth: 1,
+          fire: 1,
+          water: 1
+        }
+      },
+
+      heal: {
+        req: 1,
+        hct: {
+          generic: 1,
+          divine: 1,
+          heal: 1,
+          prot: 1,
+          smite: 1
+        }
+      },
+
+      illu: {
+        req: 1,
+        hct: {
+          generic: 1,
+          dom: 1,
+          illu: 1,
+          inspi: 1
+        }
+      },
+
+      inspi: {
+        req: 1,
+        hct: {
+          generic: 1,
+          dom: 1,
+          illu: 1,
+          inspi: 1
+        }
+      },
+
+      prot: {
+        req: 1,
+        hct: {
+          generic: 1,
+          divine: 1,
+          heal: 1,
+          prot: 1,
+          smite: 1
+        }
+      },
+
+      smite: {
+        req: 1,
+        hct: {
+          generic: 1,
+          divine: 1,
+          heal: 1,
+          prot: 1,
+          smite: 1
+        }
+      },
+
+      water: {
+        req: 1,
+        hct: {
+          generic: 1,
+          air: 1,
+          earth: 1,
+          fire: 1,
+          water: 1
+        }
       }
+    };
 
-      return result;
-    }
-
-    /*
-      ============================================================
-      STAFF REQUIREMENT / HCT SYNERGY VALUES
-      ============================================================
-      Baseline set to 1 everywhere for now.
-      Later you can manually adjust individual req / HCT pairs here.
-    */
-    const staffReqHctSynergy = createBaselineStaffReqHctSynergy(staffReqToHctOptions);
+    const premiumStaffAttr = new Set(["fire", "death"]);
+    const normalStaffAttr = new Set(["blood", "curses", "smite", "heal", "dom"]);
+    const collectorStaffAttr = new Set(["air", "water", "earth", "prot", "divine", "illu"]);
 
     /*
       ============================================================
-      REQUIRED STAFF BASE SCORE TABLES
+      STAFF BASE SCORE TABLES
       ============================================================
     */
-    const staffReqHsrScores = {
+    const staffHsrScores = {
       "11": 1,
       "12": 1.5,
       "13": 2,
@@ -812,7 +960,7 @@
       "16": 24
     };
 
-    const staffReqEnergyBonuses = {
+    const staffEnergyBonuses = {
       "5": 1,
       "6": 1.5,
       "7": 2,
@@ -848,19 +996,20 @@
 
     /*
       ============================================================
-      SIMPLE VALUE HELPERS
+      STAFF SCORE HELPERS
       ============================================================
     */
-    function getStaffAttrBonus(attr) {
-      if (!attr) return 1;
-      if (attr === "generic") return 2;
-      if (premiumStaffAttr.has(attr)) return 8;
-      if (normalStaffAttr.has(attr)) return 4;
-      if (collectorStaffAttr.has(attr)) return 2;
-      return 1;
+    function getStaffReqAttributeScore(req) {
+      if (!req) return 1;
+      return staffAttributeScoreTable[req]?.req ?? 1;
     }
 
-    function getStaffHctPercentBonus(attr, pct) {
+    function getStaffHctAttributeScore(req, attr) {
+      if (!req || !attr) return 1;
+      return staffAttributeScoreTable[req]?.hct?.[attr] ?? 1;
+    }
+
+    function getStaffHctPercentScore(attr, pct) {
       if (!pct) return 1;
 
       if (attr === "generic") {
@@ -876,11 +1025,6 @@
       return 1;
     }
 
-    function getStaffReqHctBonus(req, attr) {
-      if (!req || !attr) return 1;
-      return staffReqHctSynergy[req]?.[attr] ?? 1;
-    }
-    
     /*
       ============================================================
       HARDcoded STAFF TIERS
@@ -891,7 +1035,7 @@
       const isCollector = collectorStaffAttr.has(criteria.attr);
       const isPremium = premiumStaffAttr.has(criteria.attr);
       const isHct = criteria.inherent === "hct";
-  
+
       if (
         isHct &&
         isCollector &&
@@ -900,14 +1044,14 @@
       ) {
         return "Highly Collectable";
       }
-  
+
       if (
         isCollector &&
         criteria.hsr === "16"
       ) {
         return "Collectable";
       }
-  
+
       if (
         isHct &&
         isCollector &&
@@ -916,9 +1060,9 @@
       ) {
         return "Collectable";
       }
-  
+
       if (!isNoReq) return "";
-  
+
       if (
         isHct &&
         isPremium &&
@@ -928,7 +1072,7 @@
       ) {
         return "Highly Collectable";
       }
-  
+
       if (
         isHct &&
         (
@@ -940,7 +1084,7 @@
       ) {
         return "Collectable";
       }
-  
+
       return "";
     }
 
@@ -968,51 +1112,51 @@
 
     /*
       ============================================================
-      REQUIRED STAFF SCORE FORMULA
+      STAFF SCORE FORMULA
       ============================================================
-      Formula:
-        hsrScore * (inherentMultiplier * attrBonus * hctPercentBonus * reqHctBonus) * energyBonus
+      totalScore =
+        hsrScore *
+        reqAttributeScore *
+        hctAttributeScore *
+        hctPercentScore *
+        energyBonus
     */
     function scoreStaff(criteria) {
-      const hsrScore = staffReqHsrScores[criteria.hsr] ?? 0;
-      const energyBonus = staffReqEnergyBonuses[criteria.energy] ?? 1;
+      const hsrScore = staffHsrScores[criteria.hsr] ?? 0;
+      const energyBonus = staffEnergyBonuses[criteria.energy] ?? 1;
 
-      let inherentMultiplier = 1;
-      let attrBonus = 1;
-      let hctPercentBonus = 1;
-      let reqHctBonus = 1;
+      const reqAttributeScore = getStaffReqAttributeScore(criteria.req);
 
-      if (criteria.inherent === "none") {
-        inherentMultiplier = 1;
-      } else if (criteria.inherent === "reduces_duration") {
-        inherentMultiplier = 1.2;
-      } else if (criteria.inherent === "hct") {
-        inherentMultiplier = 2;
-        attrBonus = getStaffAttrBonus(criteria.attr);
-        hctPercentBonus = getStaffHctPercentBonus(criteria.attr, criteria.hctPercent);
-        reqHctBonus = getStaffReqHctBonus(criteria.req, criteria.attr);
+      let hctAttributeScore = 1;
+      let hctPercentScore = 1;
+
+      if (criteria.inherent === "hct") {
+        hctAttributeScore = getStaffHctAttributeScore(criteria.req, criteria.attr);
+        hctPercentScore = getStaffHctPercentScore(criteria.attr, criteria.hctPercent);
       }
 
-      const modBlock = inherentMultiplier * attrBonus * hctPercentBonus * reqHctBonus;
-      const totalScore = hsrScore * modBlock * energyBonus;
+      const totalScore =
+        hsrScore *
+        reqAttributeScore *
+        hctAttributeScore *
+        hctPercentScore *
+        energyBonus;
 
       return {
         totalScore,
         breakdown: {
           hsrScore,
-          energyBonus,
-          inherentMultiplier,
-          attrBonus,
-          hctPercentBonus,
-          reqHctBonus,
-          modBlock
+          reqAttributeScore,
+          hctAttributeScore,
+          hctPercentScore,
+          energyBonus
         }
       };
     }
 
     /*
       ============================================================
-      REQUIRED STAFF SCORE -> TIER
+      STAFF SCORE -> TIER
       ============================================================
     */
     function staffScoreToTier(score) {
@@ -1052,10 +1196,6 @@
       return select.value || "";
     }
 
-    function isStaffNoReq() {
-      return getStaffReqValue() === "none";
-    }
-
     /*
       ============================================================
       MODIFIER TYPE HELPERS
@@ -1091,13 +1231,12 @@
 
       if (axePiercing) axePiercing.checked = false;
       if (swordShort) swordShort.checked = false;
-      
+
       document.getElementById("staffMainFields").classList.add("hidden");
       document.getElementById("hctAttributeDiv").classList.add("hidden");
       document.getElementById("hctPercentDiv").classList.add("hidden");
       document.getElementById("staff_attr").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("staff_hct_percent").innerHTML = '<option value="">-- Select --</option>';
-      
       document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("staff_energy").innerHTML = '<option value="">-- Select --</option>';
 
@@ -1188,27 +1327,27 @@
       const modifierTypeContainer = document.getElementById("modifierTypeContainer");
       const checkButton = document.getElementById("checkItemButton");
       const martialSharedFields = document.getElementById("martialSharedFields");
-    
+
       resetAllFields();
-    
+
       document.querySelectorAll(".itemFields").forEach(div => {
         div.classList.add("hidden");
       });
-    
+
       document.getElementById("prefixPlaceholder").classList.add("hidden");
       document.getElementById("suffixPlaceholder").classList.add("hidden");
-    
+
       noReqContainer.classList.add("hidden");
       modifierTypeContainer.classList.add("hidden");
       martialSharedFields.classList.add("hidden");
       checkButton.classList.add("hidden");
-    
+
       if (!type) {
         updateSpecialQuestionVisibility();
         updateItemDisclaimer();
         return;
       }
-    
+
       if (usesModifierTypeSlider(type)) {
         modifierTypeContainer.classList.remove("hidden");
       } else if (PLACEHOLDER_TYPES.includes(type)) {
@@ -1218,7 +1357,7 @@
         });
         checkButton.classList.remove("hidden");
       }
-    
+
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
@@ -1236,34 +1375,33 @@
       const martialSharedFields = document.getElementById("martialSharedFields");
       const prefixPlaceholder = document.getElementById("prefixPlaceholder");
       const suffixPlaceholder = document.getElementById("suffixPlaceholder");
-    
+
       document.querySelectorAll(".itemFields").forEach(div => {
         div.classList.add("hidden");
       });
-    
+
       noReqContainer.classList.add("hidden");
       martialSharedFields.classList.add("hidden");
       prefixPlaceholder.classList.add("hidden");
       suffixPlaceholder.classList.add("hidden");
-    
+
       document.getElementById("result").innerText = "";
       document.getElementById("debug").innerText = "";
-    
+
       if (!type) {
         updateSpecialQuestionVisibility();
         updateItemDisclaimer();
         return;
       }
-          
+
       if (modifierType === "weapon") {
         checkButton.classList.remove("hidden");
-      
+
         if (type === "staff") {
           document.querySelector('[data-type="staff"]').classList.remove("hidden");
         } else if (MARTIAL_TYPES.includes(type)) {
           noReqContainer.classList.remove("hidden");
         }
-        
       } else if (modifierType === "prefix") {
         prefixPlaceholder.classList.remove("hidden");
         checkButton.classList.remove("hidden");
@@ -1273,11 +1411,11 @@
       } else {
         checkButton.classList.add("hidden");
       }
-    
+
       updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
-    
+
     /*
       ============================================================
       MARTIAL NO-REQ CHANGE HANDLER
@@ -1334,7 +1472,7 @@
     function staffRequirementChanged() {
       const req = getStaffReqValue();
       const staffMainFields = document.getElementById("staffMainFields");
-    
+
       if (!req) {
         staffMainFields.classList.add("hidden");
         document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
@@ -1348,12 +1486,12 @@
         staffMainFields.classList.remove("hidden");
         populateHSR();
         populateEnergy();
-    
+
         if (document.getElementById("staff_inherent").value === "hct") {
           populateStaffHctAttributes();
         }
       }
-    
+
       document.getElementById("result").innerText = "";
       document.getElementById("debug").innerText = "";
     }
@@ -1842,11 +1980,9 @@
           score: "hardcoded",
           breakdown: {
             hsrScore: "hardcoded",
-            inherentMultiplier: "hardcoded",
-            attrBonus: "hardcoded",
-            hctPercentBonus: "hardcoded",
-            reqHctBonus: "hardcoded",
-            modBlock: "hardcoded",
+            reqAttributeScore: "hardcoded",
+            hctAttributeScore: "hardcoded",
+            hctPercentScore: "hardcoded",
             energyBonus: "hardcoded"
           }
         };
@@ -1980,11 +2116,9 @@
             `⚠ Tier attribution logic is still being finalized.\n\n` +
             `Score: ${result.score} | ` +
             `HSR: ${result.breakdown.hsrScore} | ` +
-            `Inherent Mult: ${result.breakdown.inherentMultiplier} | ` +
-            `Attr: ${result.breakdown.attrBonus} | ` +
-            `HCT%: ${result.breakdown.hctPercentBonus} | ` +
-            `Req/HCT: ${result.breakdown.reqHctBonus} | ` +
-            `Mod Block: ${result.breakdown.modBlock} | ` +
+            `Req Attr: ${result.breakdown.reqAttributeScore} | ` +
+            `HCT Attr: ${result.breakdown.hctAttributeScore} | ` +
+            `HCT%: ${result.breakdown.hctPercentScore} | ` +
             `Energy Mult: ${result.breakdown.energyBonus}`;
           return;
         }
@@ -2011,5 +2145,3 @@
   </script>
 </body>
 </html>
-
-
