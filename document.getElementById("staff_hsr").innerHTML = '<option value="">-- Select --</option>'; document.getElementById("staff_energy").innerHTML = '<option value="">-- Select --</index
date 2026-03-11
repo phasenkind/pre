@@ -734,24 +734,6 @@
     const MONK_STAFF_ATTRS = ["divine", "heal", "prot", "smite"];
     const MESMER_STAFF_ATTRS = ["dom", "illu", "inspi"];
 
-    const ALL_STAFF_HCT_ATTRS = [
-      "generic",
-      "air",
-      "blood",
-      "curses",
-      "death",
-      "divine",
-      "dom",
-      "earth",
-      "fire",
-      "heal",
-      "illu",
-      "inspi",
-      "prot",
-      "smite",
-      "water"
-    ];
-
     const staffSkinToHctOptions = {
       air: ["generic", ...ELEMENTAL_STAFF_ATTRS],
       earth: ["generic", ...ELEMENTAL_STAFF_ATTRS],
@@ -1899,39 +1881,21 @@
         hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
       };
 
-      if (normalizedCriteria.isNoReq) {
-        const hardcodedTier = getHardcodedStaffTier(normalizedCriteria);
-        if (hardcodedTier) {
-          return {
-            tier: hardcodedTier,
-            score: "hardcoded",
-            breakdown: {
-              hsrScore: "hardcoded",
-              skinScore: "hardcoded",
-              earthSpecificScore: "hardcoded",
-              hctAttributeScore: "hardcoded",
-              sameAttributeBonus: "hardcoded",
-              hctPercentScore: "hardcoded",
-              energyBonus: "hardcoded"
-            }
-          };
-        }
-      } else {
-        const hardcodedTier = getHardcodedStaffTier(normalizedCriteria);
-        if (hardcodedTier) {
-          return {
-            tier: hardcodedTier,
-            score: "hardcoded",
-            breakdown: {
-              hsrScore: "hardcoded",
-              skinScore: "hardcoded",
-              hctAttributeScore: "hardcoded",
-              sameAttributeBonus: "hardcoded",
-              hctPercentScore: "hardcoded",
-              energyBonus: "hardcoded"
-            }
-          };
-        }
+      const hardcodedTier = getHardcodedStaffTier(normalizedCriteria);
+      if (hardcodedTier) {
+        return {
+          tier: hardcodedTier,
+          score: "hardcoded",
+          breakdown: {
+            hsrScore: "hardcoded",
+            skinScore: "hardcoded",
+            earthSpecificScore: "hardcoded",
+            hctAttributeScore: "hardcoded",
+            sameAttributeBonus: "hardcoded",
+            hctPercentScore: "hardcoded",
+            energyBonus: "hardcoded"
+          }
+        };
       }
 
       const scoreResult = scoreStaff(normalizedCriteria);
@@ -2093,4 +2057,5 @@
   </script>
 </body>
 </html>
+
 
