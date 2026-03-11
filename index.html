@@ -242,7 +242,7 @@
 
     <div id="staffEarthSpecificDiv" class="hidden compact">
       <label>Specifically:</label>
-      <select id="staff_earth_specific">
+      <select id="staff_earth_specific" onchange="staffEarthSpecificChanged()">
         <option value="">-- Select --</option>
         <option value="core">Core</option>
         <option value="obsidian">Obsidian</option>
@@ -786,6 +786,11 @@
       water: 2
     };
     
+    const staffEarthSpecificScores = {
+      core: 1,
+      obsidian: 4
+    };
+    
     const staffHctAttributeScores = {
       generic: 3,
       air: 1,
@@ -863,6 +868,12 @@
     function getStaffSkinScore(skin) {
       if (!skin) return 1;
       return staffSkinScores[skin] ?? 1;
+    }
+
+    function getStaffEarthSpecificScore(skin, earthSpecific) {
+      if (skin !== "earth") return 1;
+      if (!earthSpecific) return 1;
+      return staffEarthSpecificScores[earthSpecific] ?? 1;
     }
 
     function getStaffHctAttributeScore(attr) {
@@ -980,35 +991,46 @@
       ============================================================
       STAFF SCORE FORMULA
       ============================================================
+      totalScore =
+        hsrScore *
+        skinScore *
+        earthSpecificScore *
+        hctAttributeScore *
+        sameAttributeBonus *
+        hctPercentScore *
+        energyBonus
     */
     function scoreStaff(criteria) {
       const hsrScore = staffHsrScores[criteria.hsr] ?? 0;
       const energyBonus = staffEnergyBonuses[criteria.energy] ?? 1;
       const skinScore = getStaffSkinScore(criteria.skin);
-
+      const earthSpecificScore = getStaffEarthSpecificScore(criteria.skin, criteria.earthSpecific);
+    
       let hctAttributeScore = 1;
       let sameAttributeBonus = 1;
       let hctPercentScore = 1;
-
+    
       if (criteria.inherent === "hct") {
         hctAttributeScore = getStaffHctAttributeScore(criteria.attr);
         sameAttributeBonus = getStaffSameAttributeBonus(criteria.skin, criteria.attr);
         hctPercentScore = getStaffHctPercentScore(criteria.attr, criteria.hctPercent);
       }
-
+    
       const totalScore =
         hsrScore *
         skinScore *
+        earthSpecificScore *
         hctAttributeScore *
         sameAttributeBonus *
         hctPercentScore *
         energyBonus;
-
+    
       return {
         totalScore,
         breakdown: {
           hsrScore,
           skinScore,
+          earthSpecificScore,
           hctAttributeScore,
           sameAttributeBonus,
           hctPercentScore,
@@ -1349,11 +1371,12 @@
     */
     function staffSkinChanged() {
       const skin = getStaffSkinValue();
+      const earthSpecific = getStaffEarthSpecificValue();
       const staffMainFields = document.getElementById("staffMainFields");
       const earthSpecificDiv = document.getElementById("staffEarthSpecificDiv");
-
+    
       earthSpecificDiv.classList.toggle("hidden", skin !== "earth");
-
+    
       if (!skin) {
         staffMainFields.classList.add("hidden");
         document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
@@ -1364,26 +1387,31 @@
         document.getElementById("staff_attr").innerHTML = '<option value="">-- Select --</option>';
         document.getElementById("staff_hct_percent").innerHTML = '<option value="">-- Select --</option>';
         document.getElementById("staff_earth_specific").value = "";
+      } else if (skin === "earth" && !earthSpecific) {
+        staffMainFields.classList.add("hidden");
+        document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("staff_energy").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("staff_inherent").value = "";
+        document.getElementById("hctAttributeDiv").classList.add("hidden");
+        document.getElementById("hctPercentDiv").classList.add("hidden");
+        document.getElementById("staff_attr").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("staff_hct_percent").innerHTML = '<option value="">-- Select --</option>';
       } else {
         staffMainFields.classList.remove("hidden");
         populateHSR();
         populateEnergy();
-
+    
         if (document.getElementById("staff_inherent").value === "hct") {
           populateStaffHctAttributes();
         }
       }
-
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
-    }
-
-    function staffNoReqChanged() {
-      populateHSR();
-      populateEnergy();
-
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
+    
+        document.getElementById("result").innerText = "";
+        document.getElementById("debug").innerText = "";
+      }
+    
+    function staffEarthSpecificChanged() {
+      staffSkinChanged();
     }
 
     /*
@@ -1880,6 +1908,7 @@
             breakdown: {
               hsrScore: "hardcoded",
               skinScore: "hardcoded",
+              earthSpecificScore: "hardcoded",
               hctAttributeScore: "hardcoded",
               sameAttributeBonus: "hardcoded",
               hctPercentScore: "hardcoded",
@@ -2034,6 +2063,7 @@
             `Score: ${result.score} | ` +
             `HSR: ${result.breakdown.hsrScore} | ` +
             `Skin: ${result.breakdown.skinScore} | ` +
+            `Earth Spec: ${result.breakdown.earthSpecificScore} | ` +
             `HCT Attr: ${result.breakdown.hctAttributeScore} | ` +
             `Same Attr: ${result.breakdown.sameAttributeBonus} | ` +
             `HCT%: ${result.breakdown.hctPercentScore} | ` +
@@ -2063,3 +2093,4 @@
   </script>
 </body>
 </html>
+
