@@ -225,10 +225,9 @@
     ============================================================
   -->
   <div class="itemFields hidden" data-type="staff">
-    <label>Requirement:</label>
-    <select id="staff_req" onchange="staffRequirementChanged()">
+    <label>Skin:</label>
+    <select id="staff_skin" onchange="staffSkinChanged()">
       <option value="">-- Select --</option>
-      <option value="none">None</option>
       <option value="air">Air</option>
       <option value="curses">Curses</option>
       <option value="death">Death</option>
@@ -240,6 +239,15 @@
       <option value="smite">Smite</option>
       <option value="water">Water</option>
     </select>
+
+    <div id="staffEarthSpecificDiv" class="hidden compact">
+      <label>Specifically:</label>
+      <select id="staff_earth_specific">
+        <option value="">-- Select --</option>
+        <option value="core">Core</option>
+        <option value="obsidian">Obsidian</option>
+      </select>
+    </div>
 
     <div id="staffMainFields" class="hidden">
       <label>HSR %:</label>
@@ -272,6 +280,13 @@
         <select id="staff_hct_percent">
           <option value="">-- Select --</option>
         </select>
+      </div>
+
+      <div class="noReqRow">
+        <label>
+          <input type="checkbox" id="staff_no_req" onchange="staffNoReqChanged()">
+          No Req?
+        </label>
       </div>
     </div>
   </div>
@@ -737,38 +752,28 @@
       "water"
     ];
 
-    const staffReqToHctOptions = {
-      none: ALL_STAFF_HCT_ATTRS,
-
+    const staffSkinToHctOptions = {
       air: ["generic", ...ELEMENTAL_STAFF_ATTRS],
       earth: ["generic", ...ELEMENTAL_STAFF_ATTRS],
       fire: ["generic", ...ELEMENTAL_STAFF_ATTRS],
       water: ["generic", ...ELEMENTAL_STAFF_ATTRS],
 
-      blood: ["generic", ...NECRO_STAFF_ATTRS],
       curses: ["generic", ...NECRO_STAFF_ATTRS],
       death: ["generic", ...NECRO_STAFF_ATTRS],
 
       divine: ["generic", ...MONK_STAFF_ATTRS],
-      heal: ["generic", ...MONK_STAFF_ATTRS],
-      prot: ["generic", ...MONK_STAFF_ATTRS],
       smite: ["generic", ...MONK_STAFF_ATTRS],
 
       dom: ["generic", ...MESMER_STAFF_ATTRS],
-      illu: ["generic", ...MESMER_STAFF_ATTRS],
-      inspi: ["generic", ...MESMER_STAFF_ATTRS]
+      illu: ["generic", ...MESMER_STAFF_ATTRS]
     };
 
     /*
       ============================================================
       STAFF SCORING TABLES
       ============================================================
-      Fill in the numbers however you want.
-      req = requirement attribute score
-      hct = HCT attribute score for that req
     */
-    const staffReqAttributeScores = {
-      none: 1,
+    const staffSkinScores = {
       air: 2,
       curses: 2,
       death: 2,
@@ -800,7 +805,6 @@
     };
 
     const premiumStaffAttr = new Set(["fire", "death"]);
-    const normalStaffAttr = new Set(["blood", "curses", "smite", "heal", "dom"]);
     const collectorStaffAttr = new Set(["air", "water", "earth", "prot", "divine", "illu", "inspi"]);
 
     /*
@@ -856,20 +860,20 @@
       STAFF SCORE HELPERS
       ============================================================
     */
-    function getStaffReqAttributeScore(req) {
-    if (!req) return 1;
-    return staffReqAttributeScores[req] ?? 1;
-  }
-  
-  function getStaffHctAttributeScore(attr) {
-    if (!attr) return 1;
-    return staffHctAttributeScores[attr] ?? 1;
-  }
-  
-  function getStaffSameAttributeBonus(req, attr) {
-    if (!req || !attr) return 1;
-    return req === attr ? 2 : 1;
-  }
+    function getStaffSkinScore(skin) {
+      if (!skin) return 1;
+      return staffSkinScores[skin] ?? 1;
+    }
+
+    function getStaffHctAttributeScore(attr) {
+      if (!attr) return 1;
+      return staffHctAttributeScores[attr] ?? 1;
+    }
+
+    function getStaffSameAttributeBonus(skin, attr) {
+      if (!skin || !attr) return 1;
+      return skin === attr ? 2 : 1;
+    }
 
     function getStaffHctPercentScore(attr, pct) {
       if (!pct) return 1;
@@ -893,7 +897,7 @@
       ============================================================
     */
     function getHardcodedStaffTier(criteria) {
-      const isNoReq = criteria.req === "none";
+      const isNoReq = criteria.isNoReq;
       const isCollector = collectorStaffAttr.has(criteria.attr);
       const isPremium = premiumStaffAttr.has(criteria.attr);
       const isHct = criteria.inherent === "hct";
@@ -976,42 +980,35 @@
       ============================================================
       STAFF SCORE FORMULA
       ============================================================
-      totalScore =
-        hsrScore *
-        reqAttributeScore *
-        hctAttributeScore *
-        sameAttributeBonus *
-        hctPercentScore *
-        energyBonus
     */
     function scoreStaff(criteria) {
       const hsrScore = staffHsrScores[criteria.hsr] ?? 0;
       const energyBonus = staffEnergyBonuses[criteria.energy] ?? 1;
-      const reqAttributeScore = getStaffReqAttributeScore(criteria.req);
-    
+      const skinScore = getStaffSkinScore(criteria.skin);
+
       let hctAttributeScore = 1;
       let sameAttributeBonus = 1;
       let hctPercentScore = 1;
-    
+
       if (criteria.inherent === "hct") {
         hctAttributeScore = getStaffHctAttributeScore(criteria.attr);
-        sameAttributeBonus = getStaffSameAttributeBonus(criteria.req, criteria.attr);
+        sameAttributeBonus = getStaffSameAttributeBonus(criteria.skin, criteria.attr);
         hctPercentScore = getStaffHctPercentScore(criteria.attr, criteria.hctPercent);
       }
-    
+
       const totalScore =
         hsrScore *
-        reqAttributeScore *
+        skinScore *
         hctAttributeScore *
         sameAttributeBonus *
         hctPercentScore *
         energyBonus;
-    
+
       return {
         totalScore,
         breakdown: {
           hsrScore,
-          reqAttributeScore,
+          skinScore,
           hctAttributeScore,
           sameAttributeBonus,
           hctPercentScore,
@@ -1053,13 +1050,24 @@
 
     /*
       ============================================================
-      STAFF REQUIREMENT HELPERS
+      STAFF HELPERS
       ============================================================
     */
-    function getStaffReqValue() {
-      const select = document.getElementById("staff_req");
+    function getStaffSkinValue() {
+      const select = document.getElementById("staff_skin");
       if (!select) return "";
       return select.value || "";
+    }
+
+    function getStaffEarthSpecificValue() {
+      const select = document.getElementById("staff_earth_specific");
+      if (!select) return "";
+      return select.value || "";
+    }
+
+    function isStaffNoReqChecked() {
+      const checkbox = document.getElementById("staff_no_req");
+      return !!checkbox?.checked;
     }
 
     /*
@@ -1094,17 +1102,21 @@
 
       const axePiercing = document.getElementById("axe_piercing");
       const swordShort = document.getElementById("sword_short");
+      const staffNoReq = document.getElementById("staff_no_req");
 
       if (axePiercing) axePiercing.checked = false;
       if (swordShort) swordShort.checked = false;
+      if (staffNoReq) staffNoReq.checked = false;
 
       document.getElementById("staffMainFields").classList.add("hidden");
+      document.getElementById("staffEarthSpecificDiv").classList.add("hidden");
       document.getElementById("hctAttributeDiv").classList.add("hidden");
       document.getElementById("hctPercentDiv").classList.add("hidden");
       document.getElementById("staff_attr").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("staff_hct_percent").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("staff_energy").innerHTML = '<option value="">-- Select --</option>';
+      document.getElementById("staff_earth_specific").value = "";
 
       document.getElementById("weapon_inherent").value = "";
       document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
@@ -1332,14 +1344,17 @@
 
     /*
       ============================================================
-      STAFF REQUIREMENT CHANGE HANDLER
+      STAFF SKIN / NO-REQ CHANGE HANDLERS
       ============================================================
     */
-    function staffRequirementChanged() {
-      const req = getStaffReqValue();
+    function staffSkinChanged() {
+      const skin = getStaffSkinValue();
       const staffMainFields = document.getElementById("staffMainFields");
+      const earthSpecificDiv = document.getElementById("staffEarthSpecificDiv");
 
-      if (!req) {
+      earthSpecificDiv.classList.toggle("hidden", skin !== "earth");
+
+      if (!skin) {
         staffMainFields.classList.add("hidden");
         document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
         document.getElementById("staff_energy").innerHTML = '<option value="">-- Select --</option>';
@@ -1348,6 +1363,7 @@
         document.getElementById("hctPercentDiv").classList.add("hidden");
         document.getElementById("staff_attr").innerHTML = '<option value="">-- Select --</option>';
         document.getElementById("staff_hct_percent").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("staff_earth_specific").value = "";
       } else {
         staffMainFields.classList.remove("hidden");
         populateHSR();
@@ -1362,21 +1378,30 @@
       document.getElementById("debug").innerText = "";
     }
 
+    function staffNoReqChanged() {
+      populateHSR();
+      populateEnergy();
+
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
+    }
+
     /*
       ============================================================
       STAFF SELECT POPULATION
       ============================================================
     */
     function populateHSR() {
-      const req = getStaffReqValue();
+      const skin = getStaffSkinValue();
+      const isNoReq = isStaffNoReqChecked();
       const hsrSelect = document.getElementById("staff_hsr");
       const previousValue = hsrSelect.value;
 
       hsrSelect.innerHTML = '<option value="">-- Select --</option>';
 
-      if (!req) return;
+      if (!skin) return;
 
-      const values = req === "none" ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
+      const values = isNoReq ? [11, 12, 13, 14] : [11, 12, 13, 14, 15, 16];
       values.forEach(v => hsrSelect.add(new Option(v, v)));
 
       if (values.map(String).includes(previousValue)) {
@@ -1385,15 +1410,16 @@
     }
 
     function populateEnergy() {
-      const req = getStaffReqValue();
+      const skin = getStaffSkinValue();
+      const isNoReq = isStaffNoReqChecked();
       const energySelect = document.getElementById("staff_energy");
       const previousValue = energySelect.value;
 
       energySelect.innerHTML = '<option value="">-- Select --</option>';
 
-      if (!req) return;
+      if (!skin) return;
 
-      const values = req === "none" ? [5, 6] : [5, 6, 7, 8];
+      const values = isNoReq ? [5, 6] : [5, 6, 7, 8];
       values.forEach(v => energySelect.add(new Option(v, v)));
 
       if (values.map(String).includes(previousValue)) {
@@ -1402,7 +1428,7 @@
     }
 
     function populateStaffHctAttributes() {
-      const req = getStaffReqValue();
+      const skin = getStaffSkinValue();
       const attrSelect = document.getElementById("staff_attr");
       const previousValue = attrSelect.value;
       const percentDiv = document.getElementById("hctPercentDiv");
@@ -1410,13 +1436,13 @@
 
       attrSelect.innerHTML = '<option value="">-- Select --</option>';
 
-      if (!req) {
+      if (!skin) {
         percentDiv.classList.add("hidden");
         percentSelect.innerHTML = '<option value="">-- Select --</option>';
         return;
       }
 
-      const allowedAttrs = staffReqToHctOptions[req] || [];
+      const allowedAttrs = staffSkinToHctOptions[skin] || [];
       allowedAttrs.forEach(attr => {
         attrSelect.add(new Option(getStaffAttrLabel(attr), attr));
       });
@@ -1737,7 +1763,9 @@
     */
     function getStaffCriteria() {
       return {
-        req: getStaffReqValue(),
+        skin: getStaffSkinValue(),
+        earthSpecific: getStaffEarthSpecificValue(),
+        isNoReq: isStaffNoReqChecked(),
         hsr: document.getElementById("staff_hsr").value,
         energy: document.getElementById("staff_energy").value,
         inherent: document.getElementById("staff_inherent").value,
@@ -1777,8 +1805,12 @@
       ============================================================
     */
     function validateStaffInput(criteria) {
-      if (!criteria.req) {
-        return "Please select the staff requirement.";
+      if (!criteria.skin) {
+        return "Please select the staff skin.";
+      }
+
+      if (criteria.skin === "earth" && !criteria.earthSpecific) {
+        return "Please select the specific Earth staff type.";
       }
 
       if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
@@ -1839,20 +1871,38 @@
         hctPercent: criteria.inherent === "hct" ? criteria.hctPercent : ""
       };
 
-      const hardcodedTier = getHardcodedStaffTier(normalizedCriteria);
-      if (hardcodedTier) {
-        return {
-          tier: hardcodedTier,
-          score: "hardcoded",
-          breakdown: {
-            hsrScore: "hardcoded",
-            reqAttributeScore: "hardcoded",
-            hctAttributeScore: "hardcoded",
-            sameAttributeBonus: "hardcoded",
-            hctPercentScore: "hardcoded",
-            energyBonus: "hardcoded"
-          }
-        };
+      if (normalizedCriteria.isNoReq) {
+        const hardcodedTier = getHardcodedStaffTier(normalizedCriteria);
+        if (hardcodedTier) {
+          return {
+            tier: hardcodedTier,
+            score: "hardcoded",
+            breakdown: {
+              hsrScore: "hardcoded",
+              skinScore: "hardcoded",
+              hctAttributeScore: "hardcoded",
+              sameAttributeBonus: "hardcoded",
+              hctPercentScore: "hardcoded",
+              energyBonus: "hardcoded"
+            }
+          };
+        }
+      } else {
+        const hardcodedTier = getHardcodedStaffTier(normalizedCriteria);
+        if (hardcodedTier) {
+          return {
+            tier: hardcodedTier,
+            score: "hardcoded",
+            breakdown: {
+              hsrScore: "hardcoded",
+              skinScore: "hardcoded",
+              hctAttributeScore: "hardcoded",
+              sameAttributeBonus: "hardcoded",
+              hctPercentScore: "hardcoded",
+              energyBonus: "hardcoded"
+            }
+          };
+        }
       }
 
       const scoreResult = scoreStaff(normalizedCriteria);
@@ -1979,15 +2029,15 @@
 
       if (result.breakdown) {
         if (type === "staff") {
-        debugEl.innerText =
-          `⚠ Tier attribution logic is still being finalized.\n\n` +
-          `Score: ${result.score} | ` +
-          `HSR: ${result.breakdown.hsrScore} | ` +
-          `Req Attr: ${result.breakdown.reqAttributeScore} | ` +
-          `HCT Attr: ${result.breakdown.hctAttributeScore} | ` +
-          `Same Attr: ${result.breakdown.sameAttributeBonus} | ` +
-          `HCT%: ${result.breakdown.hctPercentScore} | ` +
-          `Energy Mult: ${result.breakdown.energyBonus}`;
+          debugEl.innerText =
+            `⚠ Tier attribution logic is still being finalized.\n\n` +
+            `Score: ${result.score} | ` +
+            `HSR: ${result.breakdown.hsrScore} | ` +
+            `Skin: ${result.breakdown.skinScore} | ` +
+            `HCT Attr: ${result.breakdown.hctAttributeScore} | ` +
+            `Same Attr: ${result.breakdown.sameAttributeBonus} | ` +
+            `HCT%: ${result.breakdown.hctPercentScore} | ` +
+            `Energy Mult: ${result.breakdown.energyBonus}`;
           return;
         }
 
@@ -2013,6 +2063,3 @@
   </script>
 </body>
 </html>
-
-
-
