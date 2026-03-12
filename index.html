@@ -685,15 +685,13 @@
 
       axe_blue: {
         damageScores: {
-          "6-12": 1,
-          "6-13": 2,
-          "6-14": 4,
-          "6-15": 16,
-          "6-16": 48
+          "6-14": 0,
+          "6-15": 2,
+          "6-16": 4
         },
         skinValues: {
-          sickle: 1,
-          tribal: 1
+          sickle: 2,
+          tribal: 4
         },
         specificValues: {},
         inherentBonuses: {
@@ -1622,7 +1620,7 @@
     function getDamageOptions(type, noReq, skin = "") {
       const regularDamageOptions = {
         axe: {
-          noReq: ["5-10", "5-11", "6-12"],
+          noReq: ["5-10", "5-11", "5-12", "6-12"],
           req: [
             { value: "6-15", label: "6-15 or lower" },
             "6-16", "6-17", "6-18", "6-19", "6-20", "7-18", "7-19", "7-20"
@@ -1652,11 +1650,9 @@
       };
 
       const specialBlueAxeDamageOptions = {
-        noReq: ["5-10", "6-12"],
+        noReq: ["5-10", "5-11", "5-12", "6-12"],
         req: [
-          { value: "6-12", label: "6-12 or lower" },
-          "6-13",
-          "6-14",
+          { value: "6-14", label: "6-14 or lower" },
           "6-15",
           "6-16"
         ]
