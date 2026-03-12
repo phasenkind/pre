@@ -478,7 +478,6 @@
       ============================================================
       HARDCODED MARTIAL TIER FOUNDATION
       ============================================================
-      Blue Sickle / Tribal axes are separated from the regular axe pool.
     */
     const hardcodedMartialTierMappings = {
       axe: [
@@ -592,13 +591,6 @@
       ============================================================
       MARTIAL SCORING CONFIGS
       ============================================================
-      All martial types now use the same bow-style formula:
-
-      totalScore = damageScore * skinValue * specificValue * modMultiplier
-
-      modMultiplier =
-        inherentBonus                  when inherent === "none"
-        inherentBonus * percentBonus   otherwise
     */
     const martialReqConfigs = {
       bow: {
@@ -661,6 +653,7 @@
           battle: 1,
           cleaver: 1,
           doublebladed: 1,
+          hand: 1,
           piercing: 1,
           spiked: 1
         },
@@ -690,11 +683,6 @@
         }
       },
 
-      /*
-        Special blue axe pool for Sickle / Tribal.
-        Same setup for both skins, separated from regular axe logic.
-        Numbers are placeholders you can tune.
-      */
       axe_blue: {
         damageScores: {
           "6-12": 1,
@@ -718,10 +706,10 @@
           above50: 5
         },
         percentBonuses: {
-          enchanted: { "13": 2, "14": 3 },
-          stance:    { "13": 2, "14": 3 },
-          above50:   { "13": 3, "14": 4 },
-          hexedfoes: { "13": 2, "14": 3 },
+          enchanted: { "12": 2, "13": 3, "14": 4 },
+          stance:    { "12": 2, "13": 3, "14": 4 },
+          above50:   { "12": 2, "13": 3, "14": 4 },
+          hexedfoes: { "12": 2, "13": 3, "14": 4 },
           hexed:     { "15": 2, "16": 3, "17": 3, "18": 4 },
           below50:   { "15": 2, "16": 3, "17": 3, "18": 4 }
         },
@@ -745,6 +733,7 @@
         },
         skinValues: {
           brute: 1,
+          butterfly: 1,
           forked: 1,
           long: 1,
           scimitar: 1,
@@ -828,8 +817,6 @@
       ============================================================
       MARTIAL PERCENT OPTION CONFIGS
       ============================================================
-      Blue axes use their own dedicated section so you can adjust
-      it separately later, even if the values start out identical.
     */
     const martialPercentOptionConfigs = {
       default: {
@@ -841,10 +828,10 @@
         hexed: [15, 16, 17, 18]
       },
       axe_blue: {
-        above50: [13, 14],
-        enchanted: [13, 14],
-        hexedfoes: [13, 14],
-        stance: [13, 14],
+        above50: [12, 13, 14],
+        enchanted: [12, 13, 14],
+        hexedfoes: [12, 13, 14],
+        stance: [12, 13, 14],
         below50: [15, 16, 17, 18],
         hexed: [15, 16, 17, 18]
       }
@@ -1008,6 +995,111 @@
       if (pct === "16") return 2;
       if (pct === "15") return 2;
       return 1;
+    }
+
+    function scoreStaff(criteria) {
+      const hsrScore = staffHsrScores[criteria.hsr] ?? 0;
+      const energyBonus = staffEnergyBonuses[criteria.energy] ?? 1;
+      const skinScore = getStaffSkinScore(criteria.skin);
+      const earthSpecificScore = getStaffEarthSpecificScore(criteria.skin, criteria.earthSpecific);
+
+      let hctAttributeScore = 1;
+      let sameAttributeBonus = 1;
+      let hctPercentScore = 1;
+
+      if (criteria.inherent === "hct") {
+        hctAttributeScore = getStaffHctAttributeScore(criteria.attr);
+        sameAttributeBonus = getStaffSameAttributeBonus(criteria.skin, criteria.attr);
+        hctPercentScore = getStaffHctPercentScore(criteria.attr, criteria.hctPercent);
+      }
+
+      const totalScore =
+        hsrScore *
+        skinScore *
+        earthSpecificScore *
+        hctAttributeScore *
+        sameAttributeBonus *
+        hctPercentScore *
+        energyBonus;
+
+      return {
+        totalScore,
+        breakdown: {
+          hsrScore,
+          skinScore,
+          earthSpecificScore,
+          hctAttributeScore,
+          sameAttributeBonus,
+          hctPercentScore,
+          energyBonus
+        }
+      };
+    }
+
+    function staffScoreToTier(score) {
+      if (score >= 6000) return "God Tier";
+      if (score >= 3000) return "High End";
+      if (score >= 2000) return "Mid Tier";
+      if (score >= 50) return "Low End";
+      return "Junk";
+    }
+
+    function getHardcodedStaffTier(criteria) {
+      const isNoReq = criteria.isNoReq;
+      const isCollector = collectorStaffAttr.has(criteria.attr);
+      const isPremium = premiumStaffAttr.has(criteria.attr);
+      const isHct = criteria.inherent === "hct";
+
+      if (
+        isHct &&
+        isCollector &&
+        criteria.hsr === "16" &&
+        criteria.hctPercent === "18"
+      ) {
+        return "Highly Collectable";
+      }
+
+      if (
+        isCollector &&
+        criteria.hsr === "16"
+      ) {
+        return "Collectable";
+      }
+
+      if (
+        isHct &&
+        isCollector &&
+        criteria.hsr === "15" &&
+        criteria.hctPercent === "18"
+      ) {
+        return "Collectable";
+      }
+
+      if (!isNoReq) return "";
+
+      if (
+        isHct &&
+        isPremium &&
+        criteria.energy === "6" &&
+        criteria.hsr === "14" &&
+        criteria.hctPercent === "18"
+      ) {
+        return "Highly Collectable";
+      }
+
+      if (
+        isHct &&
+        (
+          (isPremium && criteria.energy === "6" && criteria.hsr === "13" && criteria.hctPercent === "18") ||
+          (isPremium && criteria.energy === "5" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
+          (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "18") ||
+          (criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "9")
+        )
+      ) {
+        return "Collectable";
+      }
+
+      return "";
     }
 
     /*
@@ -1628,7 +1720,6 @@
       const skin = document.getElementById(`${type}_skin`)?.value || "";
       const damage = document.getElementById(`${type}_damage`)?.value || "";
       const hammerSpecific = type === "hammer" ? getHammerSpecificValue() : "";
-
       const hammerBlocked = type === "hammer" && skin === "war" && !hammerSpecific;
 
       if (!skin || !damage || hammerBlocked) {
@@ -1709,12 +1800,27 @@
       return { tier: "Junk" };
     }
 
+    function getHardcodedMartialTier(criteria) {
+      const mappings = hardcodedMartialTierMappings[criteria.type] || [];
+      if (mappings.length === 0) return "";
+
+      const match = findTier(
+        criteria,
+        mappings,
+        ["skin", "noReq", "damage", "inherent", "percent"]
+      );
+
+      if (!match || !match.tier || match.tier === "Junk") {
+        return "";
+      }
+
+      return match.tier;
+    }
+
     /*
       ============================================================
       REQUIRED MARTIAL SCORE CALCULATION
       ============================================================
-      Same scoring structure for all martial types now:
-      damageScore * skinValue * specificValue * modMultiplier
     */
     function scoreReqMartial(type, criteria) {
       const config = getMartialConfig(type, criteria.skin);
