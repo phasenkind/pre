@@ -308,7 +308,7 @@
 
     <div id="hammerMainFields" class="hidden">
       <label>Damage Range:</label>
-      <select id="hammer_damage">
+      <select id="hammer_damage" onchange="updateMartialSharedVisibility()">
         <option value="">-- Select --</option>
       </select>
     </div>
@@ -1345,9 +1345,9 @@
       const skin = document.getElementById(`${type}_skin`).value;
       const mainFields = document.getElementById(`${type}MainFields`);
       const noReqRow = document.getElementById(`${type}NoReqRow`);
-
+    
       noReqRow.classList.toggle("hidden", !skin);
-
+    
       if (!skin) {
         mainFields.classList.add("hidden");
         document.getElementById(`${type}_damage`).innerHTML = '<option value="">-- Select --</option>';
@@ -1358,14 +1358,13 @@
         document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
         document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
       }
-      }
-
+    
       document.getElementById("result").innerText = "";
       document.getElementById("debug").innerText = "";
-
+    
       updateMartialSharedVisibility();
     }
-
+    
     function martialNoReqChanged(type) {
       if (hasChosenMartialSkin(type)) {
         populateWeaponDamage(type);
