@@ -36,44 +36,6 @@
       margin-bottom: 16px;
     }
 
-    .noReqSliderWrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-
-    #no_req_slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 80px;
-      height: 12px;
-      background: #444;
-      border-radius: 6px;
-      outline: none;
-    }
-    
-    #no_req_slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 22px;
-      height: 22px;
-      background: #cccccc;
-      border-radius: 50%;
-      cursor: pointer;
-      border: none;
-    }
-    
-    #no_req_slider::-moz-range-thumb {
-      width: 22px;
-      height: 22px;
-      background: #cccccc;
-      border-radius: 50%;
-      cursor: pointer;
-      border: none;
-    }
-
     #checkItemButton {
       background: #cccccc;
       color: black;
@@ -188,7 +150,7 @@
     ============================================================
   -->
   <div id="modifierTypeContainer" class="hidden topField">
-    <label>Placeholder Name:</label>
+    <label>Check Type:</label>
     <select id="modifierType" onchange="modifierTypeChanged()">
       <option value="">-- Select --</option>
       <option value="weapon">Base Weapon</option>
@@ -197,28 +159,6 @@
     </select>
   </div>
 
-  <!--
-    ============================================================
-    MARTIAL NO-REQ TOGGLE
-    ============================================================
-  -->
-  <div id="noReqContainer" class="hidden">
-    <label for="no_req_slider"><strong>No Req?</strong></label>
-    <div class="noReqSliderWrap">
-      <span>Yes</span>
-      <input
-        type="range"
-        id="no_req_slider"
-        min="0"
-        max="2"
-        step="1"
-        value="1"
-        oninput="noReqChanged()"
-      >
-      <span>No</span>
-    </div>
-  </div>
-  
   <!--
     ============================================================
     STAFF FIELDS
@@ -247,6 +187,13 @@
         <option value="core">Core</option>
         <option value="obsidian">Obsidian</option>
       </select>
+    </div>
+
+    <div id="staffNoReqRow" class="hidden noReqRow">
+      <label>
+        <input type="checkbox" id="staff_no_req" onchange="staffNoReqChanged()">
+        No Req?
+      </label>
     </div>
 
     <div id="staffMainFields" class="hidden">
@@ -281,45 +228,95 @@
           <option value="">-- Select --</option>
         </select>
       </div>
-
-      <div class="noReqRow">
-        <label>
-          <input type="checkbox" id="staff_no_req" onchange="staffNoReqChanged()">
-          No Req?
-        </label>
-      </div>
     </div>
   </div>
 
   <!--
     ============================================================
-    MARTIAL-SPECIFIC MAIN FIELDS
+    MARTIAL FIELDS
     ============================================================
   -->
   <div class="itemFields hidden" data-type="axe">
-    <label>Damage Range:</label>
-    <select id="axe_damage" onchange="updateSpecialQuestionVisibility()">
+    <label>Skin:</label>
+    <select id="axe_skin" onchange="martialSkinChanged('axe')">
       <option value="">-- Select --</option>
+      <option value="example1">Example Skin 1</option>
+      <option value="example2">Example Skin 2</option>
+      <option value="example3">Example Skin 3</option>
+      <option value="example4">Example Skin 4</option>
+      <option value="example5">Example Skin 5</option>
     </select>
+
+    <div class="noReqRow hidden" id="axeNoReqRow">
+      <label>
+        <input type="checkbox" id="axe_no_req" onchange="martialNoReqChanged('axe')">
+        No Req?
+      </label>
+    </div>
+
+    <div id="axeMainFields" class="hidden">
+      <label>Damage Range:</label>
+      <select id="axe_damage">
+        <option value="">-- Select --</option>
+      </select>
+    </div>
   </div>
 
   <div class="itemFields hidden" data-type="sword">
-    <label>Damage Range:</label>
-    <select id="sword_damage" onchange="updateSpecialQuestionVisibility()">
+    <label>Skin:</label>
+    <select id="sword_skin" onchange="martialSkinChanged('sword')">
       <option value="">-- Select --</option>
+      <option value="example1">Example Skin 1</option>
+      <option value="example2">Example Skin 2</option>
+      <option value="example3">Example Skin 3</option>
+      <option value="example4">Example Skin 4</option>
+      <option value="example5">Example Skin 5</option>
     </select>
+
+    <div class="noReqRow hidden" id="swordNoReqRow">
+      <label>
+        <input type="checkbox" id="sword_no_req" onchange="martialNoReqChanged('sword')">
+        No Req?
+      </label>
+    </div>
+
+    <div id="swordMainFields" class="hidden">
+      <label>Damage Range:</label>
+      <select id="sword_damage">
+        <option value="">-- Select --</option>
+      </select>
+    </div>
   </div>
 
   <div class="itemFields hidden" data-type="hammer">
-    <label>Damage Range:</label>
-    <select id="hammer_damage" onchange="updateSpecialQuestionVisibility()">
+    <label>Skin:</label>
+    <select id="hammer_skin" onchange="martialSkinChanged('hammer')">
       <option value="">-- Select --</option>
+      <option value="example1">Example Skin 1</option>
+      <option value="example2">Example Skin 2</option>
+      <option value="example3">Example Skin 3</option>
+      <option value="example4">Example Skin 4</option>
+      <option value="example5">Example Skin 5</option>
     </select>
+
+    <div class="noReqRow hidden" id="hammerNoReqRow">
+      <label>
+        <input type="checkbox" id="hammer_no_req" onchange="martialNoReqChanged('hammer')">
+        No Req?
+      </label>
+    </div>
+
+    <div id="hammerMainFields" class="hidden">
+      <label>Damage Range:</label>
+      <select id="hammer_damage">
+        <option value="">-- Select --</option>
+      </select>
+    </div>
   </div>
 
   <div class="itemFields hidden" data-type="bow">
     <label>Skin:</label>
-    <select id="bow_skin">
+    <select id="bow_skin" onchange="martialSkinChanged('bow')">
       <option value="">-- Select --</option>
       <option value="flat">Flatbow</option>
       <option value="horn">Hornbow</option>
@@ -328,10 +325,19 @@
       <option value="short">Shortbow</option>
     </select>
 
-    <label>Damage Range:</label>
-    <select id="bow_damage" onchange="updateSpecialQuestionVisibility()">
-      <option value="">-- Select --</option>
-    </select>
+    <div class="noReqRow hidden" id="bowNoReqRow">
+      <label>
+        <input type="checkbox" id="bow_no_req" onchange="martialNoReqChanged('bow')">
+        No Req?
+      </label>
+    </div>
+
+    <div id="bowMainFields" class="hidden">
+      <label>Damage Range:</label>
+      <select id="bow_damage">
+        <option value="">-- Select --</option>
+      </select>
+    </div>
   </div>
 
   <!--
@@ -383,25 +389,9 @@
 
     <div id="weaponDamagePercentDiv" class="hidden">
       <label>Damage Increase %:</label>
-      <select id="weapon_damage_percent" onchange="updateSpecialQuestionVisibility()">
+      <select id="weapon_damage_percent">
         <option value="">-- Select --</option>
       </select>
-    </div>
-
-    <div id="specialQuestionFields" class="hidden">
-      <div id="axePiercingRow" class="hidden noReqRow">
-        <label>
-          <input type="checkbox" id="axe_piercing">
-          Piercing Axe?
-        </label>
-      </div>
-
-      <div id="swordShortRow" class="hidden noReqRow">
-        <label>
-          <input type="checkbox" id="sword_short">
-          Short Sword?
-        </label>
-      </div>
     </div>
   </div>
 
@@ -616,8 +606,11 @@
         },
         skinMode: "malus",
         skinValues: {
-          "": 1,
-          piercing: 3
+          example1: 1,
+          example2: 1,
+          example3: 1,
+          example4: 1,
+          example5: 1
         },
         inherentBonuses: {
           none: 1,
@@ -656,8 +649,11 @@
         },
         skinMode: "malus",
         skinValues: {
-          "": 1,
-          short: 2
+          example1: 1,
+          example2: 1,
+          example3: 1,
+          example4: 1,
+          example5: 1
         },
         inherentBonuses: {
           none: 1,
@@ -696,7 +692,11 @@
         },
         skinMode: "flat",
         skinValues: {
-          "": 1
+          example1: 1,
+          example2: 1,
+          example3: 1,
+          example4: 1,
+          example5: 1
         },
         inherentBonuses: {
           none: 1,
@@ -973,14 +973,6 @@
       ============================================================
       STAFF SCORE FORMULA
       ============================================================
-      totalScore =
-        hsrScore *
-        skinScore *
-        earthSpecificScore *
-        hctAttributeScore *
-        sameAttributeBonus *
-        hctPercentScore *
-        energyBonus
     */
     function scoreStaff(criteria) {
       const hsrScore = staffHsrScores[criteria.hsr] ?? 0;
@@ -1036,20 +1028,17 @@
 
     /*
       ============================================================
-      MARTIAL NO-REQ SLIDER HELPERS
+      MARTIAL NO-REQ HELPERS
       ============================================================
     */
-    function getNoReqValue() {
-      const slider = document.getElementById("no_req_slider");
-      if (!slider) return "";
-
-      if (slider.value === "0") return "yes";
-      if (slider.value === "2") return "no";
-      return "";
+    function isMartialNoReqChecked(type) {
+      const checkbox = document.getElementById(`${type}_no_req`);
+      return !!checkbox?.checked;
     }
 
-    function hasChosenNoReq() {
-      return getNoReqValue() !== "";
+    function hasChosenMartialSkin(type) {
+      const select = document.getElementById(`${type}_skin`);
+      return !!select?.value;
     }
 
     /*
@@ -1099,20 +1088,25 @@
         select.value = "";
       });
 
-      document.getElementById("no_req_slider").value = "1";
+      ["axe", "sword", "hammer", "bow"].forEach(type => {
+        const noReqCheckbox = document.getElementById(`${type}_no_req`);
+        if (noReqCheckbox) noReqCheckbox.checked = false;
+
+        const mainFields = document.getElementById(`${type}MainFields`);
+        if (mainFields) mainFields.classList.add("hidden");
+
+        const noReqRow = document.getElementById(`${type}NoReqRow`);
+        if (noReqRow) noReqRow.classList.add("hidden");
+      });
 
       const modifierSelect = document.getElementById("modifierType");
       if (modifierSelect) modifierSelect.value = "";
 
-      const axePiercing = document.getElementById("axe_piercing");
-      const swordShort = document.getElementById("sword_short");
       const staffNoReq = document.getElementById("staff_no_req");
-
-      if (axePiercing) axePiercing.checked = false;
-      if (swordShort) swordShort.checked = false;
       if (staffNoReq) staffNoReq.checked = false;
 
       document.getElementById("staffMainFields").classList.add("hidden");
+      document.getElementById("staffNoReqRow").classList.add("hidden");
       document.getElementById("staffEarthSpecificDiv").classList.add("hidden");
       document.getElementById("hctAttributeDiv").classList.add("hidden");
       document.getElementById("hctPercentDiv").classList.add("hidden");
@@ -1128,14 +1122,6 @@
 
       document.getElementById("result").innerText = "";
       document.getElementById("debug").innerText = "";
-
-      const specialQuestionFields = document.getElementById("specialQuestionFields");
-      const axePiercingRow = document.getElementById("axePiercingRow");
-      const swordShortRow = document.getElementById("swordShortRow");
-
-      if (specialQuestionFields) specialQuestionFields.classList.add("hidden");
-      if (axePiercingRow) axePiercingRow.classList.add("hidden");
-      if (swordShortRow) swordShortRow.classList.add("hidden");
 
       const prefixPlaceholder = document.getElementById("prefixPlaceholder");
       const suffixPlaceholder = document.getElementById("suffixPlaceholder");
@@ -1205,7 +1191,6 @@
     */
     function showFields() {
       const type = document.getElementById("itemType").value;
-      const noReqContainer = document.getElementById("noReqContainer");
       const modifierTypeContainer = document.getElementById("modifierTypeContainer");
       const checkButton = document.getElementById("checkItemButton");
       const martialSharedFields = document.getElementById("martialSharedFields");
@@ -1219,13 +1204,11 @@
       document.getElementById("prefixPlaceholder").classList.add("hidden");
       document.getElementById("suffixPlaceholder").classList.add("hidden");
 
-      noReqContainer.classList.add("hidden");
       modifierTypeContainer.classList.add("hidden");
       martialSharedFields.classList.add("hidden");
       checkButton.classList.add("hidden");
 
       if (!type) {
-        updateSpecialQuestionVisibility();
         updateItemDisclaimer();
         return;
       }
@@ -1240,7 +1223,6 @@
         checkButton.classList.remove("hidden");
       }
 
-      updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
 
@@ -1252,7 +1234,6 @@
     function modifierTypeChanged() {
       const type = document.getElementById("itemType").value;
       const modifierType = getModifierTypeValue();
-      const noReqContainer = document.getElementById("noReqContainer");
       const checkButton = document.getElementById("checkItemButton");
       const martialSharedFields = document.getElementById("martialSharedFields");
       const prefixPlaceholder = document.getElementById("prefixPlaceholder");
@@ -1262,7 +1243,6 @@
         div.classList.add("hidden");
       });
 
-      noReqContainer.classList.add("hidden");
       martialSharedFields.classList.add("hidden");
       prefixPlaceholder.classList.add("hidden");
       suffixPlaceholder.classList.add("hidden");
@@ -1271,7 +1251,6 @@
       document.getElementById("debug").innerText = "";
 
       if (!type) {
-        updateSpecialQuestionVisibility();
         updateItemDisclaimer();
         return;
       }
@@ -1282,7 +1261,7 @@
         if (type === "staff") {
           document.querySelector('[data-type="staff"]').classList.remove("hidden");
         } else if (MARTIAL_TYPES.includes(type)) {
-          noReqContainer.classList.remove("hidden");
+          document.querySelector(`[data-type="${type}"]`).classList.remove("hidden");
         }
       } else if (modifierType === "prefix") {
         prefixPlaceholder.classList.remove("hidden");
@@ -1294,55 +1273,6 @@
         checkButton.classList.add("hidden");
       }
 
-      updateSpecialQuestionVisibility();
-      updateItemDisclaimer();
-    }
-
-    /*
-      ============================================================
-      MARTIAL NO-REQ CHANGE HANDLER
-      ============================================================
-    */
-    function noReqChanged() {
-      const type = document.getElementById("itemType").value;
-      const modifierType = getModifierTypeValue();
-      const noReqChosen = hasChosenNoReq();
-      const martialSharedFields = document.getElementById("martialSharedFields");
-
-      document.querySelectorAll(".itemFields").forEach(div => {
-        div.classList.add("hidden");
-      });
-
-      martialSharedFields.classList.add("hidden");
-
-      if (!type || modifierType !== "weapon" || !MARTIAL_TYPES.includes(type)) {
-        document.getElementById("result").innerText = "";
-        document.getElementById("debug").innerText = "";
-        updateSpecialQuestionVisibility();
-        updateItemDisclaimer();
-        return;
-      }
-
-      if (!noReqChosen) {
-        document.getElementById("result").innerText = "";
-        document.getElementById("debug").innerText = "";
-        updateSpecialQuestionVisibility();
-        updateItemDisclaimer();
-        return;
-      }
-
-      document.querySelectorAll(".itemFields").forEach(div => {
-        const types = div.dataset.type ? div.dataset.type.split(",") : [];
-        div.classList.toggle("hidden", !types.includes(type));
-      });
-
-      martialSharedFields.classList.remove("hidden");
-      populateWeaponDamage(type);
-
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
-
-      updateSpecialQuestionVisibility();
       updateItemDisclaimer();
     }
 
@@ -1356,9 +1286,11 @@
       const earthSpecific = getStaffEarthSpecificValue();
       const staffMainFields = document.getElementById("staffMainFields");
       const earthSpecificDiv = document.getElementById("staffEarthSpecificDiv");
-    
+      const staffNoReqRow = document.getElementById("staffNoReqRow");
+
       earthSpecificDiv.classList.toggle("hidden", skin !== "earth");
-    
+      staffNoReqRow.classList.toggle("hidden", !skin);
+
       if (!skin) {
         staffMainFields.classList.add("hidden");
         document.getElementById("staff_hsr").innerHTML = '<option value="">-- Select --</option>';
@@ -1382,12 +1314,12 @@
         staffMainFields.classList.remove("hidden");
         populateHSR();
         populateEnergy();
-    
+
         if (document.getElementById("staff_inherent").value === "hct") {
           populateStaffHctAttributes();
         }
       }
-    
+
       document.getElementById("result").innerText = "";
       document.getElementById("debug").innerText = "";
     }
@@ -1402,6 +1334,43 @@
 
       document.getElementById("result").innerText = "";
       document.getElementById("debug").innerText = "";
+    }
+
+    /*
+      ============================================================
+      MARTIAL SKIN / NO-REQ CHANGE HANDLERS
+      ============================================================
+    */
+    function martialSkinChanged(type) {
+      const skin = document.getElementById(`${type}_skin`).value;
+      const mainFields = document.getElementById(`${type}MainFields`);
+      const noReqRow = document.getElementById(`${type}NoReqRow`);
+
+      noReqRow.classList.toggle("hidden", !skin);
+
+      if (!skin) {
+        mainFields.classList.add("hidden");
+        document.getElementById(`${type}_damage`).innerHTML = '<option value="">-- Select --</option>';
+      } else {
+        mainFields.classList.remove("hidden");
+        populateWeaponDamage(type);
+      }
+
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
+
+      updateMartialSharedVisibility();
+    }
+
+    function martialNoReqChanged(type) {
+      if (hasChosenMartialSkin(type)) {
+        populateWeaponDamage(type);
+      }
+
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
+
+      updateMartialSharedVisibility();
     }
 
     /*
@@ -1589,9 +1558,38 @@
       ============================================================
     */
     function populateWeaponDamage(type) {
-      const noReq = getNoReqValue() === "yes";
+      const noReq = isMartialNoReqChecked(type);
       const options = getDamageOptions(type, noReq);
       setSelectOptions(`${type}_damage`, options);
+    }
+
+    /*
+      ============================================================
+      MARTIAL SHARED VISIBILITY
+      ============================================================
+    */
+    function updateMartialSharedVisibility() {
+      const type = document.getElementById("itemType").value;
+      const modifierType = getModifierTypeValue();
+      const martialSharedFields = document.getElementById("martialSharedFields");
+
+      if (!MARTIAL_TYPES.includes(type) || modifierType !== "weapon") {
+        martialSharedFields.classList.add("hidden");
+        return;
+      }
+
+      const skin = document.getElementById(`${type}_skin`)?.value || "";
+      const damage = document.getElementById(`${type}_damage`)?.value || "";
+
+      if (!skin || !damage) {
+        martialSharedFields.classList.add("hidden");
+        document.getElementById("weapon_inherent").value = "";
+        document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
+        return;
+      }
+
+      martialSharedFields.classList.remove("hidden");
     }
 
     /*
@@ -1608,7 +1606,6 @@
 
       if (!inherent || inherent === "none") {
         percentDiv.classList.add("hidden");
-        updateSpecialQuestionVisibility();
         return;
       }
 
@@ -1622,59 +1619,6 @@
       }
 
       values.forEach(v => percentSelect.add(new Option(v + "%", v)));
-
-      updateSpecialQuestionVisibility();
-    }
-
-    /*
-      ============================================================
-      SPECIAL MARTIAL QUESTION VISIBILITY
-      ============================================================
-    */
-    function updateSpecialQuestionVisibility() {
-      const type = document.getElementById("itemType").value;
-      const modifierType = getModifierTypeValue();
-      const specialQuestionFields = document.getElementById("specialQuestionFields");
-      const axePiercingRow = document.getElementById("axePiercingRow");
-      const swordShortRow = document.getElementById("swordShortRow");
-
-      if (!specialQuestionFields || !axePiercingRow || !swordShortRow) return;
-
-      const damage = document.getElementById(type + "_damage")?.value || "";
-      const inherent = document.getElementById("weapon_inherent")?.value || "";
-      const percent = document.getElementById("weapon_damage_percent")?.value || "";
-
-      const isMartial = MARTIAL_TYPES.includes(type);
-      const noReqChosen = hasChosenNoReq();
-
-      if (!isMartial || !noReqChosen || modifierType !== "weapon") {
-        specialQuestionFields.classList.add("hidden");
-        axePiercingRow.classList.add("hidden");
-        swordShortRow.classList.add("hidden");
-        document.getElementById("axe_piercing").checked = false;
-        document.getElementById("sword_short").checked = false;
-        return;
-      }
-
-      const baseFieldsComplete =
-        damage &&
-        inherent &&
-        (inherent === "none" || percent);
-
-      const showAxe = baseFieldsComplete && type === "axe";
-      const showSword = baseFieldsComplete && type === "sword";
-
-      specialQuestionFields.classList.toggle("hidden", !(showAxe || showSword));
-      axePiercingRow.classList.toggle("hidden", !showAxe);
-      swordShortRow.classList.toggle("hidden", !showSword);
-
-      if (!showAxe) {
-        document.getElementById("axe_piercing").checked = false;
-      }
-
-      if (!showSword) {
-        document.getElementById("sword_short").checked = false;
-      }
     }
 
     /*
@@ -1804,25 +1748,11 @@
     }
 
     function getMartialCriteria(type) {
-      let skin = "";
-
-      if (type === "bow") {
-        skin = document.getElementById("bow_skin").value;
-      }
-
-      if (type === "axe") {
-        skin = document.getElementById("axe_piercing").checked ? "piercing" : "";
-      }
-
-      if (type === "sword") {
-        skin = document.getElementById("sword_short").checked ? "short" : "";
-      }
-
       return {
         type,
-        skin,
-        noReq: getNoReqValue(),
-        damage: document.getElementById(type + "_damage").value,
+        skin: document.getElementById(`${type}_skin`).value,
+        noReq: isMartialNoReqChecked(type) ? "yes" : "no",
+        damage: document.getElementById(`${type}_damage`).value,
         inherent: document.getElementById("weapon_inherent").value,
         percent: document.getElementById("weapon_damage_percent").value
       };
@@ -1858,12 +1788,8 @@
     }
 
     function validateMartialInput(criteria) {
-      if (!criteria.noReq) {
-        return "Please choose Yes or No for No Req?.";
-      }
-
-      if (criteria.type === "bow" && !criteria.skin) {
-        return "Please select the bow skin.";
+      if (!criteria.skin) {
+        return "Please select the weapon skin.";
       }
 
       if (!criteria.damage) {
