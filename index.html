@@ -256,7 +256,7 @@
 
     <div id="axeMainFields" class="hidden">
       <label>Damage Range:</label>
-      <select id="axe_damage">
+      <select id="axe_damage" onchange="updateMartialSharedVisibility()">
         <option value="">-- Select --</option>
       </select>
     </div>
@@ -282,7 +282,7 @@
 
     <div id="swordMainFields" class="hidden">
       <label>Damage Range:</label>
-      <select id="sword_damage">
+      <select id="sword_damage" onchange="updateMartialSharedVisibility()">
         <option value="">-- Select --</option>
       </select>
     </div>
@@ -334,7 +334,7 @@
 
     <div id="bowMainFields" class="hidden">
       <label>Damage Range:</label>
-      <select id="bow_damage">
+      <select id="bow_damage" onchange="updateMartialSharedVisibility()">
         <option value="">-- Select --</option>
       </select>
     </div>
@@ -1354,6 +1354,10 @@
       } else {
         mainFields.classList.remove("hidden");
         populateWeaponDamage(type);
+        document.getElementById("weapon_inherent").value = "";
+        document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
+      }
       }
 
       document.getElementById("result").innerText = "";
