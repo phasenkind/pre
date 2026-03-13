@@ -121,11 +121,6 @@
 </head>
 <body>
 
-  <!--
-    ============================================================
-    HEADER + ITEM TYPE SELECTION
-    ============================================================
-  -->
   <h2 class="header-red">Pre-Searing Item Tiers – WIP</h2>
 
   <div class="topField">
@@ -144,11 +139,6 @@
     </select>
   </div>
 
-  <!--
-    ============================================================
-    BASE / PREFIX / SUFFIX DROPDOWN
-    ============================================================
-  -->
   <div id="modifierTypeContainer" class="hidden topField">
     <label>Check Type:</label>
     <select id="modifierType" onchange="modifierTypeChanged()">
@@ -159,11 +149,7 @@
     </select>
   </div>
 
-  <!--
-    ============================================================
-    STAFF FIELDS
-    ============================================================
-  -->
+  <!-- STAFF -->
   <div class="itemFields hidden" data-type="staff">
     <label>Skin:</label>
     <select id="staff_skin" onchange="staffSkinChanged()">
@@ -231,11 +217,7 @@
     </div>
   </div>
 
-  <!--
-    ============================================================
-    AXE FIELDS
-    ============================================================
-  -->
+  <!-- AXE -->
   <div class="itemFields hidden" data-type="axe">
     <label>Skin:</label>
     <select id="axe_skin" onchange="martialSkinChanged('axe')">
@@ -265,11 +247,7 @@
     </div>
   </div>
 
-  <!--
-    ============================================================
-    SWORD FIELDS
-    ============================================================
-  -->
+  <!-- SWORD -->
   <div class="itemFields hidden" data-type="sword">
     <label>Skin:</label>
     <select id="sword_skin" onchange="martialSkinChanged('sword')">
@@ -297,11 +275,7 @@
     </div>
   </div>
 
-  <!--
-    ============================================================
-    HAMMER FIELDS
-    ============================================================
-  -->
+  <!-- HAMMER -->
   <div class="itemFields hidden" data-type="hammer">
     <label>Skin:</label>
     <select id="hammer_skin" onchange="martialSkinChanged('hammer')">
@@ -338,11 +312,7 @@
     </div>
   </div>
 
-  <!--
-    ============================================================
-    BOW FIELDS
-    ============================================================
-  -->
+  <!-- BOW -->
   <div class="itemFields hidden" data-type="bow">
     <label>Skin:</label>
     <select id="bow_skin" onchange="martialSkinChanged('bow')">
@@ -369,11 +339,7 @@
     </div>
   </div>
 
-  <!--
-    ============================================================
-    PLACEHOLDER ITEM TYPES
-    ============================================================
-  -->
+  <!-- PLACEHOLDERS -->
   <div class="itemFields hidden" data-type="wand">
     <label>Wand logic placeholder</label>
   </div>
@@ -398,11 +364,7 @@
     <label>Suffix logic placeholder</label>
   </div>
 
-  <!--
-    ============================================================
-    MARTIAL SHARED MODIFIER FIELDS
-    ============================================================
-  -->
+  <!-- MARTIAL SHARED -->
   <div id="martialSharedFields" class="hidden">
     <label>Inherent Damage Increase:</label>
     <select id="weapon_inherent" onchange="weaponInherentChanged()">
@@ -424,11 +386,6 @@
     </div>
   </div>
 
-  <!--
-    ============================================================
-    ACTION + OUTPUT AREA
-    ============================================================
-  -->
   <button id="checkItemButton" onclick="checkItem()" class="hidden">
     Check Item
   </button>
@@ -436,18 +393,8 @@
   <h3 id="result"></h3>
   <div id="debug" class="subtle"></div>
 
-  <!--
-    ============================================================
-    DYNAMIC DISCLAIMER BOX
-    ============================================================
-  -->
   <div id="itemDisclaimer" class="disclaimerBox hidden"></div>
 
-  <!--
-    ============================================================
-    BOTTOM LINKS
-    ============================================================
-  -->
   <div class="bottomLinks">
     <div>
       <a href="https://discord.gg/B3JfepPu" target="_blank" rel="noopener noreferrer">
@@ -464,21 +411,11 @@
   </div>
 
   <script>
-    /*
-      ============================================================
-      GLOBAL TYPE GROUPS
-      ============================================================
-    */
     const MARTIAL_TYPES = ["axe", "sword", "hammer", "bow"];
     const PLACEHOLDER_TYPES = ["wand", "shield", "focus", "misc"];
     const MODIFIER_SUPPORTED_TYPES = ["staff", "axe", "sword", "hammer", "bow"];
     const SPECIAL_AXE_SKINS = new Set(["sickle", "tribal"]);
 
-    /*
-      ============================================================
-      HARDCODED MARTIAL TIER FOUNDATION
-      ============================================================
-    */
     const hardcodedMartialTierMappings = {
       axe: [
         {
@@ -587,11 +524,6 @@
       ]
     };
 
-    /*
-      ============================================================
-      MARTIAL SCORING CONFIGS
-      ============================================================
-    */
     const martialReqConfigs = {
       bow: {
         damageScores: {
@@ -811,11 +743,6 @@
       }
     };
 
-    /*
-      ============================================================
-      MARTIAL PERCENT OPTION CONFIGS
-      ============================================================
-    */
     const martialPercentOptionConfigs = {
       default: {
         above50: [13, 14],
@@ -835,11 +762,6 @@
       }
     };
 
-    /*
-      ============================================================
-      STAFF FAMILY / FILTERING HELPERS
-      ============================================================
-    */
     const ELEMENTAL_STAFF_ATTRS = ["air", "earth", "fire", "water"];
     const NECRO_STAFF_ATTRS = ["blood", "curses", "death"];
     const MONK_STAFF_ATTRS = ["divine", "heal", "prot", "smite"];
@@ -850,22 +772,14 @@
       earth: ["generic", ...ELEMENTAL_STAFF_ATTRS],
       fire: ["generic", ...ELEMENTAL_STAFF_ATTRS],
       water: ["generic", ...ELEMENTAL_STAFF_ATTRS],
-
       curses: ["generic", ...NECRO_STAFF_ATTRS],
       death: ["generic", ...NECRO_STAFF_ATTRS],
-
       divine: ["generic", ...MONK_STAFF_ATTRS],
       smite: ["generic", ...MONK_STAFF_ATTRS],
-
       dom: ["generic", ...MESMER_STAFF_ATTRS],
       illu: ["generic", ...MESMER_STAFF_ATTRS]
     };
 
-    /*
-      ============================================================
-      STAFF SCORING TABLES
-      ============================================================
-    */
     const staffSkinScores = {
       air: 2,
       curses: 2,
@@ -905,11 +819,6 @@
     const premiumStaffAttr = new Set(["fire", "death"]);
     const collectorStaffAttr = new Set(["air", "water", "earth", "prot", "divine", "illu", "inspi"]);
 
-    /*
-      ============================================================
-      STAFF BASE SCORE TABLES
-      ============================================================
-    */
     const staffHsrScores = {
       "11": 1,
       "12": 1.5,
@@ -926,11 +835,6 @@
       "8": 3
     };
 
-    /*
-      ============================================================
-      STAFF LABEL HELPERS
-      ============================================================
-    */
     function getStaffAttrLabel(value) {
       const labels = {
         generic: "Generic",
@@ -949,15 +853,9 @@
         smite: "Smite",
         water: "Water"
       };
-
       return labels[value] || value;
     }
 
-    /*
-      ============================================================
-      STAFF SCORE HELPERS
-      ============================================================
-    */
     function getStaffSkinScore(skin) {
       if (!skin) return 1;
       return staffSkinScores[skin] ?? 1;
@@ -1048,28 +946,15 @@
       const isPremium = premiumStaffAttr.has(criteria.attr);
       const isHct = criteria.inherent === "hct";
 
-      if (
-        isHct &&
-        isCollector &&
-        criteria.hsr === "16" &&
-        criteria.hctPercent === "18"
-      ) {
+      if (isHct && isCollector && criteria.hsr === "16" && criteria.hctPercent === "18") {
         return "Highly Collectable";
       }
 
-      if (
-        isCollector &&
-        criteria.hsr === "16"
-      ) {
+      if (isCollector && criteria.hsr === "16") {
         return "Collectable";
       }
 
-      if (
-        isHct &&
-        isCollector &&
-        criteria.hsr === "15" &&
-        criteria.hctPercent === "18"
-      ) {
+      if (isHct && isCollector && criteria.hsr === "15" && criteria.hctPercent === "18") {
         return "Collectable";
       }
 
@@ -1100,11 +985,6 @@
       return "";
     }
 
-    /*
-      ============================================================
-      MARTIAL HELPERS
-      ============================================================
-    */
     function getMartialSubtype(type, skin) {
       if (type === "axe" && SPECIAL_AXE_SKINS.has(skin)) {
         return "axe_blue";
@@ -1145,11 +1025,19 @@
       return !!select?.value;
     }
 
-    /*
-      ============================================================
-      STAFF HELPERS
-      ============================================================
-    */
+    function isOrLowerDamageOption(type, damage) {
+      const orLowerValues = new Set([
+        "6-15",
+        "10-13",
+        "14-21",
+        "11-16",
+        "6-14",
+        "5-12"
+      ]);
+
+      return MARTIAL_TYPES.includes(type) && orLowerValues.has(damage);
+    }
+
     function getStaffSkinValue() {
       const select = document.getElementById("staff_skin");
       if (!select) return "";
@@ -1167,11 +1055,6 @@
       return !!checkbox?.checked;
     }
 
-    /*
-      ============================================================
-      MODIFIER TYPE HELPERS
-      ============================================================
-    */
     function getModifierTypeValue() {
       const select = document.getElementById("modifierType");
       if (!select) return "";
@@ -1182,11 +1065,6 @@
       return MODIFIER_SUPPORTED_TYPES.includes(type);
     }
 
-    /*
-      ============================================================
-      UI RESET
-      ============================================================
-    */
     function resetAllFields() {
       document.querySelectorAll(".itemFields select").forEach(select => {
         select.value = "";
@@ -1246,11 +1124,6 @@
       }
     }
 
-    /*
-      ============================================================
-      TYPE-BASED DISCLAIMERS
-      ============================================================
-    */
     function updateItemDisclaimer() {
       const type = document.getElementById("itemType").value;
       const modifierType = getModifierTypeValue();
@@ -1290,11 +1163,6 @@
       disclaimerEl.innerText = messages.join("\n\n");
     }
 
-    /*
-      ============================================================
-      INITIAL TYPE SWITCHING
-      ============================================================
-    */
     function showFields() {
       const type = document.getElementById("itemType").value;
       const modifierTypeContainer = document.getElementById("modifierTypeContainer");
@@ -1330,11 +1198,6 @@
       updateItemDisclaimer();
     }
 
-    /*
-      ============================================================
-      MODIFIER TYPE CHANGE HANDLER
-      ============================================================
-    */
     function modifierTypeChanged() {
       const type = document.getElementById("itemType").value;
       const modifierType = getModifierTypeValue();
@@ -1379,11 +1242,6 @@
       updateItemDisclaimer();
     }
 
-    /*
-      ============================================================
-      STAFF CHANGE HANDLERS
-      ============================================================
-    */
     function staffSkinChanged() {
       const skin = getStaffSkinValue();
       const earthSpecific = getStaffEarthSpecificValue();
@@ -1438,20 +1296,10 @@
       document.getElementById("debug").innerText = "";
     }
 
-    /*
-      ============================================================
-      HAMMER SPECIFIC HANDLER
-      ============================================================
-    */
     function hammerSpecificChanged() {
       martialSkinChanged("hammer");
     }
 
-    /*
-      ============================================================
-      MARTIAL CHANGE HANDLERS
-      ============================================================
-    */
     function martialSkinChanged(type) {
       const skin = document.getElementById(`${type}_skin`).value;
       const mainFields = document.getElementById(`${type}MainFields`);
@@ -1500,11 +1348,6 @@
       updateMartialSharedVisibility();
     }
 
-    /*
-      ============================================================
-      STAFF SELECT POPULATION
-      ============================================================
-    */
     function populateHSR() {
       const skin = getStaffSkinValue();
       const earthSpecific = getStaffEarthSpecificValue();
@@ -1574,11 +1417,6 @@
       }
     }
 
-    /*
-      ============================================================
-      STAFF HCT CONDITIONAL UI
-      ============================================================
-    */
     function inherentChanged() {
       const inherent = document.getElementById("staff_inherent").value;
       const hctDiv = document.getElementById("hctAttributeDiv");
@@ -1612,11 +1450,6 @@
       values.forEach(v => percentSelect.add(new Option(v, v)));
     }
 
-    /*
-      ============================================================
-      DAMAGE OPTION TABLES
-      ============================================================
-    */
     function getDamageOptions(type, noReq, skin = "") {
       const regularDamageOptions = {
         axe: {
@@ -1648,7 +1481,7 @@
           ]
         }
       };
-    
+
       const specialBlueAxeDamageOptions = {
         noReq: [
           { value: "5-12", label: "5-12 or lower" },
@@ -1660,21 +1493,15 @@
           "6-16"
         ]
       };
-    
+
       if (type === "axe" && SPECIAL_AXE_SKINS.has(skin)) {
         return noReq ? specialBlueAxeDamageOptions.noReq : specialBlueAxeDamageOptions.req;
       }
-    
+
       if (!regularDamageOptions[type]) return [];
       return noReq ? regularDamageOptions[type].noReq : regularDamageOptions[type].req;
     }
 
-
-    /*
-      ============================================================
-      GENERIC SELECT-OPTION HELPER
-      ============================================================
-    */
     function setSelectOptions(selectId, options) {
       const select = document.getElementById(selectId);
       if (!select) return;
@@ -1690,11 +1517,6 @@
       });
     }
 
-    /*
-      ============================================================
-      MARTIAL DAMAGE POPULATION
-      ============================================================
-    */
     function populateWeaponDamage(type) {
       const skin = document.getElementById(`${type}_skin`)?.value || "";
       const noReq = isMartialNoReqChecked(type);
@@ -1702,15 +1524,12 @@
       setSelectOptions(`${type}_damage`, options);
     }
 
-    /*
-      ============================================================
-      MARTIAL SHARED VISIBILITY
-      ============================================================
-    */
     function updateMartialSharedVisibility() {
       const type = document.getElementById("itemType").value;
       const modifierType = getModifierTypeValue();
       const martialSharedFields = document.getElementById("martialSharedFields");
+      const resultEl = document.getElementById("result");
+      const debugEl = document.getElementById("debug");
 
       if (!MARTIAL_TYPES.includes(type) || modifierType !== "weapon") {
         martialSharedFields.classList.add("hidden");
@@ -1730,14 +1549,20 @@
         return;
       }
 
+      if (isOrLowerDamageOption(type, damage)) {
+        martialSharedFields.classList.add("hidden");
+        document.getElementById("weapon_inherent").value = "";
+        document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
+        document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
+
+        resultEl.innerText = "Junk";
+        debugEl.innerText = "";
+        return;
+      }
+
       martialSharedFields.classList.remove("hidden");
     }
 
-    /*
-      ============================================================
-      MARTIAL INHERENT % POPULATION
-      ============================================================
-    */
     function weaponInherentChanged() {
       const type = document.getElementById("itemType").value;
       const skin = document.getElementById(`${type}_skin`)?.value || "";
@@ -1764,11 +1589,6 @@
       values.forEach(v => percentSelect.add(new Option(v + "%", v)));
     }
 
-    /*
-      ============================================================
-      GENERIC MAPPING MATCHER
-      ============================================================
-    */
     function findTier(criteria, mappings, keys) {
       for (const mapping of mappings) {
         let matched = true;
@@ -1817,11 +1637,6 @@
       return match.tier;
     }
 
-    /*
-      ============================================================
-      REQUIRED MARTIAL SCORE CALCULATION
-      ============================================================
-    */
     function scoreReqMartial(type, criteria) {
       const config = getMartialConfig(type, criteria.skin);
 
@@ -1869,11 +1684,6 @@
       };
     }
 
-    /*
-      ============================================================
-      REQUIRED MARTIAL SCORE -> TIER
-      ============================================================
-    */
     function reqMartialScoreToTier(type, score, skin = "") {
       const config = getMartialConfig(type, skin);
       const thresholds = config?.thresholds;
@@ -1886,11 +1696,6 @@
       return "Junk";
     }
 
-    /*
-      ============================================================
-      CRITERIA READERS
-      ============================================================
-    */
     function getStaffCriteria() {
       return {
         skin: getStaffSkinValue(),
@@ -1916,11 +1721,6 @@
       };
     }
 
-    /*
-      ============================================================
-      INPUT VALIDATION
-      ============================================================
-    */
     function validateStaffInput(criteria) {
       if (!criteria.skin) {
         return "Please select the staff skin.";
@@ -1969,11 +1769,6 @@
       return "";
     }
 
-    /*
-      ============================================================
-      STAFF TIER CALCULATION
-      ============================================================
-    */
     function calculateStaffTier() {
       const criteria = getStaffCriteria();
       const validationMessage = validateStaffInput(criteria);
@@ -2015,43 +1810,23 @@
       };
     }
 
-    /*
-      ============================================================
-      MARTIAL TIER CALCULATION
-      ============================================================
-    */
-    
-    function isOrLowerDamageOption(type, damage) {
-      const orLowerValues = new Set([
-        "6-15",   // axe
-        "10-13",  // sword
-        "14-21",  // hammer
-        "11-16",  // bow
-        "6-14",   // blue axe
-        "5-12"    // blue axe no-req
-      ]);
-    
-      return orLowerValues.has(damage);
-    }
-    
     function calculateMartialTier(type) {
       const criteria = getMartialCriteria(type);
       const validationMessage = validateMartialInput(criteria);
 
-    if (validationMessage) {
+      if (validationMessage) {
         return { error: validationMessage };
       }
 
-    const normalizedCriteria = {
-      ...criteria,
-      inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
-      percent: criteria.inherent === "none" ? "" : criteria.percent
-    };
-    
-    if (isOrLowerDamageOption(type, normalizedCriteria.damage)) {
-      return { tier: "Junk" };
-    }
+      const normalizedCriteria = {
+        ...criteria,
+        inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
+        percent: criteria.inherent === "none" ? "" : criteria.percent
+      };
 
+      if (isOrLowerDamageOption(type, normalizedCriteria.damage)) {
+        return { tier: "Junk" };
+      }
 
       const hardcodedTier = getHardcodedMartialTier(normalizedCriteria);
       if (hardcodedTier) {
@@ -2075,11 +1850,6 @@
       return { tier: "Junk" };
     }
 
-    /*
-      ============================================================
-      PLACEHOLDER TIER CALCULATION
-      ============================================================
-    */
     function calculatePlaceholderTier(type) {
       return {
         tier: "Logic not added yet.",
@@ -2087,11 +1857,6 @@
       };
     }
 
-    /*
-      ============================================================
-      MAIN CHECK BUTTON HANDLER
-      ============================================================
-    */
     function checkItem() {
       const type = document.getElementById("itemType").value;
       const modifierType = getModifierTypeValue();
