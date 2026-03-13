@@ -2020,19 +2020,38 @@
       MARTIAL TIER CALCULATION
       ============================================================
     */
+    
+    function isOrLowerDamageOption(type, damage) {
+      const orLowerValues = new Set([
+        "6-15",   // axe
+        "10-13",  // sword
+        "14-21",  // hammer
+        "11-16",  // bow
+        "6-14",   // blue axe
+        "5-12"    // blue axe no-req
+      ]);
+    
+      return orLowerValues.has(damage);
+    }
+    
     function calculateMartialTier(type) {
       const criteria = getMartialCriteria(type);
       const validationMessage = validateMartialInput(criteria);
 
-      if (validationMessage) {
+    if (validationMessage) {
         return { error: validationMessage };
       }
 
-      const normalizedCriteria = {
-        ...criteria,
-        inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
-        percent: criteria.inherent === "none" ? "" : criteria.percent
-      };
+    const normalizedCriteria = {
+      ...criteria,
+      inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
+      percent: criteria.inherent === "none" ? "" : criteria.percent
+    };
+    
+    if (isOrLowerDamageOption(type, normalizedCriteria.damage)) {
+      return { tier: "Junk" };
+    }
+
 
       const hardcodedTier = getHardcodedMartialTier(normalizedCriteria);
       if (hardcodedTier) {
