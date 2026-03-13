@@ -4,11 +4,6 @@
   <title>Pre-Searing Item Tiers – WIP!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /*
-      ============================================================
-      GLOBAL PAGE STYLING
-      ============================================================
-    */
     body {
       background: black;
       color: #cccccc;
@@ -184,12 +179,12 @@
 
     <div id="staffMainFields" class="hidden">
       <label>HSR %:</label>
-      <select id="staff_hsr">
+      <select id="staff_hsr" onchange="clearResult()">
         <option value="">-- Select --</option>
       </select>
 
       <label>Energy:</label>
-      <select id="staff_energy">
+      <select id="staff_energy" onchange="clearResult()">
         <option value="">-- Select --</option>
       </select>
 
@@ -210,7 +205,7 @@
 
       <div id="hctPercentDiv" class="hidden compact">
         <label>HCT %:</label>
-        <select id="staff_hct_percent">
+        <select id="staff_hct_percent" onchange="clearResult()">
           <option value="">-- Select --</option>
         </select>
       </div>
@@ -380,7 +375,7 @@
 
     <div id="weaponDamagePercentDiv" class="hidden">
       <label>Damage Increase %:</label>
-      <select id="weapon_damage_percent">
+      <select id="weapon_damage_percent" onchange="clearResult()">
         <option value="">-- Select --</option>
       </select>
     </div>
@@ -835,6 +830,11 @@
       "8": 3
     };
 
+    function clearResult() {
+      document.getElementById("result").innerText = "";
+      document.getElementById("debug").innerText = "";
+    }
+
     function getStaffAttrLabel(value) {
       const labels = {
         generic: "Generic",
@@ -960,13 +960,7 @@
 
       if (!isNoReq) return "";
 
-      if (
-        isHct &&
-        isPremium &&
-        criteria.energy === "6" &&
-        criteria.hsr === "14" &&
-        criteria.hctPercent === "18"
-      ) {
+      if (isHct && isPremium && criteria.energy === "6" && criteria.hsr === "14" && criteria.hctPercent === "18") {
         return "Highly Collectable";
       }
 
@@ -1025,19 +1019,6 @@
       return !!select?.value;
     }
 
-    function isOrLowerDamageOption(type, damage) {
-      const orLowerValues = new Set([
-        "6-15",
-        "10-13",
-        "14-21",
-        "11-16",
-        "6-14",
-        "5-12"
-      ]);
-
-      return MARTIAL_TYPES.includes(type) && orLowerValues.has(damage);
-    }
-
     function getStaffSkinValue() {
       const select = document.getElementById("staff_skin");
       if (!select) return "";
@@ -1063,6 +1044,23 @@
 
     function usesModifierTypeSlider(type) {
       return MODIFIER_SUPPORTED_TYPES.includes(type);
+    }
+
+    function isOrLowerDamageOption(type, skin, damage) {
+      if (!damage) return false;
+
+      if (type === "axe") {
+        if (SPECIAL_AXE_SKINS.has(skin)) {
+          return damage === "5-12";
+        }
+        return damage === "6-15";
+      }
+
+      if (type === "sword") return damage === "10-13";
+      if (type === "hammer") return damage === "14-21";
+      if (type === "bow") return damage === "11-16";
+
+      return false;
     }
 
     function resetAllFields() {
@@ -1108,8 +1106,7 @@
       document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
       document.getElementById("martialSharedFields").classList.add("hidden");
 
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
+      clearResult();
 
       const prefixPlaceholder = document.getElementById("prefixPlaceholder");
       const suffixPlaceholder = document.getElementById("suffixPlaceholder");
@@ -1213,8 +1210,7 @@
       prefixPlaceholder.classList.add("hidden");
       suffixPlaceholder.classList.add("hidden");
 
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
+      clearResult();
 
       if (!type) {
         updateItemDisclaimer();
@@ -1281,8 +1277,7 @@
         }
       }
 
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
+      clearResult();
     }
 
     function staffEarthSpecificChanged() {
@@ -1292,8 +1287,7 @@
     function staffNoReqChanged() {
       populateHSR();
       populateEnergy();
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
+      clearResult();
     }
 
     function hammerSpecificChanged() {
@@ -1327,9 +1321,7 @@
       document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
 
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
-
+      clearResult();
       updateMartialSharedVisibility();
     }
 
@@ -1342,9 +1334,7 @@
       document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
       document.getElementById("weaponDamagePercentDiv").classList.add("hidden");
 
-      document.getElementById("result").innerText = "";
-      document.getElementById("debug").innerText = "";
-
+      clearResult();
       updateMartialSharedVisibility();
     }
 
@@ -1431,6 +1421,8 @@
         document.getElementById("staff_attr").innerHTML = '<option value="">-- Select --</option>';
         document.getElementById("staff_hct_percent").innerHTML = '<option value="">-- Select --</option>';
       }
+
+      clearResult();
     }
 
     function hctAttributeChanged() {
@@ -1442,12 +1434,15 @@
 
       if (!attr) {
         percentDiv.classList.add("hidden");
+        clearResult();
         return;
       }
 
       percentDiv.classList.remove("hidden");
       const values = attr === "generic" ? [8, 9] : [15, 16, 17, 18];
       values.forEach(v => percentSelect.add(new Option(v, v)));
+
+      clearResult();
     }
 
     function getDamageOptions(type, noReq, skin = "") {
@@ -1531,6 +1526,8 @@
       const resultEl = document.getElementById("result");
       const debugEl = document.getElementById("debug");
 
+      clearResult();
+
       if (!MARTIAL_TYPES.includes(type) || modifierType !== "weapon") {
         martialSharedFields.classList.add("hidden");
         return;
@@ -1549,7 +1546,7 @@
         return;
       }
 
-      if (isOrLowerDamageOption(type, damage)) {
+      if (isOrLowerDamageOption(type, skin, damage)) {
         martialSharedFields.classList.add("hidden");
         document.getElementById("weapon_inherent").value = "";
         document.getElementById("weapon_damage_percent").innerHTML = '<option value="">-- Select --</option>';
@@ -1574,6 +1571,7 @@
 
       if (!inherent || inherent === "none") {
         percentDiv.classList.add("hidden");
+        clearResult();
         return;
       }
 
@@ -1582,11 +1580,14 @@
 
       if (values.length === 0) {
         percentDiv.classList.add("hidden");
+        clearResult();
         return;
       }
 
       percentDiv.classList.remove("hidden");
       values.forEach(v => percentSelect.add(new Option(v + "%", v)));
+
+      clearResult();
     }
 
     function findTier(criteria, mappings, keys) {
@@ -1597,9 +1598,7 @@
           const mappingValue = mapping[key] ?? "";
           const criteriaValue = criteria[key] ?? "";
 
-          if (mappingValue === "") {
-            continue;
-          }
+          if (mappingValue === "") continue;
 
           if (Array.isArray(mappingValue)) {
             if (!mappingValue.includes(criteriaValue)) {
@@ -1612,9 +1611,7 @@
           }
         }
 
-        if (matched) {
-          return mapping;
-        }
+        if (matched) return mapping;
       }
 
       return { tier: "Junk" };
@@ -1722,50 +1719,22 @@
     }
 
     function validateStaffInput(criteria) {
-      if (!criteria.skin) {
-        return "Please select the staff skin.";
-      }
-
-      if (criteria.skin === "earth" && !criteria.earthSpecific) {
-        return "Please select the specific Earth staff type.";
-      }
-
-      if (!criteria.hsr || !criteria.energy || !criteria.inherent) {
-        return "Please complete all required staff fields.";
-      }
-
-      if (criteria.inherent === "hct" && !criteria.attr) {
-        return "Please select the HCT attribute.";
-      }
-
-      if (criteria.inherent === "hct" && !criteria.hctPercent) {
-        return "Please select the HCT %.";
-      }
-
+      if (!criteria.skin) return "Please select the staff skin.";
+      if (criteria.skin === "earth" && !criteria.earthSpecific) return "Please select the specific Earth staff type.";
+      if (!criteria.hsr || !criteria.energy || !criteria.inherent) return "Please complete all required staff fields.";
+      if (criteria.inherent === "hct" && !criteria.attr) return "Please select the HCT attribute.";
+      if (criteria.inherent === "hct" && !criteria.hctPercent) return "Please select the HCT %.";
       return "";
     }
 
     function validateMartialInput(criteria) {
-      if (!criteria.skin) {
-        return "Please select the weapon skin.";
-      }
-
+      if (!criteria.skin) return "Please select the weapon skin.";
       if (criteria.type === "hammer" && criteria.skin === "war" && !criteria.hammerSpecific) {
         return "Please select the specific War Hammer type.";
       }
-
-      if (!criteria.damage) {
-        return "Please select the damage range.";
-      }
-
-      if (!criteria.inherent) {
-        return "Please select the inherent damage increase.";
-      }
-
-      if (criteria.inherent !== "none" && !criteria.percent) {
-        return "Please select the damage increase %.";
-      }
-
+      if (!criteria.damage) return "Please select the damage range.";
+      if (!criteria.inherent) return "Please select the inherent damage increase.";
+      if (criteria.inherent !== "none" && !criteria.percent) return "Please select the damage increase %.";
       return "";
     }
 
@@ -1818,15 +1787,15 @@
         return { error: validationMessage };
       }
 
+      if (isOrLowerDamageOption(type, criteria.skin, criteria.damage)) {
+        return { tier: "Junk" };
+      }
+
       const normalizedCriteria = {
         ...criteria,
         inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
         percent: criteria.inherent === "none" ? "" : criteria.percent
       };
-
-      if (isOrLowerDamageOption(type, normalizedCriteria.damage)) {
-        return { tier: "Junk" };
-      }
 
       const hardcodedTier = getHardcodedMartialTier(normalizedCriteria);
       if (hardcodedTier) {
