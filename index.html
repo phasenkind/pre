@@ -1781,22 +1781,22 @@
 
     function calculateMartialTier(type) {
       const criteria = getMartialCriteria(type);
-      const validationMessage = validateMartialInput(criteria);
-
-      if (validationMessage) {
-        return { error: validationMessage };
-      }
-
+    
       if (isOrLowerDamageOption(type, criteria.skin, criteria.damage)) {
         return { tier: "Junk" };
       }
-
+    
+      const validationMessage = validateMartialInput(criteria);
+      if (validationMessage) {
+        return { error: validationMessage };
+      }
+    
       const normalizedCriteria = {
         ...criteria,
         inherent: criteria.inherent === "none" ? "none" : criteria.inherent,
         percent: criteria.inherent === "none" ? "" : criteria.percent
       };
-
+    
       const hardcodedTier = getHardcodedMartialTier(normalizedCriteria);
       if (hardcodedTier) {
         return {
@@ -1804,18 +1804,18 @@
           score: "hardcoded"
         };
       }
-
+    
       if (normalizedCriteria.noReq === "no") {
         const scoreResult = scoreReqMartial(type, normalizedCriteria);
         const tier = reqMartialScoreToTier(type, scoreResult.totalScore, normalizedCriteria.skin);
-
+    
         return {
           tier,
           score: scoreResult.totalScore,
           breakdown: scoreResult.breakdown
         };
       }
-
+    
       return { tier: "Junk" };
     }
 
