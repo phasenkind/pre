@@ -631,12 +631,12 @@
           above50: 5
         },
         percentBonuses: {
-          enchanted: { "12": 2, "13": 3, "14": 4 },
-          stance:    { "12": 2, "13": 3, "14": 4 },
-          above50:   { "12": 2, "13": 3, "14": 4 },
-          hexedfoes: { "12": 2, "13": 3, "14": 4 },
-          hexed:     { "15": 2, "16": 3, "17": 3, "18": 4 },
-          below50:   { "15": 2, "16": 3, "17": 3, "18": 4 }
+          enchanted: { "10": 1, "11": 2, "12": 3, "13": 4 },
+          stance:    { "10": 1, "11": 2, "12": 3, "13": 4 },
+          above50:   { "10": 1, "11": 2, "12": 3, "13": 4 },
+          hexedfoes: { "10": 1, "11": 2, "12": 3, "13": 4 },
+          hexed:     { "12": 2, "13": 3, "14": 3, "15": 4 },
+          below50:   { "12": 2, "13": 3, "14": 3, "15": 4 }
         },
         thresholds: {
           god: 500,
@@ -645,7 +645,7 @@
           low: 12
         }
       },
-
+      
       sword: {
         damageScores: {
           "10-13": 0,
@@ -747,14 +747,14 @@
         below50: [15, 16, 17, 18],
         hexed: [15, 16, 17, 18]
       },
-    axe_blue: {
-      above50: [10, 11, 12, 13],
-      enchanted: [10, 11, 12, 13],
-      hexedfoes: [10, 11, 12, 13],
-      stance: [10, 11, 12, 13],
-      below50: [12, 13, 14, 15],
-      hexed: [12, 13, 14, 15]
-    }
+      axe_blue: {
+        above50: [10, 11, 12, 13],
+        enchanted: [10, 11, 12, 13],
+        hexedfoes: [10, 11, 12, 13],
+        stance: [10, 11, 12, 13],
+        below50: [12, 13, 14, 15],
+        hexed: [12, 13, 14, 15]
+      }
     };
 
     const ELEMENTAL_STAFF_ATTRS = ["air", "earth", "fire", "water"];
@@ -1128,19 +1128,15 @@
 
       if (!disclaimerEl) return;
 
-      const messages = [];
-
       if (!type) {
         disclaimerEl.classList.add("hidden");
         disclaimerEl.innerText = "";
         return;
       }
 
-      if (usesModifierTypeSlider(type) && modifierType !== "weapon") {
-        disclaimerEl.classList.add("hidden");
-        disclaimerEl.innerText = "";
-        return;
-      }
+      const messages = [
+        "⚠ Tier attribution logic is still being finalized."
+      ];
 
       if (type === "staff" || type === "wand") {
         messages.push("High damage range might increase the item tier, but is not taken into consideration here for simplicity's sake.");
@@ -1150,9 +1146,9 @@
         messages.push("Low attribute requirement might increase the item tier, but is not taken into consideration here for simplicity's sake.");
       }
 
-      if (messages.length === 0) {
-        disclaimerEl.classList.add("hidden");
-        disclaimerEl.innerText = "";
+      if (usesModifierTypeSlider(type) && !modifierType) {
+        disclaimerEl.classList.remove("hidden");
+        disclaimerEl.innerText = messages.join("\n\n");
         return;
       }
 
@@ -1883,7 +1879,6 @@
       if (result.breakdown) {
         if (type === "staff") {
           debugEl.innerText =
-            `⚠ Tier attribution logic is still being finalized.\n\n` +
             `Score: ${result.score} | ` +
             `HSR: ${result.breakdown.hsrScore} | ` +
             `Skin: ${result.breakdown.skinScore} | ` +
@@ -1893,6 +1888,7 @@
             `HCT%: ${result.breakdown.hctPercentScore} | ` +
             `Energy Mult: ${result.breakdown.energyBonus}`;
           return;
+          
         }
 
         debugEl.innerText =
@@ -1907,7 +1903,7 @@
       } else {
         debugEl.innerText = result.info || "";
       }
-    }
+      
   </script>
 </body>
 </html>
